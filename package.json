@@ -1,0 +1,82 @@
+{
+  "name": "file37",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@dnd-kit/core": "6.0.8",
+    "@dnd-kit/sortable": "7.0.2",
+    "@tiptap/extension-link": "2.0.4",
+    "@tiptap/extension-task-item": "2.0.4",
+    "@tiptap/extension-task-list": "2.0.4",
+    "@tiptap/extension-typography": "2.0.4",
+    "@tiptap/pm": "2.0.4",
+    "@tiptap/react": "2.0.4",
+    "@tiptap/starter-kit": "2.0.4",
+    "apexcharts": "3.41.0",
+    "axios": "0.27.2",
+    "copy-to-clipboard": "3.3.3",
+    "date-fns": "2.29.3",
+    "eventemitter3": "5.0.0",
+    "grommet": "2.31.0",
+    "grommet-icons": "4.10.0",
+    "jwt-decode": "3.1.2",
+    "lodash.clonedeep": "4.5.0",
+    "lodash.get": "4.4.2",
+    "lodash.set": "4.3.2",
+    "lodash.uniqby": "4.7.0",
+    "openpgp": "5.5.0",
+    "patch-package": "7.0.2",
+    "qrcode.react": "3.1.0",
+    "react": "18.2.0",
+    "react-apexcharts": "1.4.1",
+    "react-dom": "18.2.0",
+    "react-redux": "8.0.5",
+    "react-router-dom": "6.3.0",
+    "redux": "4.2.0",
+    "redux-saga": "1.2.2",
+    "styled-components": "5.3.6",
+    "wouter": "2.9.0"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "5.16.5",
+    "@testing-library/react": "13.4.0",
+    "@testing-library/user-event": "13.5.0",
+    "eslint": "8.18.0",
+    "eslint-plugin-import": "2.26.0",
+    "eslint-plugin-react": "7.30.1",
+    "eslint-plugin-react-hooks": "4.6.0",
+    "prettier": "2.7.1",
+    "preval.macro": "5.0.0",
+    "react-scripts": "5.0.1"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "scripts": {
+    "copyshared": "rm -rf src/shared && mkdir src/shared && cp -a ../sharedjs/lib/js src/shared/js && cp -a ../sharedjs/lib/react src/shared/react && cp -a ../sharedjs/lib/react-pure src/shared/react-pure",
+    "start": "npm run copyshared && ESLINT_NO_DEV_ERRORS=true BROWSER=none react-scripts start",
+    "test": "react-scripts test",
+    "play": ". ./.env",
+    "build": "npm run copyshared && GENERATE_SOURCEMAP=false react-scripts build",
+    "postbuild": "find ./build -name '*.map' -delete && find ./build -name '.DS_Store' -delete",
+    "upload": "source .env && aws s3 sync build $S3_URL --delete --cache-control max-age=31536000,public",
+    "postupload": "source .env && aws s3 cp $S3_URL/index.html $S3_URL/index.html --metadata-directive REPLACE --cache-control max-age=0,no-cache,no-store,must-revalidate --content-type text/html --acl public-read",
+    "invalidate": "source .env && aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_ID --paths \"/index.html\"",
+    "deploy": "npm run build && npm run upload && npm run invalidate"
+  }
+}
