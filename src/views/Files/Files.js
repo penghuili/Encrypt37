@@ -11,7 +11,7 @@ import { isImage } from '../../shared/react/file';
 import { useEffectOnce } from '../../shared/react/hooks/useEffectOnce';
 import { toastTypes } from '../../shared/react/store/sharedReducer';
 
-function Files({ files, isLoading, isCreating, onFetch, onUpload, onToast }) {
+function Files({ files, hasMore, startKey, isLoading, isCreating, onFetch, onUpload, onToast }) {
   const [file, setFile] = useState(null);
 
   useEffectOnce(() => {
@@ -70,6 +70,10 @@ function Files({ files, isLoading, isCreating, onFetch, onUpload, onToast }) {
               ))}
             </Box>
           ))}
+
+        {hasMore && (
+          <Button label="Load more" onClick={() => onFetch({ startKey })} disabled={isLoading} />
+        )}
 
         {!files?.length && !isLoading && (
           <>

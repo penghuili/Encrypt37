@@ -7,6 +7,8 @@ import Files from './Files';
 const mapStateToProps = state => {
   return {
     files: fileSelectors.data.getGroupItems(state),
+    hasMore: fileSelectors.data.hasMore(state),
+    startKey: fileSelectors.data.getStartKey(state),
     isLoading: fileSelectors.fetchItems.isPending(state),
     isCreating: fileSelectors.createItem.isPending(state),
   };
