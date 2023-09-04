@@ -1,7 +1,8 @@
 import { Anchor, Box, Image, Layer, Spinner, Text } from 'grommet';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import { isImage } from '../../shared/react/file';
+import { useInView } from '../../shared/react/hooks/useInView';
 
 function FileItem({
   fileId,
@@ -17,18 +18,11 @@ function FileItem({
 }) {
   const [showOriginalImage, setShowOriginalImage] = useState(false);
 
-  useEffect(() => {
-    if (!fileMeta) {
-      return;
-    }
-
+  const ref = useInView(() => {
     if (isImage(fileMeta?.mimeType)) {
       onDownloadThumbnail({ fileId });
-    } else {
-      onDownloadFile({ fileId });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fileId]);
+  });
 
   function renderActions() {
     return (
@@ -61,7 +55,11 @@ function FileItem({
       );
     }
 
-    return <Text>{fileMeta.fileName}</Text>;
+    return (
+      <Text>
+        {fileMeta.fileName} <Spinner size="small" />
+      </Text>
+    );
   }
 
   function renderOriginalImage() {
@@ -79,7 +77,7 @@ function FileItem({
         >
           {isDownloadingFile && (
             <Box align="center" justify="center" height="100%">
-              <Spinner size="xlarge" />
+              <Spinner />
             </Box>
           )}
           {!!file && (
@@ -105,7 +103,7 @@ function FileItem({
   }
 
   return (
-    <Box>
+    <Box ref={ref}>
       {renderContent()}
       {renderActions()}
       {renderOriginalImage()}

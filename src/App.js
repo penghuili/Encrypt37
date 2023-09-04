@@ -11,6 +11,7 @@ import createTheme from './shared/react-pure/createTheme';
 import Divider from './shared/react-pure/Divider';
 import Spacer from './shared/react-pure/Spacer';
 import AppContainer from './shared/react/AppContainer';
+import Door from './shared/react/Door';
 import { HooksOutsieWrapper, setHook } from './shared/react/hooksOutside';
 import initShared from './shared/react/initShared';
 import Toast from './shared/react/Toast';
@@ -39,6 +40,8 @@ function App() {
         <Toast />
       </AppContainer>
       <HooksOutsieWrapper />
+
+      <Door />
     </StoreProvider>
   );
 }
