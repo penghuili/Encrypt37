@@ -2,6 +2,7 @@ import { connect } from 'react-redux';
 
 import { fileActions, fileSelectors } from '../../shared/react/store/file/fileStore';
 import { sharedActionCreators } from '../../shared/react/store/sharedActions';
+import { groupActions } from '../../store/group/groupStore';
 import Files from './Files';
 
 const mapStateToProps = state => {
@@ -16,7 +17,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = {
   onFetch: fileActions.fetchItemsRequested,
-  onUpload: fileActions.createRequested,
+  onFetchGroups: groupActions.fetchItemsRequested,
   onToast: sharedActionCreators.setToast,
 };
 

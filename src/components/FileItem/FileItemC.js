@@ -1,7 +1,6 @@
 import { connect } from 'react-redux';
 
 import { fileActions, fileSelectors } from '../../shared/react/store/file/fileStore';
-import { sharedActionCreators } from '../../shared/react/store/sharedActions';
 import FileItem from './FileItem';
 
 const mapStateToProps = (state, { fileId }) => ({
@@ -18,7 +17,6 @@ const mapDispatchToProps = {
   onDownloadFile: fileActions.downloadFileRequested,
   onDownloadThumbnail: fileActions.downloadThumbnailRequested,
   onDelete: fileActions.deleteRequested,
-  onNav: sharedActionCreators.navigate,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(FileItem);

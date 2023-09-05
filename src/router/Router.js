@@ -12,6 +12,10 @@ import Verify2FA from '../shared/react/Verify2FA';
 import Account from '../views/Account';
 import Encryption from '../views/Encryption';
 import Files from '../views/Files';
+import FilesUpload from '../views/FilesUpload';
+import GroupAdd from '../views/GroupAdd';
+import GroupsReorder from '../views/GroupsReorder';
+import GroupUpdate from '../views/GroupUpdate';
 import Privacy from '../views/Privacy';
 import Welcome from '../views/Welcome';
 
@@ -28,6 +32,11 @@ function Router({ isCheckingRefreshToken, isLoggedIn }) {
     return (
       <Switch>
         <Route path="/files" component={Files} />
+        <Route path="/files/upload" component={FilesUpload} />
+
+        <Route path="/groups/add" component={GroupAdd} />
+        <Route path="/groups/:groupId/update" component={GroupUpdate} />
+        <Route path="/groups/:groupId/reorder" component={GroupsReorder} />
 
         <Route path="/account" component={Account} />
         <Route path="/security" component={Security} />
