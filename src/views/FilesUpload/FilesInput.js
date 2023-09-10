@@ -1,4 +1,4 @@
-import { Box, Text } from 'grommet';
+import { Box, Text, TextArea } from 'grommet';
 import { Close } from 'grommet-icons';
 import React from 'react';
 import styled from 'styled-components';
@@ -18,32 +18,46 @@ const Input = styled.input`
   cursor: pointer;
 `;
 
-function FilesInput({ files, onSelected, onRemove }) {
+function FilesInput({ files, notes, onNotesChange, onSelected, onRemove }) {
   return (
-    <Wrapper>
-      <Input
-        type="file"
-        id="file-upload"
-        multiple
-        onChange={e => {
-          onSelected(e.target.files);
-        }}
-      />
-      <label htmlFor="file-upload">
-        {files?.length ? `${files.length} file(s) selected` : 'Choose files...'}
-      </label>
+    <>
+      <Wrapper>
+        <Input
+          type="file"
+          id="file-upload"
+          multiple
+          onChange={e => {
+            onSelected(e.target.files);
+          }}
+        />
+        <label htmlFor="file-upload">
+          {files?.length
+            ? `${files.length} ${files.length > 1 ? 'files' : 'file'} selected`
+            : 'Choose files...'}
+        </label>
+      </Wrapper>
 
       {files?.length ? (
         <>
           {Array.from(files).map(file => (
-            <Box key={file.name} direction="row" align="center" margin="1rem 0 0">
-              <Text truncate="tip" margin="0 1rem 0 0">{file.name}</Text>
-              <Close onClick={() => onRemove(file)} />
+            <Box key={file.name}>
+              <Box direction="row" align="center" margin="1rem 0 0">
+                <Text truncate="tip" margin="0 1rem 0 0">
+                  {file.name}
+                </Text>
+                <Close onClick={() => onRemove(file)} />
+              </Box>
+              <TextArea
+                note={notes[file.name]}
+                onChange={e => {
+                  onNotesChange({ ...notes, [file.name]: e.target.value });
+                }}
+              />
             </Box>
           ))}
         </>
       ) : null}
-    </Wrapper>
+    </>
   );
 }
 

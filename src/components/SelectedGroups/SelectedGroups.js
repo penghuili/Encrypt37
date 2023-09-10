@@ -19,7 +19,7 @@ function SelectedGroups({ groupsObj, selectedGroups }) {
         }
 
         return (
-          <Text key={group.id} weight="bold" size="small" margin="0 1rem 0 0">
+          <Text key={group.id} weight="bold" size="small" color="text-xweak" margin="0 1rem 0 0">
             #{groupObj.title}
           </Text>
         );

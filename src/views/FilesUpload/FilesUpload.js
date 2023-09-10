@@ -10,21 +10,24 @@ import FilesInput from './FilesInput';
 
 function FilesUpload({ isCreating, onUpload }) {
   const [files, setFiles] = useState([]);
+  const [notes, setNotes] = useState({});
   const [selectedGroupIds, setSelectedGroupIds] = useState([]);
 
-  function handleUpload(filesToUpload) {
+  function handleUpload(filesToUpload, notesToUpload) {
     if (!filesToUpload?.length) {
       return;
     }
 
+    const firstFile = filesToUpload[0];
     onUpload({
-      file: filesToUpload[0],
+      file: firstFile,
+      note: notesToUpload[firstFile.name],
       groupIds: selectedGroupIds,
       goBack: filesToUpload.length === 1,
-      onSucceeded: uploadedFile => {
-        const left = filesToUpload.filter(f => f.name !== uploadedFile.name);
+      onSucceeded: () => {
+        const left = filesToUpload.slice(1);
         setFiles(left);
-        handleUpload(left);
+        handleUpload(left, notesToUpload);
       },
     });
   }
@@ -35,6 +38,8 @@ function FilesUpload({ isCreating, onUpload }) {
       <ContentWrapper>
         <FilesInput
           files={files}
+          notes={notes}
+          onNotesChange={setNotes}
           onSelected={value => {
             if (!value?.length) {
               return;
@@ -53,7 +58,7 @@ function FilesUpload({ isCreating, onUpload }) {
         <Button
           label="Upload"
           onClick={() => {
-            handleUpload(files);
+            handleUpload(files, notes);
           }}
           disabled={!files?.length || isCreating}
           margin="1rem 0 0"

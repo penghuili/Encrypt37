@@ -1,10 +1,14 @@
-import { Anchor, Box, Image, Layer, Spinner, Text } from 'grommet';
+import { Box, Image, Layer, Menu, Spinner, Text } from 'grommet';
+import { MoreVertical } from 'grommet-icons';
 import React, { useState } from 'react';
 
+import { useXMargin } from '../../hooks/useXMargin';
+import { formatTime } from '../../shared/js/date';
 import LoadingSkeleton from '../../shared/react-pure/LoadingSkeleton';
 import { isImage } from '../../shared/react/file';
 import { useInView } from '../../shared/react/hooks/useInView';
-import { useXMargin } from '../../hooks/useXMargin';
+import SelectedGroups from '../SelectedGroups';
+import HorizontalCenter from '../../shared/react-pure/HorizontalCenter';
 
 function FileItem({
   fileId,
@@ -27,31 +31,6 @@ function FileItem({
       onDownloadThumbnail({ fileId });
     }
   });
-
-  function renderActions() {
-    return (
-      <Box direction="row" margin={margin}>
-        <Anchor
-          label={fileMeta?.groups?.length ? 'Update tags' : 'Add tag'}
-          onClick={() => {
-            onUpdateTag(fileMeta);
-          }}
-          disabled={isDeleting}
-          size="small"
-          margin="0 1rem 0 0"
-        />
-        <Anchor
-          label="Delete"
-          onClick={() => {
-            onDelete({ itemId: fileId });
-          }}
-          disabled={isDeleting}
-          size="small"
-          color="status-critical"
-        />
-      </Box>
-    );
-  }
 
   function renderContent() {
     if (isImage(fileMeta?.mimeType)) {
@@ -117,8 +96,33 @@ function FileItem({
 
   return (
     <Box ref={ref}>
+      {!!fileMeta?.createdAt && (
+        <HorizontalCenter>
+          <Text size="xsmall" margin={margin}>
+            {formatTime(new Date(fileMeta.createdAt))}
+          </Text>
+          <Menu
+            icon={<MoreVertical size="small" />}
+            items={[
+              {
+                label: fileMeta?.groups?.length ? 'Update tags' : 'Add tag',
+                onClick: () => onUpdateTag(fileMeta),
+                margin: '0.25rem 0',
+              },
+              {
+                label: 'Delete',
+                onClick: () => onDelete({ itemId: fileId }),
+                margin: '0.25rem 0',
+                color: 'status-critical',
+                disabled: isDeleting,
+              },
+            ]}
+          />
+        </HorizontalCenter>
+      )}
       <Box>{renderContent()}</Box>
-      {renderActions()}
+      {!!fileMeta?.groups?.length && <SelectedGroups selectedGroups={fileMeta.groups} />}
+      {!!fileMeta?.note && <Text margin={margin}>{fileMeta.note}</Text>}
       {renderOriginalImage()}
     </Box>
   );

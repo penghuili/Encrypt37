@@ -4,10 +4,9 @@ import React, { useEffect, useState } from 'react';
 import FileItem from '../../components/FileItem';
 import GroupFilter from '../../components/GroupFilter';
 import GroupsModal from '../../components/GroupsModal';
-import SelectedGroups from '../../components/SelectedGroups';
 import { useXMargin } from '../../hooks/useXMargin';
 import { group37Prefix } from '../../shared/js/apps';
-import { formatDateWeek, formatTime } from '../../shared/js/date';
+import { formatDateWeek } from '../../shared/js/date';
 import ContentWrapper from '../../shared/react-pure/ContentWrapper';
 import Divider from '../../shared/react-pure/Divider';
 import HorizontalCenter from '../../shared/react-pure/HorizontalCenter';
@@ -51,11 +50,7 @@ function Files({ files, hasMore, startKey, isLoading, isCreating, onFetch, onFet
               <Text margin={margin}>{formatDateWeek(new Date(fileDate.date))}</Text>
               {fileDate.items.map(file => (
                 <Box key={file.sortKey} margin="0 0 1rem">
-                  <Text size="xsmall" margin={margin}>
-                    {formatTime(new Date(file.createdAt))}
-                  </Text>
                   <FileItem fileId={file.sortKey} onUpdateTag={setFocusedFile} />
-                  <SelectedGroups selectedGroups={file.groups} />
                 </Box>
               ))}
             </Box>
