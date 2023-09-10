@@ -1,12 +1,15 @@
+import { endOfMonth, startOfMonth } from 'date-fns';
 import { Box, Button, Text } from 'grommet';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import FileItem from '../../components/FileItem';
 import GroupFilter from '../../components/GroupFilter';
 import GroupsModal from '../../components/GroupsModal';
+import YearMonthPicker from '../../components/YearMonthPicker';
 import { useXMargin } from '../../hooks/useXMargin';
 import { group37Prefix } from '../../shared/js/apps';
 import { formatDateWeek } from '../../shared/js/date';
+import getUTCTimeNumber from '../../shared/js/getUTCTimeNumber';
 import ContentWrapper from '../../shared/react-pure/ContentWrapper';
 import Divider from '../../shared/react-pure/Divider';
 import HorizontalCenter from '../../shared/react-pure/HorizontalCenter';
@@ -28,13 +31,13 @@ function Files({
   const margin = useXMargin();
   const [focusedFile, setFocusedFile] = useState(null);
   const [selectedGroup, setSelectedGroup] = useState(undefined);
+  const [startTime, setStartTime] = useState(null);
+  const [endTime, setEndtime] = useState(null);
 
   useEffectOnce(() => {
     onFetchGroups({ prefix: group37Prefix.file37 });
+    onFetch();
   });
-  useEffect(() => {
-    onFetch({ groupId: selectedGroup?.sortKey, force: selectedGroup === null });
-  }, [selectedGroup, onFetch]);
 
   return (
     <>
@@ -47,17 +50,38 @@ function Files({
             color="status-ok"
             margin="0 1rem 1rem 0"
           />
-          <RouteLink
-            to={`/groups`}
-            label="Manage tags"
-            color="status-ok"
-            margin="0 1rem 1rem 0"
-          />
+          <RouteLink to={`/groups`} label="Manage tags" color="status-ok" margin="0 1rem 1rem 0" />
         </HorizontalCenter>
 
         <Divider />
         <Spacer />
-        <GroupFilter selectedGroup={selectedGroup} onSelect={setSelectedGroup} />
+        <GroupFilter
+          selectedGroup={selectedGroup}
+          onSelect={value => {
+            setSelectedGroup(value);
+            onFetch({ groupId: value?.sortKey, force: true, startTime, endTime });
+          }}
+        />
+        <YearMonthPicker
+          startDate={new Date('2023-07-01')}
+          onChange={value => {
+            if (value) {
+              const date = `${value}-01`;
+              const startTime = getUTCTimeNumber(startOfMonth(new Date(date)));
+              const endTime = getUTCTimeNumber(endOfMonth(new Date(date)));
+              setStartTime(startTime);
+              setEndtime(endTime);
+              onFetch({ groupId: selectedGroup?.sortKey, force: true, startTime, endTime });
+            } else {
+              setStartTime(null);
+              setEndtime(null);
+              onFetch({ groupId: selectedGroup?.sortKey, force: true });
+            }
+          }}
+        />
+        <Spacer />
+        <Divider />
+        <Spacer />
 
         {!!files?.length &&
           files.map(fileDate => (
