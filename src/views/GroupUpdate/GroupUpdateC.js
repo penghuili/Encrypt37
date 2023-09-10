@@ -7,6 +7,7 @@ const mapStateToProps = (state, { params: { groupId } }) => ({
   groupId,
   group: groupSelectors.data.getStandaloneItem(state),
   isLoading: groupSelectors.fetchItem.isPending(state),
+  isUpdating: groupSelectors.updateItem.isPending(state),
 });
 
 const mapDispatchToProps = {

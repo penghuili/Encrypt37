@@ -14,6 +14,7 @@ import Encryption from '../views/Encryption';
 import Files from '../views/Files';
 import FilesUpload from '../views/FilesUpload';
 import GroupAdd from '../views/GroupAdd';
+import Groups from '../views/Groups';
 import GroupsReorder from '../views/GroupsReorder';
 import GroupUpdate from '../views/GroupUpdate';
 import Privacy from '../views/Privacy';
@@ -34,9 +35,10 @@ function Router({ isCheckingRefreshToken, isLoggedIn }) {
         <Route path="/files" component={Files} />
         <Route path="/files/upload" component={FilesUpload} />
 
+        <Route path="/groups" component={Groups} />
         <Route path="/groups/add" component={GroupAdd} />
+        <Route path="/groups/reorder" component={GroupsReorder} />
         <Route path="/groups/:groupId/update" component={GroupUpdate} />
-        <Route path="/groups/:groupId/reorder" component={GroupsReorder} />
 
         <Route path="/account" component={Account} />
         <Route path="/security" component={Security} />

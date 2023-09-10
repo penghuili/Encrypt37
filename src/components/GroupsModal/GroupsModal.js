@@ -51,7 +51,11 @@ function GroupsModal({
           return (
             <Tag
               key={group.sortKey}
-              value={<Text color={getColor()}>{group.title}</Text>}
+              value={
+                <Text color={getColor()} size="small">
+                  {group.title}
+                </Text>
+              }
               onClick={
                 obj
                   ? undefined

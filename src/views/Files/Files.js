@@ -47,6 +47,12 @@ function Files({
             color="status-ok"
             margin="0 1rem 1rem 0"
           />
+          <RouteLink
+            to={`/groups`}
+            label="Manage tags"
+            color="status-ok"
+            margin="0 1rem 1rem 0"
+          />
         </HorizontalCenter>
 
         <Divider />

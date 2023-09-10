@@ -1,9 +1,9 @@
 import { Box, Tag, Text } from 'grommet';
 import React from 'react';
 
+import { useXMargin } from '../../hooks/useXMargin';
 import Divider from '../../shared/react-pure/Divider';
 import Spacer from '../../shared/react-pure/Spacer';
-import { useXMargin } from '../../hooks/useXMargin';
 
 function GroupFilter({ groups, selectedGroup, onSelect }) {
   const margin = useXMargin();
@@ -12,15 +12,20 @@ function GroupFilter({ groups, selectedGroup, onSelect }) {
     return null;
   }
 
+  const safeGroups = groups || [];
   return (
     <>
       <Box direction="row" wrap margin={margin}>
-        {(groups || []).map(group => {
+        {safeGroups.map(group => {
           const isSelected = group.sortKey === selectedGroup?.sortKey;
           return (
             <Tag
               key={group.sortKey}
-              value={<Text color={isSelected ? 'brand' : undefined}>{group.title}</Text>}
+              value={
+                <Text color={isSelected ? 'brand' : undefined} size="small">
+                  {group.title}
+                </Text>
+              }
               onClick={() => {
                 if (isSelected) {
                   onSelect(null);

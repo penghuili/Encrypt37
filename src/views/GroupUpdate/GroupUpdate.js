@@ -8,7 +8,7 @@ import AppBar from '../../shared/react/AppBar';
 import { useEffectOnce } from '../../shared/react/hooks/useEffectOnce';
 import { useListener } from '../../shared/react/hooks/useListener';
 
-function GroupUpdate({ groupId, group, isLoading, onFetchGroup, onUpdate }) {
+function GroupUpdate({ groupId, group, isLoading, isUpdating, onFetchGroup, onUpdate }) {
   const [title, setTitle] = useState('');
   useListener(group?.title, value => setTitle(value || ''));
 
@@ -18,7 +18,7 @@ function GroupUpdate({ groupId, group, isLoading, onFetchGroup, onUpdate }) {
 
   return (
     <>
-      <AppBar title="Update tag" hasBack isLoading={isLoading} />
+      <AppBar title="Update tag" hasBack isLoading={isLoading || isUpdating} />
       <ContentWrapper>
         <InputField label="Title" placeholder="Title" value={title} onChange={setTitle} />
 
@@ -26,9 +26,9 @@ function GroupUpdate({ groupId, group, isLoading, onFetchGroup, onUpdate }) {
         <Button
           label="Update tag"
           onClick={() => {
-            onUpdate({ itemId: groupId, title });
+            onUpdate({ itemId: groupId, title, goBack: true });
           }}
-          disabled={!title || isLoading}
+          disabled={!title || isLoading || isUpdating}
         />
       </ContentWrapper>
     </>

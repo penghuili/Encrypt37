@@ -27,7 +27,11 @@ function GroupsSelector({ selectedGroups, groups, onFetchGroups, onSelect, onNav
           return (
             <Tag
               key={group.sortKey}
-              value={<Text color={color}>{group.title}</Text>}
+              value={
+                <Text color={color} size="small">
+                  {group.title}
+                </Text>
+              }
               onClick={
                 obj
                   ? undefined
