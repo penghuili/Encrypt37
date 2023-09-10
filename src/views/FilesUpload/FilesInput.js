@@ -1,7 +1,9 @@
-import { Box, Text, TextArea } from 'grommet';
+import { Box, Image, Text, TextArea } from 'grommet';
 import { Close } from 'grommet-icons';
 import React from 'react';
 import styled from 'styled-components';
+import HorizontalCenter from '../../shared/react-pure/HorizontalCenter';
+import { isImage } from '../../shared/react/file';
 
 const Wrapper = styled.div`
   position: relative;
@@ -17,6 +19,22 @@ const Input = styled.input`
   height: 100%;
   cursor: pointer;
 `;
+
+function FileInfo({ file, onRemove }) {
+  return (
+    <Box margin="1rem 0 0">
+      {isImage(file.type) && (
+        <Image src={URL.createObjectURL(file)} width="100px" height="100px" alt={file.name} />
+      )}
+      <HorizontalCenter>
+        <Text truncate="tip" margin="0 1rem 0 0">
+          {file.name}
+        </Text>
+        <Close onClick={onRemove} />
+      </HorizontalCenter>
+    </Box>
+  );
+}
 
 function FilesInput({ files, notes, onNotesChange, onSelected, onRemove }) {
   return (
@@ -41,12 +59,7 @@ function FilesInput({ files, notes, onNotesChange, onSelected, onRemove }) {
         <>
           {Array.from(files).map(file => (
             <Box key={file.name}>
-              <Box direction="row" align="center" margin="1rem 0 0">
-                <Text truncate="tip" margin="0 1rem 0 0">
-                  {file.name}
-                </Text>
-                <Close onClick={() => onRemove(file)} />
-              </Box>
+              <FileInfo file={file} onRemove={() => onRemove(file)} />
               <TextArea
                 note={notes[file.name]}
                 onChange={e => {

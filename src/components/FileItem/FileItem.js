@@ -118,6 +118,7 @@ function FileItem({
               },
             ]}
           />
+          {isDeleting && <Spinner size="small" />}
         </HorizontalCenter>
       )}
       <Box>{renderContent()}</Box>

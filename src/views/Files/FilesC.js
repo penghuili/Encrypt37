@@ -12,6 +12,7 @@ const mapStateToProps = state => {
     startKey: fileSelectors.data.getStartKey(state),
     isLoading: fileSelectors.fetchItems.isPending(state),
     isCreating: fileSelectors.createItem.isPending(state),
+    isDeleting: fileSelectors.deleteItem.isPending(state),
   };
 };
 

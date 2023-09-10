@@ -15,7 +15,16 @@ import AppBar from '../../shared/react/AppBar';
 import { useEffectOnce } from '../../shared/react/hooks/useEffectOnce';
 import RouteLink from '../../shared/react/RouteLink';
 
-function Files({ files, hasMore, startKey, isLoading, isCreating, onFetch, onFetchGroups }) {
+function Files({
+  files,
+  hasMore,
+  startKey,
+  isLoading,
+  isCreating,
+  isDeleting,
+  onFetch,
+  onFetchGroups,
+}) {
   const margin = useXMargin();
   const [focusedFile, setFocusedFile] = useState(null);
   const [selectedGroup, setSelectedGroup] = useState(undefined);
@@ -29,7 +38,7 @@ function Files({ files, hasMore, startKey, isLoading, isCreating, onFetch, onFet
 
   return (
     <>
-      <AppBar title="File37" isLoading={isLoading || isCreating} />
+      <AppBar title="File37" isLoading={isLoading || isCreating || isDeleting} />
       <ContentWrapper padding="0">
         <HorizontalCenter margin={margin}>
           <RouteLink
