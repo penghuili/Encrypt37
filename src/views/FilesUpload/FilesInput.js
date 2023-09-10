@@ -1,9 +1,15 @@
 import { Box, Image, Text, TextArea } from 'grommet';
 import { Close } from 'grommet-icons';
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import HorizontalCenter from '../../shared/react-pure/HorizontalCenter';
-import { isImage } from '../../shared/react/file';
+import {
+  FILI_SIZE_LIMIT,
+  FILI_SIZE_LIMIT_IN_MB,
+  getFileSizeString,
+  isImage,
+} from '../../shared/react/file';
+import { uniqBy } from '../../shared/js/uniq';
 
 const Wrapper = styled.div`
   position: relative;
@@ -30,6 +36,7 @@ function FileInfo({ file, onRemove }) {
         <Text truncate="tip" margin="0 1rem 0 0">
           {file.name}
         </Text>
+        <Text margin="0 1rem 0 0">{getFileSizeString(file.size)}</Text>
         <Close onClick={onRemove} />
       </HorizontalCenter>
     </Box>
@@ -37,6 +44,8 @@ function FileInfo({ file, onRemove }) {
 }
 
 function FilesInput({ files, notes, onNotesChange, onSelected, onRemove }) {
+  const [largeFiles, setLargeFiles] = useState([]);
+
   return (
     <>
       <Wrapper>
@@ -45,7 +54,21 @@ function FilesInput({ files, notes, onNotesChange, onSelected, onRemove }) {
           id="file-upload"
           multiple
           onChange={e => {
-            onSelected(e.target.files);
+            const selected = Array.from(e.target.files);
+
+            const uniqFiles = uniqBy([...selected, ...files], 'name');
+            const allowedFiles = [];
+            const tooLargeFiles = [];
+            uniqFiles.forEach(file => {
+              if (file.size <= FILI_SIZE_LIMIT) {
+                allowedFiles.push(file);
+              } else {
+                tooLargeFiles.push(file);
+              }
+            });
+
+            onSelected(allowedFiles);
+            setLargeFiles(tooLargeFiles);
           }}
         />
         <label htmlFor="file-upload">
@@ -55,9 +78,9 @@ function FilesInput({ files, notes, onNotesChange, onSelected, onRemove }) {
         </label>
       </Wrapper>
 
-      {files?.length ? (
+      {!!files?.length && (
         <>
-          {Array.from(files).map(file => (
+          {files.map(file => (
             <Box key={file.name}>
               <FileInfo file={file} onRemove={() => onRemove(file)} />
               <TextArea
@@ -69,7 +92,26 @@ function FilesInput({ files, notes, onNotesChange, onSelected, onRemove }) {
             </Box>
           ))}
         </>
-      ) : null}
+      )}
+
+      {!!largeFiles?.length && (
+        <>
+          <Text color="status-critical" margin="1rem 0 0" weight="bold">
+            File size limit is {FILI_SIZE_LIMIT_IN_MB}MB,{' '}
+            {largeFiles.length > 1 ? 'these files are' : 'this file is'} too large:
+          </Text>
+          {largeFiles.map(file => (
+            <Box key={file.name}>
+              <FileInfo
+                file={file}
+                onRemove={() => {
+                  setLargeFiles(largeFiles.filter(f => f.name !== file.name));
+                }}
+              />
+            </Box>
+          ))}
+        </>
+      )}
     </>
   );
 }

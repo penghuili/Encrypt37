@@ -3,12 +3,12 @@ import { MoreVertical } from 'grommet-icons';
 import React, { useState } from 'react';
 
 import { useXMargin } from '../../hooks/useXMargin';
-import { formatTime } from '../../shared/js/date';
+import { formatDateTime, formatTime } from '../../shared/js/date';
+import HorizontalCenter from '../../shared/react-pure/HorizontalCenter';
 import LoadingSkeleton from '../../shared/react-pure/LoadingSkeleton';
-import { isImage } from '../../shared/react/file';
+import { getFileSizeString, isImage } from '../../shared/react/file';
 import { useInView } from '../../shared/react/hooks/useInView';
 import SelectedGroups from '../SelectedGroups';
-import HorizontalCenter from '../../shared/react-pure/HorizontalCenter';
 
 function FileItem({
   fileId,
@@ -24,6 +24,7 @@ function FileItem({
   onUpdateTag,
 }) {
   const [showOriginalImage, setShowOriginalImage] = useState(false);
+  const [isFocusing, setIsFocusing] = useState(false);
   const margin = useXMargin();
 
   const ref = useInView(() => {
@@ -110,18 +111,44 @@ function FileItem({
                 margin: '0.25rem 0',
               },
               {
+                label: 'Download',
+                onClick: () => {
+                  setIsFocusing(true);
+                  onDownloadFile({
+                    fileId,
+                    onSucceeded: fileUrl => {
+                      const link = document.createElement('a');
+                      link.href = fileUrl;
+                      link.download = fileMeta.fileName;
+                      link.click();
+                      setIsFocusing(false);
+                    },
+                  });
+                },
+                margin: '0.25rem 0',
+              },
+              {
                 label: 'Delete',
-                onClick: () => onDelete({ itemId: fileId }),
+                onClick: () => {
+                  setIsFocusing(true);
+                  onDelete({ itemId: fileId, onSucceeded: () => setIsFocusing(false) });
+                },
                 margin: '0.25rem 0',
                 color: 'status-critical',
                 disabled: isDeleting,
               },
             ]}
           />
-          {isDeleting && <Spinner size="small" />}
+          {(isDeleting || isDownloadingFile) && !!isFocusing && <Spinner size="small" />}
         </HorizontalCenter>
       )}
       <Box>{renderContent()}</Box>
+      {!!fileMeta.size && (
+        <Text size="xsmall" margin={margin}>
+          {getFileSizeString(fileMeta.size)}{' '}
+          {!!fileMeta.lastModified && ` · ${formatDateTime(fileMeta.lastModified)}`}
+        </Text>
+      )}
       {!!fileMeta?.groups?.length && <SelectedGroups selectedGroups={fileMeta.groups} />}
       {!!fileMeta?.note && <Text margin={margin}>{fileMeta.note}</Text>}
       {renderOriginalImage()}

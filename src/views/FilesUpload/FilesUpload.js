@@ -2,7 +2,6 @@ import { Button } from 'grommet';
 import React, { useState } from 'react';
 
 import GroupsSelector from '../../components/GroupsSelector';
-import { uniqBy } from '../../shared/js/uniq';
 import ContentWrapper from '../../shared/react-pure/ContentWrapper';
 import Spacer from '../../shared/react-pure/Spacer';
 import AppBar from '../../shared/react/AppBar';
@@ -45,7 +44,7 @@ function FilesUpload({ isCreating, onUpload }) {
               return;
             }
 
-            setFiles(uniqBy([...value, ...files], 'name'));
+            setFiles(value);
           }}
           onRemove={file => {
             setFiles(files.filter(f => f.name !== file.name));
