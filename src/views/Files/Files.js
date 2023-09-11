@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 
 import FileItem from '../../components/FileItem';
 import GroupFilter from '../../components/GroupFilter';
-import GroupsModal from '../../components/GroupsModal';
 import YearMonthPicker from '../../components/YearMonthPicker';
 import { useXMargin } from '../../hooks/useXMargin';
 import { group37Prefix } from '../../shared/js/apps';
@@ -29,14 +28,13 @@ function Files({
   onFetchGroups,
 }) {
   const margin = useXMargin();
-  const [focusedFile, setFocusedFile] = useState(null);
   const [selectedGroup, setSelectedGroup] = useState(undefined);
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndtime] = useState(null);
 
   useEffectOnce(() => {
     onFetchGroups({ prefix: group37Prefix.file37 });
-    onFetch();
+    onFetch({ force: true });
   });
 
   return (
@@ -62,23 +60,25 @@ function Files({
             onFetch({ groupId: value?.sortKey, force: true, startTime, endTime });
           }}
         />
-        <YearMonthPicker
-          startDate={new Date('2023-07-01')}
-          onChange={value => {
-            if (value) {
-              const date = `${value}-01`;
-              const startTime = getUTCTimeNumber(startOfMonth(new Date(date)));
-              const endTime = getUTCTimeNumber(endOfMonth(new Date(date)));
-              setStartTime(startTime);
-              setEndtime(endTime);
-              onFetch({ groupId: selectedGroup?.sortKey, force: true, startTime, endTime });
-            } else {
-              setStartTime(null);
-              setEndtime(null);
-              onFetch({ groupId: selectedGroup?.sortKey, force: true });
-            }
-          }}
-        />
+        <Box margin={margin}>
+          <YearMonthPicker
+            startDate={new Date('2023-07-01')}
+            onChange={value => {
+              if (value) {
+                const date = `${value}-01`;
+                const startTime = getUTCTimeNumber(startOfMonth(new Date(date)));
+                const endTime = getUTCTimeNumber(endOfMonth(new Date(date)));
+                setStartTime(startTime);
+                setEndtime(endTime);
+                onFetch({ groupId: selectedGroup?.sortKey, force: true, startTime, endTime });
+              } else {
+                setStartTime(null);
+                setEndtime(null);
+                onFetch({ groupId: selectedGroup?.sortKey, force: true });
+              }
+            }}
+          />
+        </Box>
         <Spacer />
         <Divider />
         <Spacer />
@@ -89,7 +89,7 @@ function Files({
               <Text margin={margin}>{formatDateWeek(new Date(fileDate.date))}</Text>
               {fileDate.items.map(file => (
                 <Box key={file.sortKey} margin="0 0 1rem">
-                  <FileItem fileId={file.sortKey} onUpdateTag={setFocusedFile} />
+                  <FileItem fileId={file.sortKey} fileMeta={file} />
                 </Box>
               ))}
             </Box>
@@ -98,7 +98,15 @@ function Files({
         {hasMore && (
           <Button
             label="Load more"
-            onClick={() => onFetch({ startKey })}
+            onClick={() =>
+              onFetch({
+                startKey,
+                groupId: selectedGroup?.sortKey,
+                force: true,
+                startTime,
+                endTime,
+              })
+            }
             disabled={isLoading}
             margin={margin}
           />
@@ -108,10 +116,6 @@ function Files({
           <>
             <Text margin={margin}>No files.</Text>
           </>
-        )}
-
-        {!!focusedFile && (
-          <GroupsModal fileId={focusedFile.sortKey} onClose={() => setFocusedFile(null)} />
         )}
       </ContentWrapper>
     </>

@@ -13,6 +13,7 @@ import Account from '../views/Account';
 import Encryption from '../views/Encryption';
 import Files from '../views/Files';
 import FilesUpload from '../views/FilesUpload';
+import FileUpdate from '../views/FileUpdate';
 import GroupAdd from '../views/GroupAdd';
 import Groups from '../views/Groups';
 import GroupsReorder from '../views/GroupsReorder';
@@ -34,6 +35,7 @@ function Router({ isCheckingRefreshToken, isLoggedIn }) {
       <Switch>
         <Route path="/files" component={Files} />
         <Route path="/files/upload" component={FilesUpload} />
+        <Route path="/files/:fileId/update" component={FileUpdate} />
 
         <Route path="/groups" component={Groups} />
         <Route path="/groups/add" component={GroupAdd} />

@@ -1,4 +1,4 @@
-import { Anchor, Spinner, Text } from 'grommet';
+import { Anchor, Box, Spinner, Text } from 'grommet';
 import React from 'react';
 
 import { formatDateTime } from '../../shared/js/date';
@@ -12,7 +12,14 @@ import RouteLink from '../../shared/react/RouteLink';
 import { useEffectOnce } from '../../shared/react/hooks/useEffectOnce';
 import { getFileSizeString } from '../../shared/react/file';
 
-function Account({ account, settings, isLoadingAccount, onFetchSettings, onLogOut }) {
+function Account({
+  account,
+  settings,
+  isLoadingAccount,
+  isLoadingFileSettings,
+  onFetchSettings,
+  onLogOut,
+}) {
   useEffectOnce(onFetchSettings);
 
   return (
@@ -27,7 +34,12 @@ function Account({ account, settings, isLoadingAccount, onFetchSettings, onLogOu
             <Text margin="0 0 1rem">Created at: {formatDateTime(account.createdAt)}</Text>
             <Divider />
             <Spacer />
-            <Text margin="0 0 1rem">Storage size: {getFileSizeString(settings?.size || 0)}</Text>
+            <Box margin="0 0 1rem" direction="row" align="center">
+              <Text margin="0 1rem 0 0">
+                Storage size: {getFileSizeString(settings?.size || 0)}
+              </Text>
+              {isLoadingFileSettings && <Spinner size="small" />}
+            </Box>
             <Divider />
             <Spacer />
             <ChangeTheme />

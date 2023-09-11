@@ -1,26 +1,30 @@
 import React from 'react';
 
 import { group37Prefix } from '../../shared/js/apps';
-import { calculateItemPosition } from '../../shared/js/position';
 import ContentWrapper from '../../shared/react-pure/ContentWrapper';
-import DragDrop from '../../shared/react-pure/DragDrop';
+import Reorder from '../../shared/react-pure/Reorder';
 import AppBar from '../../shared/react/AppBar';
 import { useEffectOnce } from '../../shared/react/hooks/useEffectOnce';
 
-function GroupsReorder({ groups, isUpdating, onFetch, onUpdate }) {
+function GroupsReorder({ groups, isLoading, onFetch, onUpdate }) {
   useEffectOnce(() => {
     onFetch({ prefix: group37Prefix.file37 });
   });
 
   return (
     <>
-      <AppBar title="Reorder tags" isLoading={isUpdating} hasBack />
+      <AppBar title="Reorder tags" isLoading={isLoading} hasBack />
       <ContentWrapper>
-        <DragDrop
+        <Reorder
           items={groups}
-          onDragEnd={(sourceId, targetId) => {
-            const newPosition = calculateItemPosition(groups, sourceId, targetId);
-            onUpdate({ itemId: sourceId, position: newPosition, goBack: false, reorder: true });
+          onReorder={({ itemId, newPosition, onSucceeded }) => {
+            onUpdate({
+              itemId,
+              position: newPosition,
+              goBack: false,
+              reorder: true,
+              onSucceeded,
+            });
           }}
         />
       </ContentWrapper>

@@ -1,14 +1,12 @@
 import { connect } from 'react-redux';
 
-import { fileActions, fileSelectors } from '../../shared/react/store/file/fileStore';
+import { fileActions } from '../../shared/react/store/file/fileStore';
 import { sharedActionCreators } from '../../shared/react/store/sharedActions';
 import { groupActions, groupSelectors } from '../../store/group/groupStore';
-import GroupsModal from './GroupsModal';
+import GroupsUpdater from './GroupsUpdater';
 
-const mapStateToProps = (state, { fileId }) => {
+const mapStateToProps = state => {
   return {
-    fileId,
-    file: fileSelectors.data.getStandaloneItem(state),
     groups: groupSelectors.data.getItems(state),
     getIsAddingGroupItem: groupId => groupSelectors.createGroupItem.isPending(state, groupId),
     getIsDeletingGroupItem: groupId => groupSelectors.deleteGroupItem.isPending(state, groupId),
@@ -23,4 +21,4 @@ const mapDispatchToProps = {
   onNav: sharedActionCreators.navigate,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(GroupsModal);
+export default connect(mapStateToProps, mapDispatchToProps)(GroupsUpdater);

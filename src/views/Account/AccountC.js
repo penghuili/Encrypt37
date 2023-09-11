@@ -10,6 +10,7 @@ const mapStateToProps = state => ({
   expiresAt: sharedSelectors.getExpiresAt(state),
   settings: fileSelectors.data.getSettings(state),
   isLoadingAccount: sharedSelectors.isLoadingAccount(state),
+  isLoadingFileSettings: fileSelectors.fetchSettings.isPending(state),
 });
 
 const mapDispatchToProps = {

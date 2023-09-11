@@ -40,7 +40,7 @@ function FilesUpload({ isCreating, onUpload }) {
           notes={notes}
           onNotesChange={setNotes}
           onSelected={value => {
-            if (!value?.length) {
+            if (!value) {
               return;
             }
 
@@ -50,8 +50,13 @@ function FilesUpload({ isCreating, onUpload }) {
             setFiles(files.filter(f => f.name !== file.name));
           }}
         />
-        <Spacer size="2rem" />
-        <GroupsSelector selectedGroups={selectedGroupIds} onSelect={setSelectedGroupIds} />
+
+        {!!files?.length && (
+          <>
+            <Spacer size="2rem" />
+            <GroupsSelector selectedGroups={selectedGroupIds} onSelect={setSelectedGroupIds} />
+          </>
+        )}
 
         <Spacer />
         <Button

@@ -68,13 +68,17 @@ function YearMonthPicker({ onChange, startDate, endDate = new Date() }) {
               </Box>
             </HorizontalCenter>
             <Spacer />
-            <Button
-              label="Ok"
-              onClick={() => {
-                onChange(`${year}-${month}`);
-                setShow(false);
-              }}
-            />
+            <Box direction="row" justify="between">
+              <Button label="Cancel" onClick={handleClose} />
+              <Button
+                label="Ok"
+                onClick={() => {
+                  onChange(`${year}-${month}`);
+                  setShow(false);
+                }}
+                primary
+              />
+            </Box>
           </Box>
         </Layer>
       )}

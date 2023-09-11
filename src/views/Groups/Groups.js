@@ -44,6 +44,7 @@ function Groups({ groups, isLoading, isDeleting, onFetch, onDelete }) {
                 to={`/groups/${group.sortKey}/update`}
                 label="Edit"
                 color="status-ok"
+                size="small"
                 margin="0 1rem 1rem 0"
               />
               <Anchor
@@ -53,6 +54,7 @@ function Groups({ groups, isLoading, isDeleting, onFetch, onDelete }) {
                   onDelete({ itemId: group.sortKey, goBack: false });
                 }}
                 color="status-error"
+                size="small"
                 margin="0 1rem 1rem 0"
               />
             </HorizontalCenter>
