@@ -2,7 +2,6 @@ import { Button, TextArea } from 'grommet';
 import React, { useState } from 'react';
 
 import FileContent from '../../components/FileContent';
-import GroupsUpdater from '../../components/GroupsUpdater';
 import ContentWrapper from '../../shared/react-pure/ContentWrapper';
 import Spacer from '../../shared/react-pure/Spacer';
 import AppBar from '../../shared/react/AppBar';
@@ -30,9 +29,6 @@ function GroupUpdate({ fileId, fileMeta, isLoading, isUpdating, onFetch, onUpdat
             setNote(e.target.value);
           }}
         />
-
-        <Spacer />
-        <GroupsUpdater file={fileMeta} />
 
         <Spacer />
         <Button

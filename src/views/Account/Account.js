@@ -1,6 +1,7 @@
 import { Anchor, Box, Spinner, Text } from 'grommet';
 import React from 'react';
 
+import apps from '../../shared/js/apps';
 import { formatDateTime } from '../../shared/js/date';
 import ContentWrapper from '../../shared/react-pure/ContentWrapper';
 import Divider from '../../shared/react-pure/Divider';
@@ -8,20 +9,26 @@ import Spacer from '../../shared/react-pure/Spacer';
 import AppBar from '../../shared/react/AppBar';
 import AppVersion from '../../shared/react/AppVersion';
 import ChangeTheme from '../../shared/react/ChangeTheme';
-import RouteLink from '../../shared/react/RouteLink';
-import { useEffectOnce } from '../../shared/react/hooks/useEffectOnce';
 import { getFileSizeString } from '../../shared/react/file';
+import { useEffectOnce } from '../../shared/react/hooks/useEffectOnce';
+import PaymentStatus from '../../shared/react/PaymentStatus';
+import RouteLink from '../../shared/react/RouteLink';
+
+function getUsagePercentage(size) {
+  return +((size / 500 / 1024 / 1024 / 1024) * 100).toFixed(4);
+}
 
 function Account({
   account,
   settings,
   isLoadingAccount,
-  isLoadingFileSettings,
+  isLoadingSettings,
   onFetchSettings,
   onLogOut,
 }) {
-  useEffectOnce(onFetchSettings);
-
+  useEffectOnce(() => {
+    onFetchSettings(apps.file37.name, true);
+  });
   return (
     <>
       <AppBar title="Account" hasBack />
@@ -32,13 +39,15 @@ function Account({
             <Text margin="0 0 1rem">Username: {account.username}</Text>
             <Text margin="0 0 1rem">User ID: {account.userId}</Text>
             <Text margin="0 0 1rem">Created at: {formatDateTime(account.createdAt)}</Text>
+            <PaymentStatus app={apps.file37.name} showBuyButton />
             <Divider />
             <Spacer />
             <Box margin="0 0 1rem" direction="row" align="center">
               <Text margin="0 1rem 0 0">
-                Storage size: {getFileSizeString(settings?.size || 0)}
+                Storage size: {getFileSizeString(settings?.size || 0)} / 500GB (
+                {getUsagePercentage(settings?.size || 0)}%)
               </Text>
-              {isLoadingFileSettings && <Spinner size="small" />}
+              {isLoadingSettings && <Spinner size="small" />}
             </Box>
             <Divider />
             <Spacer />
@@ -50,6 +59,10 @@ function Account({
             <Divider />
             <Spacer />
             <RouteLink label="How encryption works?" to="/encryption" />
+            <Spacer />
+            <RouteLink label="Pricing" to="/pricing" />
+            <Spacer />
+            <RouteLink label="Buy tickets" to="/tickets" />
             <Spacer />
             <RouteLink label="Privacy" to="/privacy" />
             <Spacer />

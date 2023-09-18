@@ -5,7 +5,7 @@ import FileUpdate from './FileUpdate';
 
 const mapStateToProps = (state, { params: { fileId } }) => ({
   fileId,
-  fileMeta: fileSelectors.data.getStandaloneItem(state),
+  fileMeta: fileSelectors.data.getItem(state, fileId),
   isLoading: fileSelectors.fetchItem.isPending(state),
   isUpdating: fileSelectors.updateItem.isPending(state),
 });

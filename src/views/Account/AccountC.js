@@ -1,20 +1,19 @@
 import { connect } from 'react-redux';
 
+import { sharedActionCreators } from '../../shared/react/store/sharedActions';
 import sharedSelectors from '../../shared/react/store/sharedSelectors';
 import Account from './Account';
-import { sharedActionCreators } from '../../shared/react/store/sharedActions';
-import { fileActions, fileSelectors } from '../../shared/react/store/file/fileStore';
 
 const mapStateToProps = state => ({
   account: sharedSelectors.getAccount(state),
   expiresAt: sharedSelectors.getExpiresAt(state),
-  settings: fileSelectors.data.getSettings(state),
+  settings: sharedSelectors.getSettings(state),
   isLoadingAccount: sharedSelectors.isLoadingAccount(state),
-  isLoadingFileSettings: fileSelectors.fetchSettings.isPending(state),
+  isLoadingSettings: sharedSelectors.isLoadingSettings(state),
 });
 
 const mapDispatchToProps = {
-  onFetchSettings: fileActions.fetchSettingsRequested,
+  onFetchSettings: sharedActionCreators.fetchSettingsRequested,
   onLogOut: sharedActionCreators.logOutPressed,
 };
 
