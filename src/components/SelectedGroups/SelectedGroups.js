@@ -2,6 +2,7 @@ import { Box, Text } from 'grommet';
 import React from 'react';
 
 import { useXMargin } from '../../hooks/useXMargin';
+import { noGroupSortKey } from '../../lib/constants';
 
 function SelectedGroups({ groupsObj, selectedGroups }) {
   const margin = useXMargin();
@@ -13,6 +14,10 @@ function SelectedGroups({ groupsObj, selectedGroups }) {
   return (
     <Box direction="row" wrap margin={margin}>
       {(selectedGroups || []).map(group => {
+        if (group.id === noGroupSortKey) {
+          return null;
+        }
+
         const groupObj = groupsObj[group.id];
         if (!groupObj) {
           return null;

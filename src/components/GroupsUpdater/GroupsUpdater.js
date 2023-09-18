@@ -1,6 +1,7 @@
 import { Box, Tag, Text } from 'grommet';
 import React, { useMemo } from 'react';
 
+import { noGroupSortKey } from '../../lib/constants';
 import { group37Prefix } from '../../shared/js/apps';
 import { useEffectOnce } from '../../shared/react/hooks/useEffectOnce';
 
@@ -28,6 +29,10 @@ function GroupsUpdater({
   return (
     <Box direction="row" wrap>
       {(groups || []).map(group => {
+        if (group.sortKey === noGroupSortKey) {
+          return null;
+        }
+
         const isAddingGroupItem = getIsAddingGroupItem(group.sortKey);
         const isDeletingGroupItem = getIsDeletingGroupItem(group.sortKey);
         const obj = selectedGroupsObj[group.sortKey];

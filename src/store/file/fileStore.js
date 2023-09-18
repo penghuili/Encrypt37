@@ -34,7 +34,7 @@ const customReducer = (state = {}, action) => {
         groups: uniqBy(
           [
             ...(file.groups || []),
-            { id: action.payload.data.id, itemId: action.payload.data.sortKey },
+            { id: action.payload.data.item.id, itemId: action.payload.data.item.sortKey },
           ],
           'id'
         ),
@@ -51,7 +51,7 @@ const customReducer = (state = {}, action) => {
 
       const updatedFile = {
         ...file,
-        groups: (file.groups || []).filter(group => group.id !== action.payload.data.id),
+        groups: (file.groups || []).filter(group => group.id !== action.payload.data.item.id),
       };
       const updatedState = updateStandaloneItemAndItems(state, updatedFile);
       return regroupFiles(updatedState);
