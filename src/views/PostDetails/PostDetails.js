@@ -1,4 +1,5 @@
-import { Box, Spinner } from 'grommet';
+import { Box, Menu, Spinner } from 'grommet';
+import { MoreVertical } from 'grommet-icons';
 import React from 'react';
 
 import FileContent from '../../components/FileContent';
@@ -12,11 +13,19 @@ import Spacer from '../../shared/react-pure/Spacer';
 import AppBar from '../../shared/react/AppBar';
 import GroupsSelected from '../../shared/react/GroupsSelected';
 import { useEffectOnce } from '../../shared/react/hooks/useEffectOnce';
-import RouteLink from '../../shared/react/RouteLink';
 import TextEditor from '../../shared/react/TextEditor';
 import { groupSelectors } from '../../store/group/groupStore';
 
-function PostDetails({ postId, post, isLoading, onFetch, onFetchGroups }) {
+function PostDetails({
+  postId,
+  post,
+  isLoading,
+  isDeleting,
+  onFetch,
+  onFetchGroups,
+  onDelete,
+  onNav,
+}) {
   const margin = useXMargin();
 
   useEffectOnce(() => {
@@ -59,11 +68,29 @@ function PostDetails({ postId, post, isLoading, onFetch, onFetchGroups }) {
 
   return (
     <>
-      <AppBar title="Post" hasBack isLoading={isLoading} />
-      <ContentWrapper>
+      <AppBar title="Post" hasBack isLoading={isLoading || isDeleting} />
+      <ContentWrapper padding="0">
         <HorizontalCenter margin={margin}>
           <FilesUpload postId={postId} />
-          <RouteLink label="Update post" to={`/posts/${postId}/update`} />
+          <Menu
+            icon={<MoreVertical size="small" />}
+            items={[
+              {
+                label: 'Update',
+                onClick: () => onNav(`/posts/${postId}/update`),
+                margin: '0.25rem 0',
+              },
+              {
+                label: 'Delete',
+                onClick: () => {
+                  onDelete({ itemId: postId, goBack: true });
+                },
+                margin: '0.25rem 0',
+                color: 'status-critical',
+                disabled: isDeleting,
+              },
+            ]}
+          />
         </HorizontalCenter>
         <Spacer />
         <Divider />

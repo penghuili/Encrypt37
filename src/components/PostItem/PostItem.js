@@ -60,7 +60,7 @@ function PostItem({ item, isDownloadingFile, isDeleting, onDelete, onNav }) {
                     ? `View ${item.files.length - 1} more ${
                         item.files.length - 1 > 1 ? 'files' : 'file'
                       } >>`
-                    : 'View >>'}
+                    : 'Add more files >>'}
                 </Text>
               }
               onClick={() => onNav(`/posts/${item.sortKey}`)}

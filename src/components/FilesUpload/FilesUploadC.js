@@ -1,5 +1,6 @@
 import { connect } from 'react-redux';
 
+import { filePostActions } from '../../shared/react/store/file/filePostStore';
 import { fileActions, fileSelectors } from '../../shared/react/store/file/fileStore';
 import FilesUpload from './FilesUpload';
 
@@ -8,6 +9,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
+  onCreatePost: filePostActions.createRequested,
   onUpload: fileActions.createRequested,
 };
 

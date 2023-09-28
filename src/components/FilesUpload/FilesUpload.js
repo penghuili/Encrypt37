@@ -3,7 +3,7 @@ import { Close } from 'grommet-icons';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
-import apps from '../../shared/js/apps';
+import apps, { group37Prefix } from '../../shared/js/apps';
 import { uniqBy } from '../../shared/js/uniq';
 import Divider from '../../shared/react-pure/Divider';
 import HorizontalCenter from '../../shared/react-pure/HorizontalCenter';
@@ -15,6 +15,9 @@ import {
   getFileSizeString,
   isImage,
 } from '../../shared/react/file';
+import GroupsSelector from '../../shared/react/GroupsSelector';
+import TextEditor from '../../shared/react/TextEditor';
+import { groupActions, groupSelectors } from '../../store/group/groupStore';
 
 const InputWrapper = styled.div`
   position: relative;
@@ -59,11 +62,13 @@ function FileInfo({ file, onRemove }) {
   );
 }
 
-function FilesUpload({ postId, isCreating, onUpload }) {
+function FilesUpload({ postId, isCreating, onCreatePost, onUpload }) {
   const [showModal, setShowModal] = useState(false);
   const [files, setFiles] = useState([]);
   const [notes, setNotes] = useState({});
   const [largeFiles, setLargeFiles] = useState([]);
+  const [postNote, setPostNote] = useState('');
+  const [selectedGroupIds, setSelectedGroupIds] = useState([]);
 
   function handleReset() {
     setFiles([]);
@@ -78,6 +83,18 @@ function FilesUpload({ postId, isCreating, onUpload }) {
 
   function handleUpload(filesToUpload, notesToUpload, thePostId) {
     if (!filesToUpload?.length) {
+      return;
+    }
+
+    if (!thePostId) {
+      onCreatePost({
+        note: postNote,
+        groups: selectedGroupIds,
+        onSucceeded: newPost => {
+          handleUpload(filesToUpload, notesToUpload, newPost?.sortKey);
+        },
+      });
+
       return;
     }
 
@@ -163,6 +180,24 @@ function FilesUpload({ postId, isCreating, onUpload }) {
           <Spacer />
           <Divider />
           <Spacer />
+
+          {!postId && (
+            <>
+              <TextEditor text={postNote} onChange={setPostNote} />
+              <Spacer />
+
+              <GroupsSelector
+                group37Prefix={group37Prefix.file37}
+                groupSelectors={groupSelectors}
+                groupActions={groupActions}
+                selectedGroups={selectedGroupIds}
+                onSelect={setSelectedGroupIds}
+              />
+              <Spacer />
+              <Divider />
+              <Spacer />
+            </>
+          )}
 
           {!!files?.length && (
             <>

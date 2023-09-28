@@ -1,7 +1,6 @@
 import { Box, Button, Spinner } from 'grommet';
 import React, { useState } from 'react';
 
-import { useXMargin } from '../../hooks/useXMargin';
 import { group37Prefix } from '../../shared/js/apps';
 import ContentWrapper from '../../shared/react-pure/ContentWrapper';
 import Spacer from '../../shared/react-pure/Spacer';
@@ -13,8 +12,6 @@ import TextEditor from '../../shared/react/TextEditor';
 import { groupActions, groupSelectors } from '../../store/group/groupStore';
 
 function PostUpdate({ postId, post, isLoading, isUpdating, onFetch, onUpdate }) {
-  const margin = useXMargin();
-
   const [postNote, setPostNote] = useState('');
   useListener(post?.note, value => setPostNote(value || ''));
 
@@ -28,14 +25,14 @@ function PostUpdate({ postId, post, isLoading, isUpdating, onFetch, onUpdate }) 
         <>
           {!!post.note && (
             <>
-              <Box margin={margin} align="start">
+              <Box align="start">
                 <TextEditor text={postNote} onChange={setPostNote} />
 
                 <Spacer />
                 <Button
                   primary
                   label="Update"
-                  onClick={() => onUpdate({ itemId: postId, note: postNote })}
+                  onClick={() => onUpdate({ itemId: postId, note: postNote, goBack: true })}
                   disabled={isUpdating}
                 />
               </Box>
@@ -63,7 +60,7 @@ function PostUpdate({ postId, post, isLoading, isUpdating, onFetch, onUpdate }) 
 
   return (
     <>
-      <AppBar title="Post" hasBack isLoading={isLoading} />
+      <AppBar title="Update post" hasBack />
       <ContentWrapper>{renderContent()}</ContentWrapper>
     </>
   );
