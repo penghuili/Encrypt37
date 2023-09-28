@@ -1,10 +1,14 @@
 import { Text } from 'grommet';
 import React from 'react';
 
+import { STORAGE_LIMIT_IN_GB } from '../lib/storageLimit';
+import Pitch from './Pitch';
+
 function TryForFree() {
   return (
     <>
-      <Text>You can try File37 for free for 14 days.</Text>
+      <Pitch />
+      <Text margin="2rem 0 0">You can try File37 for free for 14 days.</Text>
       <Text>
         After that, it's only <Text color="brand">$6 / month</Text> or{' '}
         <Text color="brand" weight="bold">
@@ -15,10 +19,10 @@ function TryForFree() {
         </Text>
         .
       </Text>
-      <Text>
+      <Text margin="2rem 0 0">
         You will get{' '}
         <Text color="brand" weight="bold">
-          500GB
+          {STORAGE_LIMIT_IN_GB}GB
         </Text>{' '}
         storage.
       </Text>

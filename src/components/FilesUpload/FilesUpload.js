@@ -1,10 +1,12 @@
-import { Box, Button, Image, Layer, Text, TextArea } from 'grommet';
+import { Anchor, Box, Button, Image, Layer, Text, TextArea } from 'grommet';
 import { Close } from 'grommet-icons';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import styled from 'styled-components';
 
+import { hasMoreStorage, STORAGE_LIMIT_IN_GB } from '../../lib/storageLimit';
 import apps, { group37Prefix } from '../../shared/js/apps';
 import { uniqBy } from '../../shared/js/uniq';
+import DatePicker2 from '../../shared/react-pure/DatePicker2';
 import Divider from '../../shared/react-pure/Divider';
 import HorizontalCenter from '../../shared/react-pure/HorizontalCenter';
 import LoadingSkeletonOverlay from '../../shared/react-pure/LoadingSkeletonOverlay';
@@ -24,7 +26,12 @@ const InputWrapper = styled.div`
   display: inline-block;
   border: 1px dashed ${apps.file37.color};
   padding: 0.5rem;
-  margin: 0 1rem 0 0;
+
+  opacity: ${props => (props.disabled ? 0.3 : 1)};
+
+  &:hover {
+    cursor: ${props => (props.disabled ? 'not-allowed' : 'pointer')};
+  }
 `;
 const Input = styled.input`
   position: absolute;
@@ -34,6 +41,12 @@ const Input = styled.input`
   height: 100%;
   width: 100%;
   cursor: pointer;
+`;
+const InputLabel = styled.label`
+  user-select: none;
+  &:hover {
+    cursor: ${props => (props.disabled ? 'not-allowed' : 'pointer')};
+  }
 `;
 
 const LayerContentWrapper = styled.div`
@@ -62,18 +75,23 @@ function FileInfo({ file, onRemove }) {
   );
 }
 
-function FilesUpload({ postId, isCreating, onCreatePost, onUpload }) {
+function FilesUpload({ postId, settings, isCreatingPost, isCreating, onCreatePost, onUpload }) {
   const [showModal, setShowModal] = useState(false);
   const [files, setFiles] = useState([]);
   const [notes, setNotes] = useState({});
   const [largeFiles, setLargeFiles] = useState([]);
+  const [date, setDate] = useState(null);
   const [postNote, setPostNote] = useState('');
   const [selectedGroupIds, setSelectedGroupIds] = useState([]);
+  const canUpload = useMemo(() => hasMoreStorage(settings?.size), [settings?.size]);
 
   function handleReset() {
     setFiles([]);
     setNotes({});
     setLargeFiles([]);
+    setPostNote('');
+    setSelectedGroupIds([]);
+    setDate(null);
   }
 
   function handleClose() {
@@ -88,8 +106,10 @@ function FilesUpload({ postId, isCreating, onCreatePost, onUpload }) {
 
     if (!thePostId) {
       onCreatePost({
+        date: date ? date.getTime() : null,
         note: postNote,
         groups: selectedGroupIds,
+        reorder: true,
         onSucceeded: newPost => {
           handleUpload(filesToUpload, notesToUpload, newPost?.sortKey);
         },
@@ -121,47 +141,53 @@ function FilesUpload({ postId, isCreating, onCreatePost, onUpload }) {
   function renderFilesInput() {
     return (
       <HorizontalCenter>
-        <InputWrapper>
-          <Input
-            type="file"
-            id="file-upload"
-            multiple
-            onChange={e => {
-              const selected = Array.from(e.target.files);
+        <LoadingSkeletonOverlay visible={isCreating || isCreatingPost}>
+          <InputWrapper disabled={!canUpload}>
+            {canUpload && (
+              <Input
+                type="file"
+                id="file-upload"
+                multiple
+                onChange={e => {
+                  const selected = Array.from(e.target.files);
 
-              const uniqFiles = uniqBy([...selected, ...files], 'name');
-              if (!uniqFiles.length) {
-                return;
-              }
+                  const uniqFiles = uniqBy([...selected, ...files], 'name');
+                  if (!uniqFiles.length) {
+                    return;
+                  }
 
-              const allowedFiles = [];
-              const tooLargeFiles = [];
-              uniqFiles.forEach(file => {
-                if (file.size <= FILI_SIZE_LIMIT) {
-                  allowedFiles.push(file);
-                } else {
-                  tooLargeFiles.push(file);
-                }
-              });
+                  const allowedFiles = [];
+                  const tooLargeFiles = [];
+                  uniqFiles.forEach(file => {
+                    if (file.size <= FILI_SIZE_LIMIT) {
+                      allowedFiles.push(file);
+                    } else {
+                      tooLargeFiles.push(file);
+                    }
+                  });
 
-              setFiles(allowedFiles);
-              setLargeFiles(tooLargeFiles);
-              setShowModal(true);
-            }}
-          />
-          <label htmlFor="file-upload">
-            {files?.length
-              ? `${files.length} ${files.length > 1 ? 'files' : 'file'} ${
-                  showModal ? 'selected' : 'left'
-                }`
-              : '+ Upload files'}
-          </label>
+                  if (!date) {
+                    setDate(new Date());
+                  }
 
-          {isCreating && <LoadingSkeletonOverlay />}
-        </InputWrapper>
+                  setFiles(allowedFiles);
+                  setLargeFiles(tooLargeFiles);
+                  setShowModal(true);
+                }}
+              />
+            )}
+            <InputLabel htmlFor="file-upload" disabled={!canUpload}>
+              {files?.length
+                ? `${files.length} ${files.length > 1 ? 'files' : 'file'} ${
+                    showModal ? 'selected' : 'left'
+                  }`
+                : '+ Upload files'}
+            </InputLabel>
+          </InputWrapper>
+        </LoadingSkeletonOverlay>
 
-        {(!!files?.length || !!largeFiles.length) && !isCreating && (
-          <Button label="Clear" plain onClick={handleReset} />
+        {(!!files?.length || !!largeFiles.length) && !isCreating && !isCreatingPost && (
+          <Button label="Clear" plain onClick={handleReset} margin="0 0 0 1rem" />
         )}
       </HorizontalCenter>
     );
@@ -183,6 +209,8 @@ function FilesUpload({ postId, isCreating, onCreatePost, onUpload }) {
 
           {!postId && (
             <>
+              <DatePicker2 date={date} onSelect={setDate} />
+              <Spacer />
               <TextEditor text={postNote} onChange={setPostNote} />
               <Spacer />
 
@@ -245,7 +273,7 @@ function FilesUpload({ postId, isCreating, onCreatePost, onUpload }) {
               onClick={() => {
                 handleUpload(files, notes, postId);
               }}
-              disabled={!files?.length || isCreating}
+              disabled={!files?.length || isCreating || isCreatingPost}
               primary
             />
           </Box>
@@ -256,7 +284,18 @@ function FilesUpload({ postId, isCreating, onCreatePost, onUpload }) {
 
   return (
     <>
-      {renderFilesInput()}
+      <Box>
+        {renderFilesInput()}
+        {!canUpload && (
+          <Text margin="1rem 0 0" color="status-warning">
+            You have reached the storage limit of {STORAGE_LIMIT_IN_GB}GB. Please{' '}
+            <Anchor href="https://encrypt37.com/contact/" target="_blank">
+              contact
+            </Anchor>{' '}
+            me if you need more storage.
+          </Text>
+        )}
+      </Box>
       {renderModal()}
     </>
   );

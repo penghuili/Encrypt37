@@ -1,7 +1,6 @@
 import { Anchor, Avatar, Heading, Text } from 'grommet';
 import React from 'react';
 
-import logo from '../../assets/logo.png';
 import ContentWrapper from '../../shared/react-pure/ContentWrapper';
 import Divider from '../../shared/react-pure/Divider';
 import HorizontalCenter from '../../shared/react-pure/HorizontalCenter';
@@ -13,7 +12,7 @@ function Maintenance() {
     <>
       <ContentWrapper>
         <HorizontalCenter margin="2rem 0 1rem">
-          <Avatar src={logo} />{' '}
+          <Avatar src={`${process.env.REACT_APP_ASSETS_FOR_CODE}/logo.png`} />{' '}
           <Heading level="2" margin="0 0 0 1rem">
             File37
           </Heading>
@@ -22,7 +21,7 @@ function Maintenance() {
         <Text>File37 is under maintenance for now. Please check back later.</Text>
 
         <Spacer size="4rem" />
-        <Anchor label="Contact" href="https://peng37.com/contact" target="_blank" />
+        <Anchor label="Contact" href="https://encrypt37.com/contact" target="_blank" />
 
         <Spacer />
         <Divider />

@@ -21,6 +21,7 @@ const mapDispatchToProps = {
   onDownloadFile: fileActions.downloadFileRequested,
   onDownloadThumbnail: fileActions.downloadThumbnailRequested,
   onNav: sharedActionCreators.navigate,
+  onToast: sharedActionCreators.setToast,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(FileContent);

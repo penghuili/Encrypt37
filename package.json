@@ -35,7 +35,9 @@
     "react-router-dom": "6.3.0",
     "redux": "4.2.0",
     "redux-saga": "1.2.2",
+    "streamsaver": "2.0.6",
     "styled-components": "5.3.6",
+    "web-streams-polyfill": "3.2.1",
     "wouter": "2.9.0"
   },
   "devDependencies": {
@@ -70,13 +72,9 @@
     ]
   },
   "scripts": {
-    "copyshared": "rm -rf src/shared && mkdir src/shared && cp -a ../sharedjs/lib/js src/shared/js && cp -a ../sharedjs/lib/react src/shared/react && cp -a ../sharedjs/lib/react-pure src/shared/react-pure",
+    "copyshared": "rm -rf src/shared && mkdir src/shared && cp -a ../sharedjs/lib/js src/shared/js && cp -a ../sharedjs/lib/react src/shared/react && cp -a ../sharedjs/lib/react-pure src/shared/react-pure && rm -f scripts/upload.js && cp -a ../sharedjs/lib/scripts/upload.js scripts/upload.js",
     "start": "npm run copyshared && ESLINT_NO_DEV_ERRORS=true BROWSER=none react-scripts start",
-    "test": "react-scripts test",
-    "play": ". ./.env",
-    "build": "npm run copyshared && GENERATE_SOURCEMAP=false react-scripts build",
-    "postbuild": "find ./build -name '*.map' -delete && find ./build -name '.DS_Store' -delete",
-    "upload": "node ./scripts/upload.js",
-    "deploy": "npm run build && npm run upload"
+    "build": "GENERATE_SOURCEMAP=false react-scripts build && find ./build -name '.DS_Store' -delete",
+    "deploy": "npm run copyshared && node ./scripts/upload.js"
   }
 }

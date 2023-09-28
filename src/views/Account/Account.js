@@ -1,6 +1,7 @@
 import { Anchor, Box, Spinner, Text } from 'grommet';
 import React from 'react';
 
+import { getUsagePercentage, STORAGE_LIMIT_IN_GB } from '../../lib/storageLimit';
 import apps from '../../shared/js/apps';
 import { formatDateTime } from '../../shared/js/date';
 import ContentWrapper from '../../shared/react-pure/ContentWrapper';
@@ -13,10 +14,6 @@ import { getFileSizeString } from '../../shared/react/file';
 import { useEffectOnce } from '../../shared/react/hooks/useEffectOnce';
 import PaymentStatus from '../../shared/react/PaymentStatus';
 import RouteLink from '../../shared/react/RouteLink';
-
-function getUsagePercentage(size) {
-  return +((size / 500 / 1024 / 1024 / 1024) * 100).toFixed(4);
-}
 
 function Account({
   account,
@@ -44,7 +41,7 @@ function Account({
             <Spacer />
             <Box margin="0 0 1rem" direction="row" align="center">
               <Text margin="0 1rem 0 0">
-                Storage size: {getFileSizeString(settings?.size || 0)} / 500GB (
+                Storage size: {getFileSizeString(settings?.size || 0)} / {STORAGE_LIMIT_IN_GB}GB (
                 {getUsagePercentage(settings?.size || 0)}%)
               </Text>
               {isLoadingSettings && <Spinner size="small" />}
@@ -66,7 +63,7 @@ function Account({
             <Spacer />
             <RouteLink label="Privacy" to="/privacy" />
             <Spacer />
-            <Anchor label="Contact" href="https://peng37.com/contact" target="_blank" />
+            <Anchor label="Contact" href="https://encrypt37.com/contact" target="_blank" />
             <Spacer />
             <Divider />
             <Spacer />

@@ -1,4 +1,4 @@
-import { Box, Menu, Spinner } from 'grommet';
+import { Box, Menu } from 'grommet';
 import { MoreVertical } from 'grommet-icons';
 import React from 'react';
 
@@ -21,6 +21,7 @@ function PostDetails({
   post,
   isLoading,
   isDeleting,
+  isCreating,
   onFetch,
   onFetchGroups,
   onDelete,
@@ -59,16 +60,12 @@ function PostDetails({
       );
     }
 
-    if (isLoading) {
-      return <Spinner />;
-    }
-
     return null;
   }
 
   return (
     <>
-      <AppBar title="Post" hasBack isLoading={isLoading || isDeleting} />
+      <AppBar title="Post" hasBack isLoading={isLoading || isDeleting || isCreating} />
       <ContentWrapper padding="0">
         <HorizontalCenter margin={margin}>
           <FilesUpload postId={postId} />
@@ -97,6 +94,8 @@ function PostDetails({
         <Spacer />
 
         {renderContent()}
+
+        <Spacer size="5rem" />
       </ContentWrapper>
     </>
   );

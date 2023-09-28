@@ -27,7 +27,7 @@ function Encryption() {
         </Heading>
         <Text margin="1rem 0 0">
           Please check{' '}
-          <Anchor label="here" href="https://peng37.com/link37/encryption/" target="_blank" />
+          <Anchor label="here" href="https://encrypt37.com/encryption/" target="_blank" />
         </Text>
 
         <Heading level="3" margin="3rem 0 0">

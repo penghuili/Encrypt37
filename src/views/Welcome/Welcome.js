@@ -1,7 +1,6 @@
 import { Anchor, Avatar, Heading } from 'grommet';
 import React from 'react';
 
-import logo from '../../assets/logo.png';
 import Pitch from '../../components/Pitch';
 import ContentWrapper from '../../shared/react-pure/ContentWrapper';
 import Divider from '../../shared/react-pure/Divider';
@@ -15,7 +14,7 @@ function Welcome() {
     <>
       <ContentWrapper>
         <HorizontalCenter margin="2rem 0 1rem">
-          <Avatar src={logo} />{' '}
+          <Avatar src={`${process.env.REACT_APP_ASSETS_FOR_CODE}/logo.png`} />{' '}
           <Heading level="2" margin="0 0 0 1rem">
             File37
           </Heading>
@@ -37,7 +36,7 @@ function Welcome() {
         <Spacer />
         <RouteLink label="Privacy" to="/privacy" />
         <Spacer />
-        <Anchor label="Contact" href="https://peng37.com/contact" target="_blank" />
+        <Anchor label="Contact" href="https://encrypt37.com/contact" target="_blank" />
 
         <Spacer />
         <Divider />

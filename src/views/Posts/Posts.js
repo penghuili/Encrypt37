@@ -1,15 +1,18 @@
-import { Box, Button, Text } from 'grommet';
-import React, { useEffect, useState } from 'react';
+import { Box, Text } from 'grommet';
+import React, { useState } from 'react';
 
 import FilesUpload from '../../components/FilesUpload';
 import PostItem from '../../components/PostItem';
+import ScrollToTop from '../../components/ScrollToTop';
 import { useXMargin } from '../../hooks/useXMargin';
+import { globalState } from '../../lib/globalState';
 import { group37Prefix } from '../../shared/js/apps';
 import { formatDate } from '../../shared/js/date';
 import AnimatedList from '../../shared/react-pure/AnimatedList';
 import ContentWrapper from '../../shared/react-pure/ContentWrapper';
 import Divider from '../../shared/react-pure/Divider';
 import HorizontalCenter from '../../shared/react-pure/HorizontalCenter';
+import LoadMore from '../../shared/react-pure/LoadMore';
 import Spacer from '../../shared/react-pure/Spacer';
 import AppBar from '../../shared/react/AppBar';
 import GroupFilter from '../../shared/react/GroupFilter';
@@ -35,34 +38,46 @@ function Posts({
   const [selectedGroupId, setSelectedGroupId] = useState(undefined);
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
-  const queryParams = getQueryParams();
 
   useEffectOnce(() => {
     onFetchGroups({ prefix: group37Prefix.file37 });
-  });
 
-  useEffect(() => {
+    const queryParams = getQueryParams();
     onFetch({
-      force: true,
       groupId: queryParams.groupId,
       startTime: parseStartTime(queryParams.startTime),
       endTime: parseEndTime(queryParams.endTime),
     });
-
     setSelectedGroupId(queryParams.groupId);
     setStartTime(queryParams.startTime);
     setEndTime(queryParams.endTime);
-  }, [onFetch, queryParams.groupId, queryParams.startTime, queryParams.endTime]);
 
-  function navigate(newGroupId, newStartTime, newEndTime) {
+    if (globalState.offsetTop) {
+      setTimeout(() => {
+        window.scrollTo({
+          top: globalState.offsetTop,
+          behavior: 'smooth',
+        });
+        globalState.offsetTop = null;
+      }, 500);
+    }
+  });
+
+  function navigateAndFetch(newGroupId, newStartTime, newEndTime) {
     const queryString =
       objectToQueryString({
         groupId: newGroupId,
         startTime: newStartTime,
         endTime: newEndTime,
       }) || Date.now();
-
     onNav(`/?${queryString}`);
+
+    onFetch({
+      force: true,
+      groupId: newGroupId,
+      startTime: parseStartTime(newStartTime),
+      endTime: parseEndTime(newEndTime),
+    });
   }
 
   return (
@@ -88,7 +103,7 @@ function Posts({
             selectedGroupId={selectedGroupId}
             onSelectGroup={value => {
               setSelectedGroupId(value?.sortKey);
-              navigate(value?.sortKey, startTime, endTime);
+              navigateAndFetch(value?.sortKey, startTime, endTime);
             }}
             startTime={startTime ? new Date(startTime) : null}
             endTime={endTime ? new Date(endTime) : null}
@@ -98,11 +113,11 @@ function Posts({
                 const newEndTime = formatDate(endDate);
                 setStartTime(newStartTime);
                 setEndTime(newEndTime);
-                navigate(selectedGroupId, newStartTime, newEndTime);
+                navigateAndFetch(selectedGroupId, newStartTime, newEndTime);
               } else {
                 setStartTime(null);
                 setEndTime(null);
-                navigate(selectedGroupId, null, null);
+                navigateAndFetch(selectedGroupId, null, null);
               }
             }}
           />
@@ -121,29 +136,28 @@ function Posts({
           </>
         )}
 
-        {hasMore && (
-          <Button
-            label="Load more"
-            onClick={() =>
-              onFetch({
-                startKey,
-                groupId: selectedGroupId,
-                force: true,
-                startTime: parseStartTime(startTime),
-                endTime: parseEndTime(endTime),
-              })
-            }
-            disabled={isLoading}
-            margin={margin}
-            size="small"
-          />
-        )}
+        <LoadMore
+          hasMore={hasMore}
+          isLoading={isLoading}
+          margin={margin}
+          onLoadMore={() =>
+            onFetch({
+              force: true,
+              startKey,
+              groupId: selectedGroupId,
+              startTime: parseStartTime(startTime),
+              endTime: parseEndTime(endTime),
+            })
+          }
+        />
 
         {!posts?.length && !isLoading && (
           <>
             <Text margin={margin}>No posts.</Text>
           </>
         )}
+
+        <ScrollToTop />
       </ContentWrapper>
     </>
   );

@@ -1,6 +1,6 @@
 import { Box, Button, Menu, Spinner, Text } from 'grommet';
 import { MoreVertical } from 'grommet-icons';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 
 import { useXMargin } from '../../hooks/useXMargin';
 import { formatDateWeekTime } from '../../shared/js/date';
@@ -9,13 +9,15 @@ import GroupsSelected from '../../shared/react/GroupsSelected';
 import { groupSelectors } from '../../store/group/groupStore';
 import FileContent from '../FileContent';
 import TextEditor from '../../shared/react/TextEditor';
+import { setOffsetTop } from '../../lib/globalState';
 
 function PostItem({ item, isDownloadingFile, isDeleting, onDelete, onNav }) {
   const [isFocusing, setIsFocusing] = useState(false);
   const margin = useXMargin();
+  const ref = useRef();
 
   return (
-    <Box>
+    <Box ref={ref}>
       <HorizontalCenter>
         <Text size="xsmall" margin={margin}>
           {formatDateWeekTime(new Date(item.createdAt))}
@@ -49,7 +51,7 @@ function PostItem({ item, isDownloadingFile, isDeleting, onDelete, onNav }) {
       )}
       {!!item?.files?.length && (
         <>
-          <FileContent postId={item.sortKey} fileId={item.files[0]} />
+          <FileContent postId={item.sortKey} fileId={item.files[0]} showActions />
           <Box margin={margin} align="start">
             <Button
               plain
@@ -63,7 +65,10 @@ function PostItem({ item, isDownloadingFile, isDeleting, onDelete, onNav }) {
                     : 'Add more files >>'}
                 </Text>
               }
-              onClick={() => onNav(`/posts/${item.sortKey}`)}
+              onClick={() => {
+                onNav(`/posts/${item.sortKey}`);
+                setOffsetTop(ref.current.offsetTop);
+              }}
             />
           </Box>
         </>

@@ -23,22 +23,18 @@ function PostUpdate({ postId, post, isLoading, isUpdating, onFetch, onUpdate }) 
     if (post) {
       return (
         <>
-          {!!post.note && (
-            <>
-              <Box align="start">
-                <TextEditor text={postNote} onChange={setPostNote} />
+          <Box align="start">
+            <TextEditor text={postNote} onChange={setPostNote} />
 
-                <Spacer />
-                <Button
-                  primary
-                  label="Update"
-                  onClick={() => onUpdate({ itemId: postId, note: postNote, goBack: true })}
-                  disabled={isUpdating}
-                />
-              </Box>
-              <Spacer />
-            </>
-          )}
+            <Spacer />
+            <Button
+              primary
+              label="Update"
+              onClick={() => onUpdate({ itemId: postId, note: postNote, goBack: true })}
+              disabled={isUpdating}
+            />
+          </Box>
+          <Spacer />
 
           <Spacer />
           <GroupsUpdater

@@ -2,7 +2,6 @@ import React from 'react';
 import { Provider as StoreProvider, useDispatch } from 'react-redux';
 import { useLocation } from 'wouter';
 
-import logo from './assets/logo.png';
 import Router from './router';
 import apps from './shared/js/apps';
 import createTheme from './shared/react-pure/createTheme';
@@ -13,7 +12,7 @@ import initShared from './shared/react/initShared';
 import Toast from './shared/react/Toast';
 import store from './store';
 
-initShared({ logo, app: apps.file37.name });
+initShared({ logo: `${process.env.REACT_APP_ASSETS_FOR_CODE}/logo.png`, app: apps.file37.name });
 
 setHook('location', useLocation);
 setHook('dispatch', useDispatch);
