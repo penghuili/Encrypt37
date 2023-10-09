@@ -16,6 +16,7 @@ const mapStateToProps = (state, { fileId }) => {
 const mapDispatchToProps = {
   onDownloadFile: fileActions.downloadFileRequested,
   onDelete: filePostActions.deleteRequested,
+  onUpdate: filePostActions.updateRequested,
   onNav: sharedActionCreators.navigate,
 };
 

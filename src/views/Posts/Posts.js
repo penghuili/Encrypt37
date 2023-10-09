@@ -1,30 +1,30 @@
 import { Box, Text } from 'grommet';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
-import FilesUpload from '../../components/FilesUpload';
 import PostItem from '../../components/PostItem';
 import ScrollToTop from '../../components/ScrollToTop';
+import StorageLimistBanner from '../../components/StorageLimistBanner';
 import { useXMargin } from '../../hooks/useXMargin';
 import { globalState } from '../../lib/globalState';
 import { group37Prefix } from '../../shared/js/apps';
 import { formatDate } from '../../shared/js/date';
 import AnimatedList from '../../shared/react-pure/AnimatedList';
 import ContentWrapper from '../../shared/react-pure/ContentWrapper';
-import Divider from '../../shared/react-pure/Divider';
-import HorizontalCenter from '../../shared/react-pure/HorizontalCenter';
+import FloatingButton from '../../shared/react-pure/FloatingButton';
 import LoadMore from '../../shared/react-pure/LoadMore';
-import Spacer from '../../shared/react-pure/Spacer';
 import AppBar from '../../shared/react/AppBar';
 import GroupFilter from '../../shared/react/GroupFilter';
 import { parseEndTime, parseStartTime } from '../../shared/react/GroupFilter/GroupFilter';
 import { useEffectOnce } from '../../shared/react/hooks/useEffectOnce';
 import { getQueryParams, objectToQueryString } from '../../shared/react/routeHelpers';
 import { groupSelectors } from '../../store/group/groupStore';
+import { hasMoreStorage } from '../../lib/storageLimit';
 
 function Posts({
   posts,
   hasMore,
   startKey,
+  settings,
   isLoading,
   isCreatingPost,
   isCreatingFile,
@@ -38,6 +38,7 @@ function Posts({
   const [selectedGroupId, setSelectedGroupId] = useState(undefined);
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
+  const canUpload = useMemo(() => hasMoreStorage(settings?.size), [settings?.size]);
 
   useEffectOnce(() => {
     onFetchGroups({ prefix: group37Prefix.file37 });
@@ -83,19 +84,13 @@ function Posts({
   return (
     <>
       <AppBar
-        title="File37"
+        title="Encrypt37"
         isLoading={
           isLoading || isCreatingPost || isCreatingFile || isDeletingPost || isDeletingFile
         }
       />
       <ContentWrapper padding="0">
-        <HorizontalCenter margin={margin}>
-          <FilesUpload />
-        </HorizontalCenter>
-
-        <Spacer />
-        <Divider />
-        <Spacer />
+        <StorageLimistBanner canUpload={canUpload} />
 
         <Box margin={margin}>
           <GroupFilter
@@ -158,6 +153,13 @@ function Posts({
         )}
 
         <ScrollToTop />
+        {canUpload && (
+          <FloatingButton
+            onClick={() =>
+              onNav(selectedGroupId ? `/posts/add?groupId=${selectedGroupId}` : `/posts/add`)
+            }
+          />
+        )}
       </ContentWrapper>
     </>
   );

@@ -10,13 +10,13 @@ import SignIn from '../shared/react/SignIn';
 import SignUp from '../shared/react/SignUp';
 import Verify2FA from '../shared/react/Verify2FA';
 import Account from '../views/Account';
-import Encryption from '../views/Encryption';
 import Expired from '../views/Expired';
 import FileUpdate from '../views/FileUpdate';
 import Groups from '../views/Groups';
-import GroupsReorder from '../views/GroupsReorder';
 import GroupUpdate from '../views/GroupUpdate';
 import Maintenance from '../views/Maintenance';
+import NoteUpdate from '../views/NoteUpdate';
+import PostAdd from '../views/PostAdd';
 import PostDetails from '../views/PostDetails';
 import Posts from '../views/Posts';
 import PostUpdate from '../views/PostUpdate';
@@ -51,7 +51,6 @@ function Router({ isCheckingRefreshToken, isLoggedIn, isLoadingSettings, trid, i
           <Route path="/tickets" component={Tickets} />
           <Route path="/pricing" component={Pricing} />
 
-          <Route path="/encryption" component={Encryption} />
           <Route path="/privacy" component={Privacy} />
 
           <Route path="/" component={Expired} />
@@ -63,12 +62,13 @@ function Router({ isCheckingRefreshToken, isLoggedIn, isLoadingSettings, trid, i
     return (
       <Switch>
         <Route path="/posts" component={Posts} />
+        <Route path="/posts/add" component={PostAdd} />
         <Route path="/posts/:postId" component={PostDetails} />
         <Route path="/posts/:postId/update" component={PostUpdate} />
         <Route path="/files/:fileId/update" component={FileUpdate} />
+        <Route path="/notes/:noteId/update" component={NoteUpdate} />
 
         <Route path="/groups" component={Groups} />
-        <Route path="/groups/reorder" component={GroupsReorder} />
         <Route path="/groups/:groupId/update" component={GroupUpdate} />
 
         <Route path="/account" component={Account} />
@@ -78,7 +78,6 @@ function Router({ isCheckingRefreshToken, isLoggedIn, isLoadingSettings, trid, i
         <Route path="/tickets" component={Tickets} />
         <Route path="/pricing" component={Pricing} />
 
-        <Route path="/encryption" component={Encryption} />
         <Route path="/privacy" component={Privacy} />
 
         <Route path="/" component={Posts} />
@@ -93,7 +92,6 @@ function Router({ isCheckingRefreshToken, isLoggedIn, isLoadingSettings, trid, i
       <Route path="/sign-in" component={SignIn} />
       <Route path="/sign-in/2fa" component={Verify2FA} />
 
-      <Route path="/encryption" component={Encryption} />
       <Route path="/privacy" component={Privacy} />
       <Route path="/pricing" component={Pricing} />
 

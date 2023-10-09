@@ -8,7 +8,7 @@ function TryForFree() {
   return (
     <>
       <Pitch />
-      <Text margin="2rem 0 0">You can try File37 for free for 14 days.</Text>
+      <Text margin="2rem 0 0">You can try Encrypt37 for free for 14 days.</Text>
       <Text>
         After that, it's only <Text color="brand">$6 / month</Text> or{' '}
         <Text color="brand" weight="bold">

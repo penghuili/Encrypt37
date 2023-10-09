@@ -5,5 +5,5 @@ export function getUsagePercentage(size) {
 }
 
 export function hasMoreStorage(currentStorageSize) {
-  return currentStorageSize < STORAGE_LIMIT_IN_GB * 1024 * 1024 * 1024;
+  return !currentStorageSize || currentStorageSize < STORAGE_LIMIT_IN_GB * 1024 * 1024 * 1024;
 }

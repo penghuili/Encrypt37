@@ -31,7 +31,7 @@ function Tickets({ account, isLoading, onToast }) {
             <Text margin="1rem 0 0">You can buy ticket at my stripe page.</Text>
 
             <Text margin="1rem 0 0">
-              1. Please add your username to the "Your File37 username" field when checkout.
+              1. Please add your username to the "Your Encrypt37 username" field when checkout.
             </Text>
             <Text margin="1rem 0 0">
               Your username: {account.username}{' '}

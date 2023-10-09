@@ -12,6 +12,7 @@ import AppVersion from '../../shared/react/AppVersion';
 import ChangeTheme from '../../shared/react/ChangeTheme';
 import { getFileSizeString } from '../../shared/react/file';
 import { useEffectOnce } from '../../shared/react/hooks/useEffectOnce';
+import { privacyUrl, termsUrl } from '../../shared/react/initShared';
 import PaymentStatus from '../../shared/react/PaymentStatus';
 import RouteLink from '../../shared/react/RouteLink';
 
@@ -55,13 +56,19 @@ function Account({
             <Spacer />
             <Divider />
             <Spacer />
-            <RouteLink label="How encryption works?" to="/encryption" />
+            <Anchor
+              label="How encryption works?"
+              href="https://encrypt37.com/encryption"
+              target="_blank"
+            />
             <Spacer />
             <RouteLink label="Pricing" to="/pricing" />
             <Spacer />
             <RouteLink label="Buy tickets" to="/tickets" />
             <Spacer />
-            <RouteLink label="Privacy" to="/privacy" />
+            <Anchor label="Privacy" href={privacyUrl} target="_blank" />
+            <Spacer />
+            <Anchor label="Terms" href={termsUrl} target="_blank" />
             <Spacer />
             <Anchor label="Contact" href="https://encrypt37.com/contact" target="_blank" />
             <Spacer />

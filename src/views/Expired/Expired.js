@@ -13,7 +13,7 @@ function GroupUpdate({ isTrying, tried, onTry }) {
     if (!tried) {
       return (
         <>
-          <Heading margin="0">Try File37!</Heading>
+          <Heading margin="0">Try Encrypt37!</Heading>
           <TryForFree />
           <Spacer size="2rem" />
 
@@ -41,7 +41,7 @@ function GroupUpdate({ isTrying, tried, onTry }) {
 
   return (
     <>
-      <AppBar title={tried ? 'Your account is expired' : 'Try File37!'} isLoading={isTrying} />
+      <AppBar title={tried ? 'Your account is expired' : 'Try Encrypt37!'} isLoading={isTrying} />
       <ContentWrapper>{renderContent()}</ContentWrapper>
     </>
   );

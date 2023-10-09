@@ -1,4 +1,4 @@
-import { Anchor, Avatar, Heading } from 'grommet';
+import { Anchor, Heading, Image } from 'grommet';
 import React from 'react';
 
 import Pitch from '../../components/Pitch';
@@ -7,6 +7,7 @@ import Divider from '../../shared/react-pure/Divider';
 import HorizontalCenter from '../../shared/react-pure/HorizontalCenter';
 import Spacer from '../../shared/react-pure/Spacer';
 import ChangeTheme from '../../shared/react/ChangeTheme';
+import { privacyUrl, termsUrl } from '../../shared/react/initShared';
 import RouteLink from '../../shared/react/RouteLink';
 
 function Welcome() {
@@ -14,9 +15,9 @@ function Welcome() {
     <>
       <ContentWrapper>
         <HorizontalCenter margin="2rem 0 1rem">
-          <Avatar src={`${process.env.REACT_APP_ASSETS_FOR_CODE}/logo.png`} />{' '}
+          <Image src={`${process.env.REACT_APP_ASSETS_FOR_CODE}/logo.png`} width="48px" />{' '}
           <Heading level="2" margin="0 0 0 1rem">
-            File37
+            Encrypt37
           </Heading>
         </HorizontalCenter>
         <Pitch />
@@ -30,11 +31,13 @@ function Welcome() {
         <Divider />
         <Spacer />
 
-        <RouteLink label="How encryption works?" to="/encryption" />
+        <Anchor label="How encryption works?" href="https://encrypt37.com/encryption" target="_blank" />
         <Spacer />
         <RouteLink label="Pricing" to="/pricing" />
         <Spacer />
-        <RouteLink label="Privacy" to="/privacy" />
+        <Anchor label="Privacy" href={privacyUrl} target="_blank" />
+        <Spacer />
+        <Anchor label="Terms" href={termsUrl} target="_blank" />
         <Spacer />
         <Anchor label="Contact" href="https://encrypt37.com/contact" target="_blank" />
 

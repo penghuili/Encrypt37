@@ -12,7 +12,12 @@ import initShared from './shared/react/initShared';
 import Toast from './shared/react/Toast';
 import store from './store';
 
-initShared({ logo: `${process.env.REACT_APP_ASSETS_FOR_CODE}/logo.png`, app: apps.file37.name });
+initShared({
+  logo: `${process.env.REACT_APP_ASSETS_FOR_CODE}/logo.png`,
+  app: apps.file37.name,
+  privacyUrl: 'https://encrypt37.com/privacy/',
+  termsUrl: 'https://encrypt37.com/terms/',
+});
 
 setHook('location', useLocation);
 setHook('dispatch', useDispatch);
@@ -24,11 +29,9 @@ function App() {
     <StoreProvider store={store}>
       <AppContainer theme={theme}>
         <Router />
-
         <Toast />
       </AppContainer>
       <HooksOutsieWrapper />
-
       <Door />
     </StoreProvider>
   );

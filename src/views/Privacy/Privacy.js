@@ -11,18 +11,18 @@ function Privacy() {
       <AppBar title="Privacy" hasBack />
       <ContentWrapper>
         <Text>
-          1. File37 encrypts your data by default. You can check how encryption works{' '}
-          <Anchor label="here" href="/encryption" target="_blank" />.
+          1. Encrypt37 encrypts your data by default. You can check how encryption works{' '}
+          <Anchor label="here" href="https://encrypt37.com/encryption" target="_blank" />.
         </Text>
 
-        <Text margin="1rem 0 0">2. File37 has no tracking;</Text>
+        <Text margin="1rem 0 0">2. Encrypt37 has no tracking;</Text>
 
         <Text margin="1rem 0 0">
-          3. File37 doesn't sell third party ads, and it never sells your data. File37 makes
+          3. Encrypt37 doesn't sell third party ads, and it never sells your data. Encrypt37 makes
           money through paid customers.
         </Text>
 
-        <Text margin="1rem 0 0">4. File37 doesn't save your payment info;</Text>
+        <Text margin="1rem 0 0">4. Encrypt37 doesn't save your payment info;</Text>
 
         <Text margin="1rem 0 0">
           Contact me for anything:{' '}

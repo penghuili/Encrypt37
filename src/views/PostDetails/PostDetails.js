@@ -1,11 +1,12 @@
-import { Box, Menu } from 'grommet';
-import { MoreVertical } from 'grommet-icons';
-import React from 'react';
+import { Box, Button } from 'grommet';
+import { Edit, Trash } from 'grommet-icons';
+import React, { useState } from 'react';
 
-import FileContent from '../../components/FileContent';
-import FilesUpload from '../../components/FilesUpload';
+import TextEditorItem from '../../components/TextEditorWithFile/TextEditorItem';
+import ThreadContent from '../../components/ThreadContent';
 import { useXMargin } from '../../hooks/useXMargin';
 import { group37Prefix } from '../../shared/js/apps';
+import Confirm from '../../shared/react-pure/Confirm';
 import ContentWrapper from '../../shared/react-pure/ContentWrapper';
 import Divider from '../../shared/react-pure/Divider';
 import HorizontalCenter from '../../shared/react-pure/HorizontalCenter';
@@ -13,7 +14,6 @@ import Spacer from '../../shared/react-pure/Spacer';
 import AppBar from '../../shared/react/AppBar';
 import GroupsSelected from '../../shared/react/GroupsSelected';
 import { useEffectOnce } from '../../shared/react/hooks/useEffectOnce';
-import TextEditor from '../../shared/react/TextEditor';
 import { groupSelectors } from '../../store/group/groupStore';
 
 function PostDetails({
@@ -21,13 +21,14 @@ function PostDetails({
   post,
   isLoading,
   isDeleting,
-  isCreating,
   onFetch,
   onFetchGroups,
   onDelete,
+  onUpdate,
   onNav,
 }) {
   const margin = useXMargin();
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   useEffectOnce(() => {
     onFetch({ itemId: postId });
@@ -45,15 +46,21 @@ function PostDetails({
           )}
 
           {!!post.note && (
-            <Box margin={margin}>
-              <TextEditor text={post.note} editable={false} />
+            <Box pad={margin} width="100%">
+              <TextEditorItem
+                text={post.note}
+                editable={false}
+                onReadOnlyChecked={content => {
+                  onUpdate({ itemId: postId, note: content, goBack: false });
+                }}
+              />
             </Box>
           )}
 
-          {!!post.files?.length &&
-            post.files.map(fileId => (
-              <Box key={fileId} margin="0 0 3rem">
-                <FileContent postId={postId} fileId={fileId} showNote showActions />
+          {!!post.items?.length &&
+            post.items.map(item => (
+              <Box key={item.id} margin="0.5rem 0" width="100%">
+                <ThreadContent item={item} editable={false} />
               </Box>
             ))}
         </>
@@ -65,28 +72,22 @@ function PostDetails({
 
   return (
     <>
-      <AppBar title="Post" hasBack isLoading={isLoading || isDeleting || isCreating} />
+      <AppBar title="Post" hasBack isLoading={isLoading || isDeleting} />
       <ContentWrapper padding="0">
         <HorizontalCenter margin={margin}>
-          <FilesUpload postId={postId} />
-          <Menu
-            icon={<MoreVertical size="small" />}
-            items={[
-              {
-                label: 'Update',
-                onClick: () => onNav(`/posts/${postId}/update`),
-                margin: '0.25rem 0',
-              },
-              {
-                label: 'Delete',
-                onClick: () => {
-                  onDelete({ itemId: postId, goBack: true });
-                },
-                margin: '0.25rem 0',
-                color: 'status-critical',
-                disabled: isDeleting,
-              },
-            ]}
+          <Button
+            size="small"
+            icon={<Edit size="small" />}
+            onClick={() => onNav(`/posts/${postId}/update`)}
+            margin="0 1rem 0 0"
+            disabled={isDeleting || isLoading}
+          />
+
+          <Button
+            size="small"
+            icon={<Trash size="small" color="status-critical" />}
+            onClick={() => setShowDeleteConfirm(true)}
+            disabled={isDeleting || isLoading}
           />
         </HorizontalCenter>
         <Spacer />
@@ -96,6 +97,13 @@ function PostDetails({
         {renderContent()}
 
         <Spacer size="5rem" />
+
+        <Confirm
+          message="Are you sure you want to delete this post?"
+          show={showDeleteConfirm}
+          onClose={() => setShowDeleteConfirm(false)}
+          onConfirm={() => onDelete({ itemId: postId, goBack: true })}
+        />
       </ContentWrapper>
     </>
   );

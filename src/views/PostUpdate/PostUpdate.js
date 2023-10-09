@@ -1,42 +1,66 @@
-import { Box, Button, Spinner } from 'grommet';
-import React, { useState } from 'react';
+import { Spinner } from 'grommet';
+import React, { useMemo } from 'react';
 
+import TextEditorWithFile from '../../components/TextEditorWithFile';
 import { group37Prefix } from '../../shared/js/apps';
 import ContentWrapper from '../../shared/react-pure/ContentWrapper';
 import Spacer from '../../shared/react-pure/Spacer';
 import AppBar from '../../shared/react/AppBar';
 import GroupsUpdater from '../../shared/react/GroupsUpdater';
 import { useEffectOnce } from '../../shared/react/hooks/useEffectOnce';
-import { useListener } from '../../shared/react/hooks/useListener';
-import TextEditor from '../../shared/react/TextEditor';
 import { groupActions, groupSelectors } from '../../store/group/groupStore';
 
-function PostUpdate({ postId, post, isLoading, isUpdating, onFetch, onUpdate }) {
-  const [postNote, setPostNote] = useState('');
-  useListener(post?.note, value => setPostNote(value || ''));
+function PostUpdate({ postId, post, isLoading, onFetch }) {
+  const filesIds = useMemo(() => {
+    return (post?.files || []).join('-');
+  }, [post?.files]);
+
+  const items = useMemo(() => {
+    if (post) {
+      const first = {
+        type: 'note',
+        id: post.sortKey,
+        note: post.note,
+        decryptedPassword: post.decryptedPassword,
+      };
+      const rest = (post.items || []).map(item => ({
+        type: item.id.startsWith('file37') ? 'file' : 'note',
+        id: item.id,
+        note: item.note?.note,
+        decryptedPassword: item.note?.decryptedPassword,
+      }));
+
+      return [first, ...rest];
+    }
+
+    return null;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [post?.note, filesIds]);
 
   useEffectOnce(() => {
     onFetch({ itemId: postId });
   });
 
+  function renderEditor() {
+    if (post) {
+      return <TextEditorWithFile postId={postId} items={items} />;
+    }
+
+    if (isLoading) {
+      return <Spinner />;
+    }
+
+    return null;
+  }
+
   function renderContent() {
     if (post) {
       return (
         <>
-          <Box align="start">
-            <TextEditor text={postNote} onChange={setPostNote} />
+          {renderEditor()}
 
-            <Spacer />
-            <Button
-              primary
-              label="Update"
-              onClick={() => onUpdate({ itemId: postId, note: postNote, goBack: true })}
-              disabled={isUpdating}
-            />
-          </Box>
-          <Spacer />
+          <Spacer size="2rem" />
 
-          <Spacer />
           <GroupsUpdater
             group37Prefix={group37Prefix.file37}
             groupSelectors={groupSelectors}
