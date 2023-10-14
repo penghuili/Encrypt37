@@ -1,33 +1,44 @@
-import { Box, Image, Layer, Spinner, Text } from 'grommet';
+import { Box, Image, Spinner, Text } from 'grommet';
+import { Download } from 'grommet-icons';
 import React, { useEffect, useState } from 'react';
-
+import styled from 'styled-components';
 import { useXMargin } from '../../hooks/useXMargin';
 import LoadingSkeleton from '../../shared/react-pure/LoadingSkeleton';
 import { isImage } from '../../shared/react/file';
 import { useInView } from '../../shared/react/hooks/useInView';
 
+const DownloadWrapper = styled.div`
+  position: absolute;
+  top: 0;
+  right: 0.5rem;
+`;
+
 function FileContent({
   fileId,
   fileMeta,
+  fileMetaInStore,
   thumbnail,
-  rawFile,
+  editable,
   isDownloadingFile,
   onFetch,
-  // onDownloadFile,
+  onDownloadFile,
   onDownloadThumbnail,
 }) {
-  const [showOriginalImage, setShowOriginalImage] = useState(false);
   const margin = useXMargin();
+  const [clickedDownload, setClickedDownload] = useState(false);
 
+  const innerFileMeta = fileMeta || fileMetaInStore;
   const ref = useInView(() => {
-    onFetch({ itemId: fileId });
+    if (!fileMeta) {
+      onFetch({ itemId: fileId });
+    }
   });
   useEffect(() => {
-    if (isImage(fileMeta?.mimeType)) {
-      onDownloadThumbnail({ fileId, fileMeta });
+    if (isImage(innerFileMeta?.mimeType)) {
+      onDownloadThumbnail({ fileId, fileMeta: innerFileMeta });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fileMeta?.mimeType]);
+  }, [innerFileMeta?.mimeType]);
 
   function renderLoadingSkeleton() {
     const width = window.innerWidth > 600 ? `600px` : `100%`;
@@ -35,69 +46,58 @@ function FileContent({
   }
 
   function renderContent() {
-    if (!fileMeta) {
+    if (!innerFileMeta) {
       return null;
     }
 
-    if (isImage(fileMeta.mimeType)) {
+    if (isImage(innerFileMeta.mimeType)) {
       return thumbnail ? (
         <Image
           fit="contain"
           src={thumbnail.url}
-          alt={fileMeta.fileName}
+          alt={innerFileMeta.fileName}
           width="100%"
           height="auto"
           style={{ maxWidth: '600px' }}
-          onClick={() => {
-            // onDownloadFile({ fileId });
-            // TODO: fix this
-            setShowOriginalImage(false);
-          }}
         />
       ) : (
         renderLoadingSkeleton()
       );
     }
 
-    return <Text margin={margin} wordBreak="break-word">{fileMeta.fileName}</Text>;
-  }
-
-  function renderOriginalImage() {
-    if (!isImage(fileMeta?.mimeType)) {
-      return null;
-    }
-
     return (
-      showOriginalImage && (
-        <Layer
-          full
-          modal={false}
-          onClickOutside={() => setShowOriginalImage(false)}
-          onEsc={() => setShowOriginalImage(false)}
-        >
-          {isDownloadingFile && (
-            <Box align="center" justify="center" height="100%">
-              <Spinner />
-            </Box>
-          )}
-          {!!rawFile && (
-            <Image
-              src={rawFile.url}
-              alt={fileMeta.fileName}
-              height="100%"
-              fit="contain"
-              onClick={() => setShowOriginalImage(false)}
-            />
-          )}
-        </Layer>
-      )
+      <Box height={editable ? '5rem' : undefined} margin={editable ? '1rem 0' : undefined}>
+        <Text margin={margin} wordBreak="break-word">
+          {innerFileMeta.fileName}
+        </Text>
+      </Box>
     );
   }
 
   return (
-    <Box ref={ref} align="center">
+    <Box ref={ref} align="center" style={{ position: 'relative' }}>
       {renderContent()}
-      {renderOriginalImage()}
+      {!editable && (
+        <DownloadWrapper>
+          {isDownloadingFile && clickedDownload ? (
+            <Spinner size="small" />
+          ) : (
+            <Download
+              size="small"
+              color="status-ok"
+              onClick={() => {
+                setClickedDownload(true);
+                onDownloadFile({
+                  fileId,
+                  onSucceeded: () => {
+                    setClickedDownload(false);
+                  },
+                });
+              }}
+            />
+          )}
+        </DownloadWrapper>
+      )}
     </Box>
   );
 }

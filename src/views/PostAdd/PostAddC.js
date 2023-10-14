@@ -1,21 +1,14 @@
 import { connect } from 'react-redux';
-
-import { filePostActions, filePostSelectors } from '../../shared/react/store/file/filePostStore';
-import { fileActions, fileSelectors } from '../../shared/react/store/file/fileStore';
-import { noteActions, noteSelectors } from '../../store/note/noteStore';
-import PostAdd from './PostAdd';
 import { sharedActionCreators } from '../../shared/react/store/sharedActions';
+import { filePostExtraActions, filePostExtraSelectors } from '../../store/filePost/filePostStore';
+import PostAdd from './PostAdd';
 
 const mapStateToProps = state => ({
-  isCreatingPost: filePostSelectors.createItem.isPending(state),
-  isCreatingNote: noteSelectors.createItem.isPending(state),
-  isCreatingFile: fileSelectors.createItem.isPending(state),
+  isAttachingFiles: filePostExtraSelectors.attachFilesToPost.isPending(state),
 });
 
 const mapDispatchToProps = {
-  onCreatePost: filePostActions.createRequested,
-  onCreateNote: noteActions.createRequested,
-  onCreateFile: fileActions.createRequested,
+  onAttachFilesToPost: filePostExtraActions.attachFilesToPostRequested,
   onToast: sharedActionCreators.setToast,
 };
 

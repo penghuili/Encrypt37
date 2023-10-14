@@ -1,10 +1,13 @@
 import { call, put } from 'redux-saga/effects';
-
 import asyncForEach from '../../shared/js/asyncForEach';
-import { safeGet, safeSet } from '../../shared/js/object';
+import { prepend, safeGet, safeSet } from '../../shared/js/object';
 import { uniqBy } from '../../shared/js/uniq';
 import { uploadFile } from '../../shared/react/store/file/fileNetwork';
-import { removeFileFromPost, updatePost } from '../../shared/react/store/file/filePostNetwork';
+import {
+  createPost,
+  removeFileFromPost,
+  updatePost,
+} from '../../shared/react/store/file/filePostNetwork';
 import {
   filePostDomain,
   filePostReducer as sharedFilePostReducer,
@@ -50,20 +53,40 @@ export async function deleteFileAndCombineNotes(postId, fileId, previousItem, ne
   }
 }
 
-export async function attachFilesToPost(postId, items, startItemId) {
+export async function attachFilesToPost(postId, items, startItemId, groups = []) {
   try {
-    let currentItemId = startItemId;
     let post;
-    await asyncForEach(items, async item => {
+    let innerPostId = postId;
+    let innerItems = items;
+    let currentItemId = startItemId;
+
+    if (!postId) {
+      const result = await createPost({
+        date: Date.now(),
+        note: items[0].note,
+        groups,
+        files: [],
+      });
+      if (result.data) {
+        innerPostId = result.data.sortKey;
+        post = result.data;
+        innerItems = items.slice(1);
+        currentItemId = post.sortKey;
+      } else {
+        return result;
+      }
+    }
+
+    await asyncForEach(innerItems, async item => {
       if (item.type === 'file') {
-        const result = await uploadFile(item.file, '', postId, currentItemId);
+        const result = await uploadFile(item.file, '', innerPostId, currentItemId);
         if (result.data) {
           currentItemId = result.data.file.sortKey;
           post = result.data.post;
         }
       } else if (item.type === 'note') {
         const result = await createNote({
-          postId,
+          postId: innerPostId,
           startItemId: currentItemId,
           note: item.note,
           date: Date.now(),
@@ -99,7 +122,6 @@ const {
     return result;
   },
   onReducerSucceeded: (state, { data }) => {
-    console.log('data', data);
     const newState = safeSet(state, ['data', defaultId, 'item'], data);
     return newState;
   },
@@ -111,10 +133,10 @@ const {
   reducer: attachFilesToPostReducer,
   saga: attachFilesToPostSaga,
 } = createRequest(filePostDomain, 'attachFilesToPost', {
-  request: function* ({ postId, items, startItemId, onSucceeded }) {
-    const result = yield call(attachFilesToPost, postId, items, startItemId);
+  request: function* ({ postId, items, startItemId, groups, onSucceeded }) {
+    const result = yield call(attachFilesToPost, postId, items, startItemId, groups);
     if (result.data) {
-      yield put(sharedActionCreators.setToast('Your files are encrypted and saved in server.'));
+      yield put(sharedActionCreators.setToast('Encrypted and saved in server.'));
       if (onSucceeded) {
         onSucceeded(result.data);
       }
@@ -122,7 +144,8 @@ const {
     return result;
   },
   onReducerSucceeded: (state, { data }) => {
-    const newState = safeSet(state, ['data', defaultId, 'item'], data);
+    let newState = safeSet(state, ['data', defaultId, 'item'], data);
+    newState = prepend(newState, ['data', defaultId, 'items'], data);
     return newState;
   },
 });

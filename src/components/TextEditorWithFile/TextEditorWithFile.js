@@ -1,6 +1,6 @@
 import { Box, Button, Image, Text } from 'grommet';
 import React, { useState } from 'react';
-
+import LoadingSkeletonOverlay from '../../shared/react-pure/LoadingSkeletonOverlay';
 import { isImage } from '../../shared/react/file';
 import { useListener } from '../../shared/react/hooks/useListener';
 import FileContent from '../FileContent';
@@ -9,7 +9,6 @@ import TextEditorDeleteIcon from './TextEditorDeleteIcon';
 import TextEditorItem from './TextEditorItem';
 import TextEditorNoteIcon from './TextEditorNoteIcon';
 import TextEditorToolbar from './TextEditorToolbar';
-import LoadingSkeletonOverlay from '../../shared/react-pure/LoadingSkeletonOverlay';
 
 const firstNoteId = `note_${Date.now()}`;
 
@@ -51,7 +50,7 @@ function TextEditorWithFile({
   onAttachFilesToPost,
 }) {
   const [innerItems, setInnerItems] = useState(defaultItems);
-  const [notes] = useState({ [firstNoteId]: '<h1></h1>' });
+  const [notes] = useState({});
   const [notesChanged, setNotesChanged] = useState(false);
   useListener(items, value => {
     setInnerItems(value || defaultItems);
@@ -137,7 +136,7 @@ function TextEditorWithFile({
               ) : (
                 <LoadingSkeletonOverlay visible={item.loading}>
                   {item.id.startsWith('file37') ? (
-                    <FileContent fileId={item.id} editable={!disabled} />
+                    <FileContent fileId={item.id} fileMeta={item.fileMeta} editable />
                   ) : (
                     <Box>
                       {isImage(item.file.type) ? (
@@ -218,7 +217,6 @@ function TextEditorWithFile({
                 disabled={disabled || isPending}
                 onAttachFilesToPost={onAttachFilesToPost}
                 onChange={({ items: newItems }) => {
-                  console.log('newItems', newItems);
                   const updatedItems = innerItems
                     .slice(0, index + 1)
                     .concat(newItems)

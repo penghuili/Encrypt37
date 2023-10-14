@@ -1,6 +1,5 @@
 import { Spinner } from 'grommet';
 import React, { useMemo } from 'react';
-
 import TextEditorWithFile from '../../components/TextEditorWithFile';
 import { group37Prefix } from '../../shared/js/apps';
 import ContentWrapper from '../../shared/react-pure/ContentWrapper';
@@ -24,10 +23,8 @@ function PostUpdate({ postId, post, isLoading, onFetch }) {
         decryptedPassword: post.decryptedPassword,
       };
       const rest = (post.items || []).map(item => ({
-        type: item.id.startsWith('file37') ? 'file' : 'note',
-        id: item.id,
-        note: item.note?.note,
-        decryptedPassword: item.note?.decryptedPassword,
+        ...item,
+        note: item.type === 'note' ? item.note?.note : undefined,
       }));
 
       return [first, ...rest];
@@ -66,6 +63,7 @@ function PostUpdate({ postId, post, isLoading, onFetch }) {
             groupSelectors={groupSelectors}
             groupActions={groupActions}
             item={post}
+            alwaysShow={false}
           />
         </>
       );

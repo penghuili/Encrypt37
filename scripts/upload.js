@@ -72,9 +72,9 @@ const versions = result
   .split('\n')
   .filter(v => v && v !== 'index.html' && /^\d{14}$/.test(v))
   .sort();
-// If there are more than 3 versions, remove the oldest ones
-if (versions.length > 3) {
-  const toDelete = versions.slice(0, versions.length - 3); // Keep the last 10
+// If there are more than 10 versions, remove the oldest ones
+if (versions.length > 10) {
+  const toDelete = versions.slice(0, versions.length - 10); // Keep the last 10
 
   toDelete.forEach(version => {
     console.log(`Deleting version: ${version}`);

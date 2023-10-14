@@ -1,12 +1,11 @@
 import { connect } from 'react-redux';
-
 import { fileActions, fileSelectors } from '../../shared/react/store/file/fileStore';
 import FileContent from './FileContent';
 
 const mapStateToProps = (state, { fileId }) => {
   return {
     fileId,
-    fileMeta: fileSelectors.data.getItem(state, fileId),
+    fileMetaInStore: fileSelectors.data.getItem(state, fileId),
     isDownloadingFile: fileSelectors.downloadFile.isPending(state),
     rawFile: fileSelectors.data.getRawFile(state, fileId),
     thumbnail: fileSelectors.data.getThumbnail(state, fileId),

@@ -1,7 +1,6 @@
 import { Spinner } from 'grommet';
 import React from 'react';
 import { Redirect, Route, Switch } from 'wouter';
-
 import HorizontalCenter from '../shared/react-pure/HorizontalCenter';
 import ChangePassword from '../shared/react/ChangePassword';
 import Security from '../shared/react/Security';
@@ -11,15 +10,14 @@ import SignUp from '../shared/react/SignUp';
 import Verify2FA from '../shared/react/Verify2FA';
 import Account from '../views/Account';
 import Expired from '../views/Expired';
-import FileUpdate from '../views/FileUpdate';
-import Groups from '../views/Groups';
 import GroupUpdate from '../views/GroupUpdate';
+import Groups from '../views/Groups';
 import Maintenance from '../views/Maintenance';
-import NoteUpdate from '../views/NoteUpdate';
+import OnThisDay from '../views/OnThisDay';
 import PostAdd from '../views/PostAdd';
 import PostDetails from '../views/PostDetails';
-import Posts from '../views/Posts';
 import PostUpdate from '../views/PostUpdate';
+import Posts from '../views/Posts';
 import Pricing from '../views/Pricing';
 import Privacy from '../views/Privacy';
 import Tickets from '../views/Tickets';
@@ -65,8 +63,7 @@ function Router({ isCheckingRefreshToken, isLoggedIn, isLoadingSettings, trid, i
         <Route path="/posts/add" component={PostAdd} />
         <Route path="/posts/:postId" component={PostDetails} />
         <Route path="/posts/:postId/update" component={PostUpdate} />
-        <Route path="/files/:fileId/update" component={FileUpdate} />
-        <Route path="/notes/:noteId/update" component={NoteUpdate} />
+        <Route path="/on-this-day" component={OnThisDay} />
 
         <Route path="/groups" component={Groups} />
         <Route path="/groups/:groupId/update" component={GroupUpdate} />

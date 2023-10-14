@@ -1,6 +1,5 @@
 import { Note } from 'grommet-icons';
 import React from 'react';
-
 import Spacer from '../../shared/react-pure/Spacer';
 
 function TextEditorNoteIcon({ postId, item, nextItem, disabled, onCreateNote, onChange }) {
@@ -26,7 +25,7 @@ function TextEditorNoteIcon({ postId, item, nextItem, disabled, onCreateNote, on
           if (postId) {
             onCreateNote({
               postId: postId,
-              startItemId: item.sortKey,
+              startItemId: item.id,
               note: '',
               date: Date.now(),
               goBack: false,

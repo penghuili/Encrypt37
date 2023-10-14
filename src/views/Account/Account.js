@@ -1,7 +1,6 @@
 import { Anchor, Box, Spinner, Text } from 'grommet';
 import React from 'react';
-
-import { getUsagePercentage, STORAGE_LIMIT_IN_GB } from '../../lib/storageLimit';
+import { STORAGE_LIMIT_IN_GB, getUsagePercentage } from '../../lib/storageLimit';
 import apps from '../../shared/js/apps';
 import { formatDateTime } from '../../shared/js/date';
 import ContentWrapper from '../../shared/react-pure/ContentWrapper';
@@ -10,11 +9,11 @@ import Spacer from '../../shared/react-pure/Spacer';
 import AppBar from '../../shared/react/AppBar';
 import AppVersion from '../../shared/react/AppVersion';
 import ChangeTheme from '../../shared/react/ChangeTheme';
+import PaymentStatus from '../../shared/react/PaymentStatus';
+import RouteLink from '../../shared/react/RouteLink';
 import { getFileSizeString } from '../../shared/react/file';
 import { useEffectOnce } from '../../shared/react/hooks/useEffectOnce';
 import { privacyUrl, termsUrl } from '../../shared/react/initShared';
-import PaymentStatus from '../../shared/react/PaymentStatus';
-import RouteLink from '../../shared/react/RouteLink';
 
 function Account({
   account,
@@ -79,6 +78,7 @@ function Account({
             <Divider />
             <Spacer />
             <AppVersion />
+            <Text size="small">Since 2023</Text>
           </>
         )}
       </ContentWrapper>

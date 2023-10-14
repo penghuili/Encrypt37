@@ -1,11 +1,13 @@
+import { subDays } from 'date-fns';
 import { Box, Text } from 'grommet';
+import { Refresh } from 'grommet-icons';
 import React, { useMemo, useState } from 'react';
-
 import PostItem from '../../components/PostItem';
 import ScrollToTop from '../../components/ScrollToTop';
 import StorageLimistBanner from '../../components/StorageLimistBanner';
 import { useXMargin } from '../../hooks/useXMargin';
 import { globalState } from '../../lib/globalState';
+import { hasMoreStorage } from '../../lib/storageLimit';
 import { group37Prefix } from '../../shared/js/apps';
 import { formatDate } from '../../shared/js/date';
 import AnimatedList from '../../shared/react-pure/AnimatedList';
@@ -15,10 +17,10 @@ import LoadMore from '../../shared/react-pure/LoadMore';
 import AppBar from '../../shared/react/AppBar';
 import GroupFilter from '../../shared/react/GroupFilter';
 import { parseEndTime, parseStartTime } from '../../shared/react/GroupFilter/GroupFilter';
+import RouteLink from '../../shared/react/RouteLink';
 import { useEffectOnce } from '../../shared/react/hooks/useEffectOnce';
 import { getQueryParams, objectToQueryString } from '../../shared/react/routeHelpers';
 import { groupSelectors } from '../../store/group/groupStore';
-import { hasMoreStorage } from '../../lib/storageLimit';
 
 function Posts({
   posts,
@@ -39,6 +41,10 @@ function Posts({
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
   const canUpload = useMemo(() => hasMoreStorage(settings?.size), [settings?.size]);
+  const hasHistory = useMemo(
+    () => !!settings?.createdAt && new Date(settings.createdAt) < subDays(new Date(), 7),
+    [settings?.createdAt]
+  );
 
   useEffectOnce(() => {
     onFetchGroups({ prefix: group37Prefix.file37 });
@@ -117,6 +123,23 @@ function Posts({
             }}
           />
         </Box>
+        {hasHistory && (
+          <Box align="start" direction="row" margin={margin}>
+            <RouteLink label="On this day" to={`/on-this-day`} margin="0 1rem 1rem 0" />
+            {!isLoading && (
+              <Refresh
+                onClick={() =>
+                  onFetch({
+                    force: true,
+                    groupId: selectedGroupId,
+                    startTime: parseStartTime(startTime),
+                    endTime: parseEndTime(endTime),
+                  })
+                }
+              />
+            )}
+          </Box>
+        )}
 
         {!!posts?.length && (
           <>

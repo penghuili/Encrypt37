@@ -1,6 +1,5 @@
 import { Text } from 'grommet';
 import React, { useState } from 'react';
-
 import TextEditorWithFile from '../../components/TextEditorWithFile';
 import { group37Prefix } from '../../shared/js/apps';
 import ContentWrapper from '../../shared/react-pure/ContentWrapper';
@@ -13,15 +12,7 @@ import { useEffectOnce } from '../../shared/react/hooks/useEffectOnce';
 import { getQueryParams } from '../../shared/react/routeHelpers';
 import { groupActions, groupSelectors } from '../../store/group/groupStore';
 
-function PostAdd({
-  isCreatingPost,
-  isCreatingNote,
-  isCreatingFile,
-  onCreatePost,
-  onCreateNote,
-  onCreateFile,
-  onToast,
-}) {
+function PostAdd({ isAttachingFiles, onAttachFilesToPost, onToast }) {
   const [date, setDate] = useState(new Date());
   const [selectedGroupIds, setSelectedGroupIds] = useState([]);
 
@@ -32,66 +23,30 @@ function PostAdd({
     }
   });
 
-  function handleCreateNotesAndFiles(itemsToSend, postId) {
-    if (!itemsToSend?.length) {
-      onToast('Post is encrypted and saved in server.');
-      return;
-    }
-
-    const firstItem = itemsToSend[0];
-    if (firstItem.type === 'note') {
-      onCreateNote({
-        postId: postId,
-        note: firstItem.note,
-        date: Date.now(),
-        goBack: itemsToSend.length === 1,
-        onSucceeded: ({ post }) => {
-          const left = itemsToSend.slice(1);
-          handleCreateNotesAndFiles(left, post?.sortKey);
-        
-        },
-      });
-    } else {
-      onCreateFile({
-        postId: postId,
-        file: firstItem.file,
-        goBack: itemsToSend.length === 1,
-        onSucceeded: ({ post }) => {
-          const left = itemsToSend.slice(1);
-          handleCreateNotesAndFiles(left, post?.sortKey);
-        },
-      });
-    }
-  }
-
   function handleSend(items) {
-    onCreatePost({
-      date: Date.now(),
-      note: items[0].note,
+    onToast('Encrypting and saving post, please leave the page open ...');
+    onAttachFilesToPost({
+      postId: null,
+      items,
+      startItemId: null,
       groups: selectedGroupIds,
-      goBack: items.length === 1,
-      onSucceeded: newPost => {
-        handleCreateNotesAndFiles(items.slice(1), newPost?.sortKey);
-      },
+      goBack: true,
     });
   }
 
+  const isPending = isAttachingFiles;
   return (
     <>
-      <AppBar
-        title="Add post"
-        hasBack
-        isLoading={isCreatingFile || isCreatingNote || isCreatingPost}
-      />
+      <AppBar title="Add post" hasBack isLoading={isPending} />
       <ContentWrapper>
         <TextEditorWithFile
-          disabled={isCreatingFile || isCreatingNote || isCreatingPost}
+          disabled={isPending}
           onCreate={items => {
             handleSend(items);
           }}
         >
           <Spacer size="2rem" />
-          <Text weight="bold">Select date:</Text>
+          <Text weight="bold">Select date</Text>
           <DatePicker2 date={date} onSelect={setDate} />
           <Spacer />
 
@@ -101,6 +56,7 @@ function PostAdd({
             groupActions={groupActions}
             selectedGroups={selectedGroupIds}
             onSelect={setSelectedGroupIds}
+            alwaysShow={false}
           />
           <Spacer size="2rem" />
           <Divider />
