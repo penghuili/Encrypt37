@@ -14,7 +14,10 @@ function Welcome() {
     <>
       <ContentWrapper>
         <HorizontalCenter margin="2rem 0 1rem">
-          <Image src={`${process.env.REACT_APP_ASSETS_FOR_CODE}/encrypt37-logo-231017.png`} width="48px" />{' '}
+          <Image
+            src={`${process.env.REACT_APP_ASSETS_FOR_CODE}/encrypt37-logo-231017.png`}
+            width="48px"
+          />{' '}
           <Heading level="2" margin="0 0 0 1rem">
             Encrypt37
           </Heading>
@@ -30,9 +33,15 @@ function Welcome() {
         <Divider />
         <Spacer />
 
-        <Anchor label="How encryption works?" href="https://encrypt37.com/encryption" target="_blank" />
+        <Anchor
+          label="How encryption works?"
+          href="https://encrypt37.com/encryption"
+          target="_blank"
+        />
         <Spacer />
         <RouteLink label="Pricing" to="/pricing" />
+        <Spacer />
+        <Anchor label="Source code" href="https://github.com/penghuili/Encrypt37" target="_blank" />
         <Spacer />
         <Anchor label="Privacy" href={privacyUrl} target="_blank" />
         <Spacer />

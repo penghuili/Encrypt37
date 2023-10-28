@@ -65,6 +65,8 @@ function Account({
             <Spacer />
             <RouteLink label="Buy tickets" to="/tickets" />
             <Spacer />
+            <Anchor label="Source code" href="https://github.com/penghuili/Encrypt37" target="_blank" />
+            <Spacer />
             <Anchor label="Privacy" href={privacyUrl} target="_blank" />
             <Spacer />
             <Anchor label="Terms" href={termsUrl} target="_blank" />
