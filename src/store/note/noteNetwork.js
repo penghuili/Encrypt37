@@ -1,3 +1,4 @@
+import { LocalStorage, sharedLocalStorageKeys } from '../../shared/js/LocalStorage';
 import apps from '../../shared/js/apps';
 import {
   decryptMessage,
@@ -6,9 +7,8 @@ import {
   encryptMessageSymmetric,
 } from '../../shared/js/encryption';
 import generatePassword from '../../shared/js/generatePassword';
-import { LocalStorage, sharedLocalStorageKeys } from '../../shared/js/LocalStorage';
 import HTTP from '../../shared/react/HTTP';
-import { addFilesToPost } from '../../shared/react/store/file/filePostNetwork';
+import { addFilesToPost } from '../filePost/filePostNetwork';
 
 export async function fetchNote(noteId) {
   try {
@@ -22,7 +22,7 @@ export async function fetchNote(noteId) {
   }
 }
 
-export async function createNote({ postId, startItemId, note, date }) {
+export async function createNote({ postId, startItemId, note, date, updatePost }) {
   try {
     const password = generatePassword(20, true);
     const { note: encryptedNote } = await encryptNoteContent({ note }, password);
@@ -40,7 +40,7 @@ export async function createNote({ postId, startItemId, note, date }) {
     const decrypted = await decryptNoteContent(data);
 
     let post = null;
-    if (postId) {
+    if (updatePost && postId) {
       const { data } = await addFilesToPost(postId, [decrypted.sortKey], startItemId);
       post = data;
     }

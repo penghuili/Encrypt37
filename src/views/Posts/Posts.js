@@ -2,7 +2,7 @@ import { subDays } from 'date-fns';
 import { Box, Text } from 'grommet';
 import { Refresh } from 'grommet-icons';
 import React, { useMemo, useState } from 'react';
-import PostItem from '../../components/PostItem';
+import PostItems from '../../components/PostItems';
 import ScrollToTop from '../../components/ScrollToTop';
 import StorageLimistBanner from '../../components/StorageLimistBanner';
 import { useXMargin } from '../../hooks/useXMargin';
@@ -10,15 +10,14 @@ import { globalState } from '../../lib/globalState';
 import { hasMoreStorage } from '../../lib/storageLimit';
 import { group37Prefix } from '../../shared/js/apps';
 import { formatDate } from '../../shared/js/date';
-import AnimatedList from '../../shared/react-pure/AnimatedList';
 import ContentWrapper from '../../shared/react-pure/ContentWrapper';
 import FloatingButton from '../../shared/react-pure/FloatingButton';
 import LoadMore from '../../shared/react-pure/LoadMore';
 import AppBar from '../../shared/react/AppBar';
 import GroupFilter from '../../shared/react/GroupFilter';
 import { parseEndTime, parseStartTime } from '../../shared/react/GroupFilter/GroupFilter';
-import RouteLink from '../../shared/react/RouteLink';
 import { useEffectOnce } from '../../shared/react/hooks/useEffectOnce';
+import useIsMobileSize from '../../shared/react/hooks/useIsMobileSize';
 import { getQueryParams, objectToQueryString } from '../../shared/react/routeHelpers';
 import { groupSelectors } from '../../store/group/groupStore';
 
@@ -32,11 +31,13 @@ function Posts({
   isCreatingFile,
   isDeletingPost,
   isDeletingFile,
+  isExpired,
   onFetch,
   onFetchGroups,
   onNav,
 }) {
   const margin = useXMargin();
+  const isMobile = useIsMobileSize();
   const [selectedGroupId, setSelectedGroupId] = useState(undefined);
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
@@ -98,7 +99,7 @@ function Posts({
       <ContentWrapper padding="0">
         <StorageLimistBanner canUpload={canUpload} />
 
-        <Box margin={margin}>
+        <Box margin={margin} style={{ width: isMobile ? 'calc(100% - 2rem)' : '100%' }}>
           <GroupFilter
             groupSelectors={groupSelectors}
             selectedGroupId={selectedGroupId}
@@ -125,7 +126,6 @@ function Posts({
         </Box>
         {hasHistory && (
           <Box align="start" direction="row" margin={margin}>
-            <RouteLink label="On this day" to={`/on-this-day`} margin="0 1rem 1rem 0" />
             {!isLoading && (
               <Refresh
                 onClick={() =>
@@ -141,18 +141,7 @@ function Posts({
           </Box>
         )}
 
-        {!!posts?.length && (
-          <>
-            <AnimatedList
-              items={posts}
-              renderItem={item => (
-                <Box margin="0 0 1rem">
-                  <PostItem item={item} />
-                </Box>
-              )}
-            />
-          </>
-        )}
+        <PostItems posts={posts} />
 
         <LoadMore
           hasMore={hasMore}
@@ -176,7 +165,7 @@ function Posts({
         )}
 
         <ScrollToTop />
-        {canUpload && (
+        {canUpload && !isExpired && (
           <FloatingButton
             onClick={() =>
               onNav(selectedGroupId ? `/posts/add?groupId=${selectedGroupId}` : `/posts/add`)

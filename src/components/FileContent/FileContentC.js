@@ -1,5 +1,6 @@
 import { connect } from 'react-redux';
-import { fileActions, fileSelectors } from '../../shared/react/store/file/fileStore';
+import sharedSelectors from '../../shared/react/store/sharedSelectors';
+import { fileActions, fileSelectors } from '../../store/file/fileStore';
 import FileContent from './FileContent';
 
 const mapStateToProps = (state, { fileId }) => {
@@ -9,6 +10,7 @@ const mapStateToProps = (state, { fileId }) => {
     isDownloadingFile: fileSelectors.downloadFile.isPending(state),
     rawFile: fileSelectors.data.getRawFile(state, fileId),
     thumbnail: fileSelectors.data.getThumbnail(state, fileId),
+    isAccountValid: sharedSelectors.isAccountValid(state),
   };
 };
 

@@ -2,7 +2,6 @@ import { Attachment } from 'grommet-icons';
 import uniqBy from 'lodash.uniqby';
 import React from 'react';
 import styled from 'styled-components';
-
 import Spacer from '../../shared/react-pure/Spacer';
 import { FILI_SIZE_LIMIT } from '../../shared/react/file';
 

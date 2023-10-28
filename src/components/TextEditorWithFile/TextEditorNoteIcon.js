@@ -24,7 +24,7 @@ function TextEditorNoteIcon({ postId, item, nextItem, disabled, onCreateNote, on
           });
           if (postId) {
             onCreateNote({
-              postId: postId,
+              postId,
               startItemId: item.id,
               note: '',
               date: Date.now(),

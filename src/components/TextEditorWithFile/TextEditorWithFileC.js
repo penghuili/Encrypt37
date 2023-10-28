@@ -1,10 +1,8 @@
 import { connect } from 'react-redux';
-
-import { filePostActions, filePostSelectors } from '../../shared/react/store/file/filePostStore';
-import { fileActions, fileSelectors } from '../../shared/react/store/file/fileStore';
+import { fileActions, fileSelectors } from '../../store/file/fileStore';
+import { filePostActions, filePostExtraSelectors, filePostSelectors } from '../../store/filePost/filePostStore';
 import { noteActions, noteSelectors } from '../../store/note/noteStore';
 import TextEditorWithFile from './TextEditorWithFile';
-import { filePostExtraActions, filePostExtraSelectors } from '../../store/filePost/filePostStore';
 
 const mapStateToProps = state => {
   return {
@@ -26,8 +24,8 @@ const mapDispatchToProps = {
   onDeleteNote: noteActions.deleteRequested,
   onDeleteFile: fileActions.deleteRequested,
   onUpdatePost: filePostActions.updateRequested,
-  onDeleteFileAndCombineNotes: filePostExtraActions.deleteFileAndCombineNotesRequested,
-  onAttachFilesToPost: filePostExtraActions.attachFilesToPostRequested,
+  onDeleteFileAndCombineNotes: filePostActions.deleteFileAndCombineNotesRequested,
+  onAttachFilesToPost: filePostActions.attachFilesToPostRequested,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TextEditorWithFile);

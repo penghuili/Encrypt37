@@ -1,7 +1,6 @@
 import { all } from 'redux-saga/effects';
-
-import { fileSagas } from '../shared/react/store/file/fileStore';
 import { sharedSagas } from '../shared/react/store/sharedSaga';
+import { fileSagas } from './file/fileStore';
 import { filePostSagas } from './filePost/filePostStore';
 import { groupSaga } from './group/groupStore';
 import { noteSagas } from './note/noteStore';

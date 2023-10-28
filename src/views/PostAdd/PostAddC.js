@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import { sharedActionCreators } from '../../shared/react/store/sharedActions';
-import { filePostExtraActions, filePostExtraSelectors } from '../../store/filePost/filePostStore';
+import { filePostActions, filePostExtraSelectors } from '../../store/filePost/filePostStore';
 import PostAdd from './PostAdd';
 
 const mapStateToProps = state => ({
@@ -8,7 +8,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-  onAttachFilesToPost: filePostExtraActions.attachFilesToPostRequested,
+  onAttachFilesToPost: filePostActions.attachFilesToPostRequested,
   onToast: sharedActionCreators.setToast,
 };
 

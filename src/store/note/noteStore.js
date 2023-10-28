@@ -1,20 +1,19 @@
 import { call, put, select, take } from 'redux-saga/effects';
-
 import { safeGet, safeSet } from '../../shared/js/object';
-import { removeFileFromPost } from '../../shared/react/store/file/filePostNetwork';
+import { sharedActionCreators } from '../../shared/react/store/sharedActions';
 import {
   createDataSelectors,
   createGeneralStore,
   defaultId,
 } from '../../shared/react/store/storeHelpers';
+import { removeFileFromPost } from '../filePost/filePostNetwork';
 import { createNote, fetchNote, updateNote } from './noteNetwork';
-import { sharedActionCreators } from '../../shared/react/store/sharedActions';
 
 export const noteDomain = 'note';
 
 const dataSelectors = {
   ...createDataSelectors(noteDomain),
-  getItem: (state, fileId) => safeGet(state, [noteDomain, 'data', defaultId, 'notes', fileId]),
+  getItem: (state, fileId) => safeGet(state, [noteDomain, defaultId, 'data', 'notes', fileId]),
 };
 
 const { actions, selectors, reducer, saga } = createGeneralStore(noteDomain, {
@@ -35,11 +34,11 @@ const { actions, selectors, reducer, saga } = createGeneralStore(noteDomain, {
     return result;
   },
   onFetchItemSucceeded: (state, { payload, data }) => {
-    const newState = safeSet(state, ['data', defaultId, 'notes', payload.itemId], data);
+    const newState = safeSet(state, [defaultId, 'data', 'notes', payload.itemId], data);
     return newState;
   },
   createItem: function* ({ postId, startItemId, note, date, onSucceeded }) {
-    const result = yield call(createNote, { note, date, postId, startItemId });
+    const result = yield call(createNote, { note, date, postId, startItemId, updatePost: true });
 
     if (result.data) {
       yield put(sharedActionCreators.setToast('Note is encrypted and saved in server.'));
@@ -51,7 +50,7 @@ const { actions, selectors, reducer, saga } = createGeneralStore(noteDomain, {
     return result;
   },
   onCreateItemSucceeded: (state, { payload, data: { note } }) => {
-    const newState = safeSet(state, ['data', defaultId, 'notes', payload.itemId], note);
+    const newState = safeSet(state, [defaultId, 'data', 'notes', payload.itemId], note);
     return newState;
   },
   preUpdateItem: function* ({ itemId }) {
@@ -77,7 +76,7 @@ const { actions, selectors, reducer, saga } = createGeneralStore(noteDomain, {
     return result;
   },
   onUpdateItemSucceeded: (state, { payload, data }) => {
-    const newState = safeSet(state, ['data', defaultId, 'notes', payload.itemId], data);
+    const newState = safeSet(state, [defaultId, 'data', 'notes', payload.itemId], data);
     return newState;
   },
   deleteItem: async ({ itemId, noteId, onSucceeded }) => {
@@ -89,7 +88,7 @@ const { actions, selectors, reducer, saga } = createGeneralStore(noteDomain, {
     return result;
   },
   onDeleteItemSucceeded: (state, { payload }) => {
-    const newState = safeSet(state, ['data', defaultId, 'fileMetas', payload.itemId], null);
+    const newState = safeSet(state, [defaultId, 'data', 'fileMetas', payload.itemId], null);
     return newState;
   },
 });

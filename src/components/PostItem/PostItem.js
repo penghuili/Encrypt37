@@ -1,34 +1,48 @@
-import { Anchor, Box, Menu, Spinner, Text } from 'grommet';
+import { Anchor, Box, Carousel, Menu, Spinner, Text } from 'grommet';
 import { MoreVertical } from 'grommet-icons';
 import React, { useRef, useState } from 'react';
-
 import { useXMargin } from '../../hooks/useXMargin';
 import { setOffsetTop } from '../../lib/globalState';
 import { formatDateWeekTime } from '../../shared/js/date';
+import Confirm from '../../shared/react-pure/Confirm';
 import HorizontalCenter from '../../shared/react-pure/HorizontalCenter';
+import ShowMoreWrapper from '../../shared/react-pure/ShowMoreWrapper';
+import { breakpoint } from '../../shared/react-pure/size';
 import GroupsSelected from '../../shared/react/GroupsSelected';
 import TextEditor from '../../shared/react/TextEditor';
+import useIsMobileSize from '../../shared/react/hooks/useIsMobileSize';
 import { groupSelectors } from '../../store/group/groupStore';
 import FileContent from '../FileContent';
-import { breakpoint } from '../../shared/react-pure/size';
-import useIsMobile from '../../shared/react/hooks/useIsMobile';
-import ShowMoreWrapper from '../../shared/react-pure/ShowMoreWrapper';
-import Confirm from '../../shared/react-pure/Confirm';
 
-function PostItem({ item, isDownloadingFile, isDeleting, onDelete, onUpdate, onNav }) {
+function PostItem({
+  item,
+  timeDiff,
+  isDownloadingFile,
+  isDeleting,
+  isExpired,
+  onDelete,
+  onUpdate,
+  onNav,
+}) {
   const margin = useXMargin();
-  const isMobile = useIsMobile();
+  const isMobile = useIsMobileSize();
   const [isFocusing, setIsFocusing] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const ref = useRef();
 
-  function renderFirstFile() {
+  function renderFiles() {
     const files = (item?.files || []).filter(fileId => fileId.startsWith('file37'));
     if (!files.length) {
       return null;
     }
 
-    return <FileContent fileId={files[0]} editable={false} />;
+    return (
+      <Carousel fill controls="arrows">
+        {files.map(fileId => (
+          <FileContent key={fileId} fileId={fileId} editable={false} />
+        ))}
+      </Carousel>
+    );
   }
 
   return (
@@ -40,11 +54,15 @@ function PostItem({ item, isDownloadingFile, isDeleting, onDelete, onUpdate, onN
         <Menu
           icon={<MoreVertical size="small" />}
           items={[
-            {
-              label: 'Update',
-              onClick: () => onNav(`/posts/${item.sortKey}/update`),
-              margin: '0.25rem 0',
-            },
+            ...(isExpired
+              ? []
+              : [
+                  {
+                    label: 'Update',
+                    onClick: () => onNav(`/posts/${item.sortKey}/update`),
+                    margin: '0.25rem 0',
+                  },
+                ]),
             {
               label: 'Delete',
               onClick: () => {
@@ -58,20 +76,34 @@ function PostItem({ item, isDownloadingFile, isDeleting, onDelete, onUpdate, onN
         />
         {(isDeleting || isDownloadingFile) && !!isFocusing && <Spinner size="small" />}
       </HorizontalCenter>
+      {!!timeDiff?.ago && (
+        <Text size="xsmall" margin={margin}>
+          {timeDiff.ago}
+        </Text>
+      )}
+      {!!timeDiff?.gap && (
+        <Text size="xsmall" margin={margin}>
+          Since last time: {timeDiff.gap}
+        </Text>
+      )}
+
       {!!item?.note && (
-        <Box margin={margin}>
+        <Box margin={margin} pad="0.5rem 0 0">
           <ShowMoreWrapper showLink={false}>
             <TextEditor
               text={item.note}
               editable={false}
               onReadOnlyChecked={content => {
+                if (isExpired) {
+                  return;
+                }
                 onUpdate({ itemId: item.sortKey, note: content, goBack: false });
               }}
             />
           </ShowMoreWrapper>
         </Box>
       )}
-      {renderFirstFile()}
+      {renderFiles()}
       <Box margin={margin} align="start">
         <Anchor
           size="small"

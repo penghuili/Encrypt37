@@ -1,16 +1,20 @@
 import { Box, Button, Image, Text } from 'grommet';
 import React, { useState } from 'react';
+import { LocalStorage } from '../../shared/js/LocalStorage';
 import LoadingSkeletonOverlay from '../../shared/react-pure/LoadingSkeletonOverlay';
 import { isImage } from '../../shared/react/file';
+import useIsMobileSize from '../../shared/react/hooks/useIsMobileSize';
 import { useListener } from '../../shared/react/hooks/useListener';
 import FileContent from '../FileContent';
 import TextEditorAttachmentIcon from './TextEditorAttachmentIcon';
 import TextEditorDeleteIcon from './TextEditorDeleteIcon';
 import TextEditorItem from './TextEditorItem';
+import TextEditorMediaIcon from './TextEditorMediaIcon';
 import TextEditorNoteIcon from './TextEditorNoteIcon';
 import TextEditorToolbar from './TextEditorToolbar';
 
 const firstNoteId = `note_${Date.now()}`;
+const storageKey = 'file37-post-add';
 
 function isEmptyContent(content) {
   if (!content) {
@@ -32,6 +36,7 @@ function TextEditorWithFile({
   postId,
   items,
   disabled,
+  isCreate,
   isCreatingNote,
   isUpdatingNote,
   isDeletingNote,
@@ -49,8 +54,11 @@ function TextEditorWithFile({
   onDeleteFileAndCombineNotes,
   onAttachFilesToPost,
 }) {
+  const isMobile = useIsMobileSize();
   const [innerItems, setInnerItems] = useState(defaultItems);
-  const [notes] = useState({});
+  const [notes] = useState({
+    [firstNoteId]: isCreate ? LocalStorage.get(storageKey) || '' : '',
+  });
   const [notesChanged, setNotesChanged] = useState(false);
   useListener(items, value => {
     setInnerItems(value || defaultItems);
@@ -70,8 +78,9 @@ function TextEditorWithFile({
   function handleCreate() {
     const newItems = innerItems
       .map(item => (item.type === 'note' ? { ...item, note: notes[item.id] } : item))
-      .filter(item => {
-        if (item.type === 'note') {
+      .filter((item, index) => {
+        // first item is post
+        if (index !== 0 && item.type === 'note') {
           return !isEmptyContent(item.note);
         }
 
@@ -79,6 +88,7 @@ function TextEditorWithFile({
       });
 
     if (newItems.length) {
+      LocalStorage.remove(storageKey);
       onCreate(newItems);
     }
   }
@@ -108,6 +118,9 @@ function TextEditorWithFile({
                     text={notes[item.id]}
                     onChange={value => {
                       notes[item.id] = value;
+                      if (index === 0 && isCreate) {
+                        LocalStorage.set(storageKey, value);
+                      }
                     }}
                     onFocus={newEditor => {
                       setCurrentEditor(newEditor);
@@ -209,6 +222,24 @@ function TextEditorWithFile({
                   setInnerItems(updatedItems);
                 }}
               />
+
+              {isMobile && (
+                <TextEditorMediaIcon
+                  postId={postId}
+                  itemId={item.id}
+                  nextItem={innerItems[index + 1]}
+                  disabled={disabled || isPending}
+                  onAttachFilesToPost={onAttachFilesToPost}
+                  onChange={({ items: newItems }) => {
+                    const updatedItems = innerItems
+                      .slice(0, index + 1)
+                      .concat(newItems)
+                      .concat(innerItems.slice(index + 1));
+
+                    setInnerItems(updatedItems);
+                  }}
+                />
+              )}
 
               <TextEditorAttachmentIcon
                 postId={postId}

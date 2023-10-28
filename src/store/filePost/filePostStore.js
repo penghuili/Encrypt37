@@ -1,108 +1,111 @@
-import { call, put } from 'redux-saga/effects';
-import asyncForEach from '../../shared/js/asyncForEach';
+import { call, put, select, take } from 'redux-saga/effects';
 import { prepend, safeGet, safeSet } from '../../shared/js/object';
 import { uniqBy } from '../../shared/js/uniq';
-import { uploadFile } from '../../shared/react/store/file/fileNetwork';
-import {
-  createPost,
-  removeFileFromPost,
-  updatePost,
-} from '../../shared/react/store/file/filePostNetwork';
-import {
-  filePostDomain,
-  filePostReducer as sharedFilePostReducer,
-  filePostSagas as sharedFilePostSagas,
-} from '../../shared/react/store/file/filePostStore';
 import { sharedActionCreators } from '../../shared/react/store/sharedActions';
 import {
+  createDataSelectors,
+  createGeneralStore,
   createRequest,
   defaultId,
   mergeReducers,
   mergeSagas,
   updateStandaloneItemAndItems,
 } from '../../shared/react/store/storeHelpers';
+import { fileDomain } from '../file/fileStore';
 import { groupActions } from '../group/groupStore';
-import { createNote, updateNote } from '../note/noteNetwork';
+import { noteDomain } from '../note/noteStore';
+import {
+  attachFilesToPost,
+  createPost,
+  deleteFileAndCombineNotes,
+  deletePost,
+  fetchPost,
+  fetchPosts,
+  getCachedPost,
+  getCachedPosts,
+  getPostsCacheKey,
+  updatePost,
+} from './filePostNetwork';
 
-export async function deleteFileAndCombineNotes(postId, fileId, previousItem, nextItem) {
-  try {
-    let result = await removeFileFromPost(postId, fileId);
-    if (result.error) {
-      return result;
+export const filePostDomain = 'filePost';
+
+const dataSelectors = createDataSelectors(filePostDomain);
+const getPostsCacheKeyFromStore = state =>
+  safeGet(state, [filePostDomain, defaultId, 'data', 'postsCacheKey']);
+
+const { actions, selectors, reducer, saga } = createGeneralStore(filePostDomain, {
+  preFetchItems: function* (payload) {
+    const cacheKey = yield select(getPostsCacheKeyFromStore);
+    const newCacheKey = getPostsCacheKey(payload);
+    if (!payload?.force && cacheKey === newCacheKey) {
+      return { continueCall: false };
     }
 
-    if (previousItem) {
-      if (previousItem.id.startsWith('note37')) {
-        await updateNote(
-          previousItem.id,
-          { note: previousItem.note },
-          previousItem.decryptedPassword
-        );
-      } else {
-        await updatePost(postId, { note: previousItem.note }, previousItem.decryptedPassword);
-      }
+    const cachedPosts = yield call(getCachedPosts, payload);
+    if (cachedPosts?.length) {
+      yield put(actions.fetchItems.succeeded.action({ data: { items: cachedPosts } }));
     }
 
-    if (nextItem) {
-      result = await removeFileFromPost(postId, nextItem.id);
+    return { continueCall: true };
+  },
+  fetchItems: async ({ startKey, groupId, startTime, endTime }) => {
+    return fetchPosts({ startKey, groupId, startTime, endTime });
+  },
+  onFetchItemsSucceeded: (state, { payload = {} }) => {
+    const newState = safeSet(
+      state,
+      [defaultId, 'data', 'postsCacheKey'],
+      getPostsCacheKey(payload)
+    );
+    return newState;
+  },
+  preFetchItem: function* ({ itemId }) {
+    const cachedPost = yield call(getCachedPost, itemId);
+    if (cachedPost) {
+      yield put(actions.fetchItem.succeeded.action({ data: cachedPost, payload: { itemId } }));
+    }
+
+    return { continueCall: true };
+  },
+  fetchItem: async ({ itemId }) => {
+    return fetchPost(itemId);
+  },
+  createItem: function* ({ date, note, groups, onSucceeded }) {
+    const result = yield call(createPost, { date, note, groups });
+
+    if (result.data) {
+      onSucceeded(result.data);
     }
 
     return result;
-  } catch (e) {
-    return { data: null, error: e };
-  }
-}
-
-export async function attachFilesToPost(postId, items, startItemId, groups = []) {
-  try {
-    let post;
-    let innerPostId = postId;
-    let innerItems = items;
-    let currentItemId = startItemId;
-
-    if (!postId) {
-      const result = await createPost({
-        date: Date.now(),
-        note: items[0].note,
-        groups,
-        files: [],
-      });
-      if (result.data) {
-        innerPostId = result.data.sortKey;
-        post = result.data;
-        innerItems = items.slice(1);
-        currentItemId = post.sortKey;
-      } else {
-        return result;
-      }
+  },
+  preUpdateItem: function* ({ itemId, note }) {
+    let post = yield select(dataSelectors.getStandaloneItem);
+    if (!post || post.sortKey !== itemId) {
+      yield put({ type: `${filePostDomain}/fetchItem/REQUESTED`, payload: { itemId } });
+      yield take(`${filePostDomain}/fetchItem/SUCCEEDED`);
+      post = yield select(dataSelectors.getStandaloneItem);
     }
 
-    await asyncForEach(innerItems, async item => {
-      if (item.type === 'file') {
-        const result = await uploadFile(item.file, '', innerPostId, currentItemId);
-        if (result.data) {
-          currentItemId = result.data.file.sortKey;
-          post = result.data.post;
-        }
-      } else if (item.type === 'note') {
-        const result = await createNote({
-          postId: innerPostId,
-          startItemId: currentItemId,
-          note: item.note,
-          date: Date.now(),
-        });
-        if (result.data) {
-          currentItemId = result.data.note.sortKey;
-          post = result.data.post;
-        }
-      }
-    });
+    return { continueCall: !!post && post.note !== note, result: post };
+  },
+  updateItem: function* ({ itemId, note }, post) {
+    const result = yield call(updatePost, itemId, { note }, post.decryptedPassword);
+    if (result.data) {
+      yield put(sharedActionCreators.setToast('Post is encrypted and saved in server.'));
+    }
 
-    return { data: post, error: null };
-  } catch (e) {
-    return { data: null, error: e };
-  }
-}
+    return result;
+  },
+  deleteItem: async ({ itemId, onSucceeded }) => {
+    const result = await deletePost(itemId);
+    if (onSucceeded && result.data) {
+      onSucceeded(itemId);
+    }
+
+    return result;
+  },
+});
 
 const {
   actions: deleteFileAndCombineNotesActions,
@@ -122,7 +125,7 @@ const {
     return result;
   },
   onReducerSucceeded: (state, { data }) => {
-    const newState = safeSet(state, ['data', defaultId, 'item'], data);
+    const newState = safeSet(state, [defaultId, 'data', 'item'], data);
     return newState;
   },
 });
@@ -133,8 +136,8 @@ const {
   reducer: attachFilesToPostReducer,
   saga: attachFilesToPostSaga,
 } = createRequest(filePostDomain, 'attachFilesToPost', {
-  request: function* ({ postId, items, startItemId, groups, onSucceeded }) {
-    const result = yield call(attachFilesToPost, postId, items, startItemId, groups);
+  request: function* ({ postId, items, startItemId, groups, onUpdate, onSucceeded }) {
+    const result = yield call(attachFilesToPost, postId, items, startItemId, groups, onUpdate);
     if (result.data) {
       yield put(sharedActionCreators.setToast('Encrypted and saved in server.'));
       if (onSucceeded) {
@@ -144,8 +147,8 @@ const {
     return result;
   },
   onReducerSucceeded: (state, { data }) => {
-    let newState = safeSet(state, ['data', defaultId, 'item'], data);
-    newState = prepend(newState, ['data', defaultId, 'items'], data);
+    let newState = safeSet(state, [defaultId, 'data', 'item'], data);
+    newState = prepend(newState, [defaultId, 'data', 'items'], data);
     return newState;
   },
 });
@@ -155,8 +158,28 @@ const deleteGroupItemSucceededActionType = groupActions.deleteGroupItemSucceeded
 
 const customReducer = (state = {}, action) => {
   switch (action.type) {
+    case `${noteDomain}/createItem/SUCCEEDED`: {
+      const {
+        payload: {
+          data: { post },
+        },
+      } = action;
+      if (post) {
+        return updateStandaloneItemAndItems(state, post);
+      }
+      return state;
+    }
+
+    case `${fileDomain}/deleteItem/SUCCEEDED`:
+    case `${noteDomain}/deleteItem/SUCCEEDED`: {
+      const {
+        payload: { data },
+      } = action;
+      return updateStandaloneItemAndItems(state, data);
+    }
+
     case createGroupItemSucceededActionType: {
-      const post = safeGet(state, ['data', defaultId, 'item']);
+      const post = safeGet(state, [defaultId, 'data', 'item']);
       if (!post) {
         return state;
       }
@@ -176,7 +199,7 @@ const customReducer = (state = {}, action) => {
     }
 
     case deleteGroupItemSucceededActionType: {
-      const post = safeGet(state, ['data', defaultId, 'item']);
+      const post = safeGet(state, [defaultId, 'data', 'item']);
       if (!post) {
         return state;
       }
@@ -194,9 +217,24 @@ const customReducer = (state = {}, action) => {
   }
 };
 
-export const filePostExtraActions = {
+export const filePostActions = {
+  fetchItemsRequested: actions.fetchItems.requested.action,
+  fetchItemRequested: actions.fetchItem.requested.action,
+  createRequested: actions.createItem.requested.action,
+  updateRequested: actions.updateItem.requested.action,
+  deleteRequested: actions.deleteItem.requested.action,
   deleteFileAndCombineNotesRequested: deleteFileAndCombineNotesActions.requested.action,
   attachFilesToPostRequested: attachFilesToPostActions.requested.action,
+};
+
+export const filePostSelectors = {
+  ...selectors,
+  data: {
+    ...dataSelectors,
+    getPostsCacheKey: getPostsCacheKeyFromStore,
+  },
+  deleteFileAndCombineNotes: deleteFileAndCombineNotesSelectors,
+  attachFilesToPost: attachFilesToPostSelectors,
 };
 
 export const filePostExtraSelectors = {
@@ -205,14 +243,14 @@ export const filePostExtraSelectors = {
 };
 
 export const filePostReducer = mergeReducers([
+  reducer,
   customReducer,
-  sharedFilePostReducer,
   deleteFileAndCombineNotesReducer,
   attachFilesToPostReducer,
 ]);
 
 export const filePostSagas = mergeSagas([
+  saga,
   deleteFileAndCombineNotesSaga,
   attachFilesToPostSaga,
-  sharedFilePostSagas,
 ]);

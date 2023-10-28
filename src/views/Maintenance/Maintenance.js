@@ -1,6 +1,5 @@
 import { Anchor, Avatar, Heading, Text } from 'grommet';
 import React from 'react';
-
 import ContentWrapper from '../../shared/react-pure/ContentWrapper';
 import Divider from '../../shared/react-pure/Divider';
 import HorizontalCenter from '../../shared/react-pure/HorizontalCenter';
@@ -12,7 +11,7 @@ function Maintenance() {
     <>
       <ContentWrapper>
         <HorizontalCenter margin="2rem 0 1rem">
-          <Avatar src={`${process.env.REACT_APP_ASSETS_FOR_CODE}/logo.png`} />{' '}
+          <Avatar src={`${process.env.REACT_APP_ASSETS_FOR_CODE}/encrypt37-logo-231017.png`} />{' '}
           <Heading level="2" margin="0 0 0 1rem">
             Encrypt37
           </Heading>

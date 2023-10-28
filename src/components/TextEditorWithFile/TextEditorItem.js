@@ -1,14 +1,13 @@
+import React, { useEffect } from 'react';
 import { Link } from '@tiptap/extension-link';
 import { TaskItem } from '@tiptap/extension-task-item';
 import { TaskList } from '@tiptap/extension-task-list';
 import { Typography } from '@tiptap/extension-typography';
 import { EditorContent, useEditor } from '@tiptap/react';
 import { StarterKit } from '@tiptap/starter-kit';
-import React, { useEffect } from 'react';
-
 import { breakpoint } from '../../shared/react-pure/size';
 import useAutoSave from '../../shared/react/hooks/useAutoSave';
-import useIsMobile from '../../shared/react/hooks/useIsMobile';
+import useIsMobileSize from '../../shared/react/hooks/useIsMobileSize';
 import useRefValue from '../../shared/react/hooks/useRefValue';
 import TextEditorWrapper from './TextEditorWrapper';
 
@@ -21,7 +20,7 @@ function TextEditorItem({
   onReadOnlyChecked,
   onUpdateNote,
 }) {
-  const isMobile = useIsMobile();
+  const isMobile = useIsMobileSize();
 
   // eslint-disable-next-line no-unused-vars
   const [_, setInnerText] = useAutoSave(onUpdateNote, 1500);

@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
-import { filePostActions, filePostSelectors } from '../../shared/react/store/file/filePostStore';
 import { sharedActionCreators } from '../../shared/react/store/sharedActions';
 import sharedSelectors from '../../shared/react/store/sharedSelectors';
+import { filePostActions, filePostSelectors } from '../../store/filePost/filePostStore';
 import { groupActions } from '../../store/group/groupStore';
 import OnThisDay from './OnThisDay';
 

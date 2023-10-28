@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-
+import apps from '../../shared/js/apps';
 import { getColor } from '../../shared/react-pure/color';
 
 const TextEditorWrapper = styled.div`
@@ -41,7 +41,7 @@ const TextEditorWrapper = styled.div`
     }
 
     a {
-      color: ${getColor('status-ok')};
+      color: ${apps.file37.color};
     }
 
     code {
@@ -79,6 +79,11 @@ const TextEditorWrapper = styled.div`
       height: 0;
       color: transparent;
       background-color: ${getColor('light-4')};
+    }
+
+    & > ul,
+    ol {
+      margin-bottom: 1rem;
     }
 
     ul,

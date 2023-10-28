@@ -4,8 +4,9 @@ import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import React, { useRef, useState } from 'react';
 import { PiFilePdf } from 'react-icons/pi';
+import FileContent from '../../components/FileContent';
+import NoteContent from '../../components/NoteContent';
 import TextEditorItem from '../../components/TextEditorWithFile/TextEditorItem';
-import ThreadContent from '../../components/ThreadContent';
 import { useXMargin } from '../../hooks/useXMargin';
 import { group37Prefix } from '../../shared/js/apps';
 import Confirm from '../../shared/react-pure/Confirm';
@@ -20,11 +21,20 @@ import GroupsSelected from '../../shared/react/GroupsSelected';
 import { useEffectOnce } from '../../shared/react/hooks/useEffectOnce';
 import { groupSelectors } from '../../store/group/groupStore';
 
+function PostContentItem({ item, editable }) {
+  return item.id.startsWith('file37') ? (
+    <FileContent fileId={item.id} fileMeta={item.fileMeta} editable={editable} />
+  ) : (
+    <NoteContent note={item.note} editable={editable} />
+  );
+}
+
 function PostDetails({
   postId,
   post,
   isLoading,
   isDeleting,
+  isExpired,
   onFetch,
   onFetchGroups,
   onDelete,
@@ -96,7 +106,7 @@ function PostDetails({
           {!!post.items?.length &&
             post.items.map(item => (
               <Box key={item.id} margin="0.5rem 0" width="100%">
-                <ThreadContent item={item} editable={false} />
+                <PostContentItem item={item} editable={false} />
               </Box>
             ))}
         </Box>
@@ -116,7 +126,7 @@ function PostDetails({
             icon={<Edit size="small" />}
             onClick={() => onNav(`/posts/${postId}/update`)}
             margin="0 1rem 0 0"
-            disabled={isDeleting || isLoading}
+            disabled={isDeleting || isLoading || isExpired}
           />
 
           <Button
@@ -124,7 +134,7 @@ function PostDetails({
             icon={<PiFilePdf />}
             onClick={downloadPdf}
             margin="0 1rem 0 0"
-            disabled={isDeleting || isLoading}
+            disabled={isDeleting || isLoading || isExpired}
           />
 
           <Button

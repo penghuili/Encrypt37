@@ -1,21 +1,20 @@
 import { Anchor, Heading, Image } from 'grommet';
 import React from 'react';
-
 import Pitch from '../../components/Pitch';
 import ContentWrapper from '../../shared/react-pure/ContentWrapper';
 import Divider from '../../shared/react-pure/Divider';
 import HorizontalCenter from '../../shared/react-pure/HorizontalCenter';
 import Spacer from '../../shared/react-pure/Spacer';
 import ChangeTheme from '../../shared/react/ChangeTheme';
-import { privacyUrl, termsUrl } from '../../shared/react/initShared';
 import RouteLink from '../../shared/react/RouteLink';
+import { privacyUrl, termsUrl } from '../../shared/react/initShared';
 
 function Welcome() {
   return (
     <>
       <ContentWrapper>
         <HorizontalCenter margin="2rem 0 1rem">
-          <Image src={`${process.env.REACT_APP_ASSETS_FOR_CODE}/logo.png`} width="48px" />{' '}
+          <Image src={`${process.env.REACT_APP_ASSETS_FOR_CODE}/encrypt37-logo-231017.png`} width="48px" />{' '}
           <Heading level="2" margin="0 0 0 1rem">
             Encrypt37
           </Heading>

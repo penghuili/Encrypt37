@@ -9,7 +9,7 @@ import SignIn from '../shared/react/SignIn';
 import SignUp from '../shared/react/SignUp';
 import Verify2FA from '../shared/react/Verify2FA';
 import Account from '../views/Account';
-import Expired from '../views/Expired';
+import Files from '../views/Files';
 import GroupUpdate from '../views/GroupUpdate';
 import Groups from '../views/Groups';
 import Maintenance from '../views/Maintenance';
@@ -21,9 +21,11 @@ import Posts from '../views/Posts';
 import Pricing from '../views/Pricing';
 import Privacy from '../views/Privacy';
 import Tickets from '../views/Tickets';
+import TryIt from '../views/TryIt';
 import Welcome from '../views/Welcome';
 
-function Router({ isCheckingRefreshToken, isLoggedIn, isLoadingSettings, trid, isExpired }) {
+function Router({ isCheckingRefreshToken, isLoggedIn, isLoadingSettings, tried, isExpired }) {
+ 
   if (process.env.REACT_APP_MAINTENANCE === 'true') {
     return <Maintenance />;
   }
@@ -37,10 +39,17 @@ function Router({ isCheckingRefreshToken, isLoggedIn, isLoadingSettings, trid, i
   }
 
   if (isLoggedIn) {
-    if (!trid || isExpired) {
+    if (!tried) {
+      return <TryIt />;
+    }
+
+    if (isExpired) {
       return (
         <Switch>
-          <Route path="/expired" component={Expired} />
+          <Route path="/posts" component={Posts} />
+          <Route path="/posts/:postId" component={PostDetails} />
+          <Route path="/on-this-day" component={OnThisDay} />
+          <Route path="/files" component={Files} />
 
           <Route path="/account" component={Account} />
           <Route path="/security" component={Security} />
@@ -51,7 +60,7 @@ function Router({ isCheckingRefreshToken, isLoggedIn, isLoadingSettings, trid, i
 
           <Route path="/privacy" component={Privacy} />
 
-          <Route path="/" component={Expired} />
+          <Route path="/" component={Posts} />
           <Route>{() => <Redirect to="/" />}</Route>
         </Switch>
       );
@@ -64,6 +73,7 @@ function Router({ isCheckingRefreshToken, isLoggedIn, isLoadingSettings, trid, i
         <Route path="/posts/:postId" component={PostDetails} />
         <Route path="/posts/:postId/update" component={PostUpdate} />
         <Route path="/on-this-day" component={OnThisDay} />
+        <Route path="/files" component={Files} />
 
         <Route path="/groups" component={Groups} />
         <Route path="/groups/:groupId/update" component={GroupUpdate} />

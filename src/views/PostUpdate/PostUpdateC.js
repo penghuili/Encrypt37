@@ -1,6 +1,5 @@
 import { connect } from 'react-redux';
-
-import { filePostActions, filePostSelectors } from '../../shared/react/store/file/filePostStore';
+import { filePostActions, filePostSelectors } from '../../store/filePost/filePostStore';
 import PostUpdate from './PostUpdate';
 
 const mapStateToProps = (state, { params: { postId } }) => ({

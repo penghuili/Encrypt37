@@ -1,40 +1,46 @@
 import { differenceInCalendarYears, subDays, subMonths, subYears } from 'date-fns';
 import { Box, Tab, Tabs, Text } from 'grommet';
 import React, { useMemo, useState } from 'react';
-import PostItem from '../../components/PostItem';
+import PostItems from '../../components/PostItems';
 import ScrollToTop from '../../components/ScrollToTop';
 import { useXMargin } from '../../hooks/useXMargin';
 import { globalState } from '../../lib/globalState';
 import { group37Prefix } from '../../shared/js/apps';
 import { formatDate, formatDateWeek } from '../../shared/js/date';
-import AnimatedList from '../../shared/react-pure/AnimatedList';
 import ContentWrapper from '../../shared/react-pure/ContentWrapper';
 import LoadMore from '../../shared/react-pure/LoadMore';
 import AppBar from '../../shared/react/AppBar';
 import { parseEndTime, parseStartTime } from '../../shared/react/GroupFilter/GroupFilter';
 import { useEffectOnce } from '../../shared/react/hooks/useEffectOnce';
+import { getQueryParams } from '../../shared/react/routeHelpers';
 
 function getHistoryDays(startDate) {
+  const startDateObj = new Date(startDate);
   const history = [];
 
   const today = new Date();
   const lastWeek = subDays(today, 7);
-  if (lastWeek > startDate) {
+  if (lastWeek > startDateObj) {
     history.push({ label: 'Last week', date: lastWeek });
   }
 
   const lastMonth = subMonths(today, 1);
-  if (lastMonth > startDate) {
+  if (lastMonth > startDateObj) {
     history.push({ label: 'Last month', date: lastMonth });
   }
 
-  const yearsCount = differenceInCalendarYears(today, startDate);
+  const sixMonthsAgo = subMonths(today, 6);
+  if (sixMonthsAgo > startDateObj) {
+    history.push({ label: 'Half a year', date: sixMonthsAgo });
+  }
+
+  const yearsCount = differenceInCalendarYears(today, startDateObj);
   if (yearsCount > 0) {
     Array(yearsCount)
       .fill(today.getFullYear())
       .forEach((_, index) => {
         const year = subYears(today, index + 1);
-        if (year > startDate) {
+        if (year > startDateObj) {
           history.push({ label: year.getFullYear(), date: year });
         }
       });
@@ -68,7 +74,8 @@ function OnThisDay({
   useEffectOnce(() => {
     onFetchGroups({ prefix: group37Prefix.file37 });
 
-    handleNewTab(0);
+    const queryParams = getQueryParams();
+    handleNewTab(queryParams.index !== undefined ? parseInt(queryParams.index) : 0);
 
     if (globalState.offsetTop) {
       setTimeout(() => {
@@ -96,6 +103,7 @@ function OnThisDay({
       endTime: parseEndTime(day.date),
     });
     setSelectedDate(day.date);
+    onNav(`/on-this-day/?index=${tabIndex}`);
   }
 
   return (
@@ -127,18 +135,7 @@ function OnThisDay({
           </Box>
         )}
 
-        {!!posts?.length && !isLoading && (
-          <>
-            <AnimatedList
-              items={posts}
-              renderItem={item => (
-                <Box margin="0 0 1rem">
-                  <PostItem item={item} />
-                </Box>
-              )}
-            />
-          </>
-        )}
+        <PostItems posts={posts} />
 
         <LoadMore
           hasMore={hasMore}

@@ -1,8 +1,8 @@
 import { connect } from 'react-redux';
-
-import { filePostActions, filePostSelectors } from '../../shared/react/store/file/filePostStore';
-import { fileActions, fileSelectors } from '../../shared/react/store/file/fileStore';
 import { sharedActionCreators } from '../../shared/react/store/sharedActions';
+import sharedSelectors from '../../shared/react/store/sharedSelectors';
+import { fileActions, fileSelectors } from '../../store/file/fileStore';
+import { filePostActions, filePostSelectors } from '../../store/filePost/filePostStore';
 import PostItem from './PostItem';
 
 const mapStateToProps = (state, { fileId }) => {
@@ -10,6 +10,7 @@ const mapStateToProps = (state, { fileId }) => {
     fileId,
     isDownloadingFile: fileSelectors.downloadFile.isPending(state),
     isDeleting: filePostSelectors.deleteItem.isPending(state),
+    isExpired: !sharedSelectors.isAccountValid(state),
   };
 };
 
