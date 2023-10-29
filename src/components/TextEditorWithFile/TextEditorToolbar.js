@@ -18,7 +18,6 @@ import {
 } from 'grommet-icons';
 import React from 'react';
 import styled from 'styled-components';
-
 import { getColor } from '../../shared/react-pure/color';
 import { useBackgroundColor } from '../../shared/react-pure/createTheme';
 
@@ -45,14 +44,13 @@ function HeaderIcon({ color }) {
   );
 }
 
-function ToolIcon({ IconComponent, isActive, onClick, tip, disabled, margin = '0 8px 0 0' }) {
+function ToolIcon({ IconComponent, isActive, onClick, disabled, margin = '0 8px 0 0' }) {
   return (
     <Button
       icon={<IconComponent color={isActive ? 'brand' : undefined} />}
       onClick={onClick}
       plain
       margin={margin}
-      tip={tip ? { content: tip, plain: false, dropProps: { background: 1 } } : undefined}
       disabled={disabled}
     />
   );
@@ -71,31 +69,26 @@ function TextEditorToolbar({ editor }) {
         IconComponent={Bold}
         isActive={editor.isActive('bold')}
         onClick={() => editor.chain().focus().toggleBold().run()}
-        tip="Bold"
       />
       <ToolIcon
         IconComponent={Italic}
         isActive={editor.isActive('italic')}
         onClick={() => editor.chain().focus().toggleItalic().run()}
-        tip="Italic"
       />
       <ToolIcon
         IconComponent={StrikeThrough}
         isActive={editor.isActive('strike')}
         onClick={() => editor.chain().focus().toggleStrike().run()}
-        tip="Strike through"
       />
       <ToolIcon
         IconComponent={Code}
         isActive={editor.isActive('code')}
         onClick={() => editor.chain().focus().toggleCode().run()}
-        tip="Code"
       />
       <ToolIcon
         IconComponent={HeaderIcon}
         isActive={editor.isActive('heading', { level: 1 })}
         onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-        tip="Header"
         margin="0"
       />
       <Text size="24px" color="light-5" margin="0 1rem">
@@ -105,19 +98,16 @@ function TextEditorToolbar({ editor }) {
         IconComponent={Checkbox}
         isActive={editor.isActive('taskList')}
         onClick={() => editor.chain().focus().toggleTaskList().run()}
-        tip="Todo"
       />
       <ToolIcon
         IconComponent={List}
         isActive={editor.isActive('bulletList')}
         onClick={() => editor.chain().focus().toggleBulletList().run()}
-        tip="Bullet list"
       />
       <ToolIcon
         IconComponent={OrderedList}
         isActive={editor.isActive('orderedList')}
         onClick={() => editor.chain().focus().toggleOrderedList().run()}
-        tip="Ordered list"
       />
       <ToolIcon
         IconComponent={FormNext}
@@ -129,7 +119,6 @@ function TextEditorToolbar({ editor }) {
           }
         }}
         disabled={!editor.can().sinkListItem('listItem') && !editor.can().sinkListItem('taskItem')}
-        tip="Decrease indent"
       />
       <ToolIcon
         IconComponent={FormPrevious}
@@ -141,7 +130,6 @@ function TextEditorToolbar({ editor }) {
           }
         }}
         disabled={!editor.can().liftListItem('listItem') && !editor.can().liftListItem('taskItem')}
-        tip="Increase indent"
         margin="0"
       />
       <Text size="24px" color="light-5" margin="0 1rem">
@@ -151,19 +139,16 @@ function TextEditorToolbar({ editor }) {
         IconComponent={Command}
         isActive={editor.isActive('codeBlock')}
         onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-        tip="Code block"
       />
       <ToolIcon
         IconComponent={BlockQuote}
         isActive={editor.isActive('blockquote')}
         onClick={() => editor.chain().focus().toggleBlockquote().run()}
-        tip="Blockquote"
       />
       <ToolIcon
         IconComponent={Subtract}
         isActive={false}
         onClick={() => editor.chain().focus().setHorizontalRule().run()}
-        tip="Divider"
         margin="0"
       />
       <Text size="24px" color="light-5" margin="0 1rem">
@@ -173,19 +158,16 @@ function TextEditorToolbar({ editor }) {
         IconComponent={Undo}
         isActive={false}
         onClick={() => editor.chain().focus().undo().run()}
-        tip="Undo"
       />
       <ToolIcon
         IconComponent={Redo}
         isActive={false}
         onClick={() => editor.chain().focus().redo().run()}
-        tip="Redo"
       />
       <ToolIcon
         IconComponent={Clear}
         isActive={false}
         onClick={() => editor.chain().focus().unsetAllMarks().run()}
-        tip="Clear formatting"
       />
     </MenuWrapper>
   );

@@ -36,13 +36,13 @@ function PostItem({
       return null;
     }
 
-    return (
+    return files.length > 1 ? (
       <Carousel fill controls="arrows">
         {files.map(fileId => (
           <FileContent key={fileId} fileId={fileId} editable={false} />
         ))}
       </Carousel>
-    );
+    ) : <FileContent fileId={files[0]} editable={false} />;
   }
 
   return (
