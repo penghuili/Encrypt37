@@ -1,15 +1,15 @@
 import { idbStorage } from '../../lib/indexDB';
 import { LocalStorage, sharedLocalStorageKeys } from '../../shared/js/LocalStorage';
-import apps from '../../shared/js/apps';
-import asyncForEach from '../../shared/js/asyncForEach';
-import batch from '../../shared/js/batch';
+import { apps } from '../../shared/js/apps';
+import { asyncForEach } from '../../shared/js/asyncForEach';
+import { batch } from '../../shared/js/batch';
 import {
   decryptMessage,
   decryptMessageSymmetric,
   encryptMessage,
   encryptMessageSymmetric,
 } from '../../shared/js/encryption';
-import generatePassword from '../../shared/js/generatePassword';
+import { generatePassword } from '../../shared/js/generatePassword';
 import HTTP from '../../shared/react/HTTP';
 import { objectToQueryString } from '../../shared/react/routeHelpers';
 import { decryptFileContent, uploadFile } from '../file/fileNetwork';

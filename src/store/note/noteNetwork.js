@@ -1,12 +1,12 @@
 import { LocalStorage, sharedLocalStorageKeys } from '../../shared/js/LocalStorage';
-import apps from '../../shared/js/apps';
+import { apps } from '../../shared/js/apps';
 import {
   decryptMessage,
   decryptMessageSymmetric,
   encryptMessage,
   encryptMessageSymmetric,
 } from '../../shared/js/encryption';
-import generatePassword from '../../shared/js/generatePassword';
+import { generatePassword } from '../../shared/js/generatePassword';
 import HTTP from '../../shared/react/HTTP';
 import { addFilesToPost } from '../filePost/filePostNetwork';
 

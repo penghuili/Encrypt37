@@ -1,8 +1,8 @@
 import streamSaver from 'streamsaver';
 import { idbStorage } from '../../lib/indexDB';
 import { LocalStorage, sharedLocalStorageKeys } from '../../shared/js/LocalStorage';
-import apps from '../../shared/js/apps';
-import asyncForEach from '../../shared/js/asyncForEach';
+import { apps } from '../../shared/js/apps';
+import { asyncForEach } from '../../shared/js/asyncForEach';
 import {
   CHUNK_SIZE,
   decryptFile,
@@ -12,7 +12,7 @@ import {
   encryptMessage,
   encryptMessageSymmetric,
 } from '../../shared/js/encryption';
-import generatePassword from '../../shared/js/generatePassword';
+import { generatePassword } from '../../shared/js/generatePassword';
 import HTTP from '../../shared/react/HTTP';
 import {
   blobToUnit8Array,

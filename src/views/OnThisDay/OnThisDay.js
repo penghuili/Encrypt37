@@ -6,7 +6,7 @@ import ScrollToTop from '../../components/ScrollToTop';
 import { useXMargin } from '../../hooks/useXMargin';
 import { globalState } from '../../lib/globalState';
 import { group37Prefix } from '../../shared/js/apps';
-import { formatDate, formatDateWeek } from '../../shared/js/date';
+import { formatDateWeek } from '../../shared/js/date';
 import ContentWrapper from '../../shared/react-pure/ContentWrapper';
 import LoadMore from '../../shared/react-pure/LoadMore';
 import AppBar from '../../shared/react/AppBar';
@@ -108,17 +108,7 @@ function OnThisDay({
 
   return (
     <>
-      <AppBar
-        title="On this day"
-        isLoading={isLoading || isDeletingPost}
-        hasBack
-        onCustomBack={
-          selectedDate
-            ? () =>
-                onNav(`/?startTime=${formatDate(selectedDate)}&endTime=${formatDate(selectedDate)}`)
-            : undefined
-        }
-      />
+      <AppBar title="On this day" isLoading={isLoading || isDeletingPost} hasBack />
       <ContentWrapper padding="0">
         {historyDays.length > 0 && (
           <Box margin="0 0 2rem">

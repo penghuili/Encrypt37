@@ -91,9 +91,7 @@ function TextEditorToolbar({ editor }) {
         onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
         margin="0"
       />
-      <Text size="24px" color="light-5" margin="0 1rem">
-        |
-      </Text>
+      <Text size="24px" color="light-5" margin="0 1rem"></Text>
       <ToolIcon
         IconComponent={Checkbox}
         isActive={editor.isActive('taskList')}
@@ -132,9 +130,7 @@ function TextEditorToolbar({ editor }) {
         disabled={!editor.can().liftListItem('listItem') && !editor.can().liftListItem('taskItem')}
         margin="0"
       />
-      <Text size="24px" color="light-5" margin="0 1rem">
-        |
-      </Text>
+      <Text size="24px" color="light-5" margin="0 1rem"></Text>
       <ToolIcon
         IconComponent={Command}
         isActive={editor.isActive('codeBlock')}
@@ -151,9 +147,7 @@ function TextEditorToolbar({ editor }) {
         onClick={() => editor.chain().focus().setHorizontalRule().run()}
         margin="0"
       />
-      <Text size="24px" color="light-5" margin="0 1rem">
-        |
-      </Text>
+      <Text size="24px" color="light-5" margin="0 1rem"></Text>
       <ToolIcon
         IconComponent={Undo}
         isActive={false}

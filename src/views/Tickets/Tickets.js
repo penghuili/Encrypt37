@@ -1,15 +1,14 @@
 import { Anchor, Heading, Text } from 'grommet';
 import { Copy } from 'grommet-icons';
 import React from 'react';
-
 import TryForFree from '../../components/TryForFree';
-import apps from '../../shared/js/apps';
+import { apps } from '../../shared/js/apps';
 import ContentWrapper from '../../shared/react-pure/ContentWrapper';
 import Divider from '../../shared/react-pure/Divider';
 import Spacer from '../../shared/react-pure/Spacer';
 import AppBar from '../../shared/react/AppBar';
-import copyToClipboard from '../../shared/react/copyToClipboard';
 import PaymentStatus from '../../shared/react/PaymentStatus';
+import copyToClipboard from '../../shared/react/copyToClipboard';
 
 function Tickets({ account, isLoading, onToast }) {
   return (

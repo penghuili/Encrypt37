@@ -11,7 +11,6 @@ import TextEditorDeleteIcon from './TextEditorDeleteIcon';
 import TextEditorItem from './TextEditorItem';
 import TextEditorMediaIcon from './TextEditorMediaIcon';
 import TextEditorNoteIcon from './TextEditorNoteIcon';
-import TextEditorToolbar from './TextEditorToolbar';
 
 const firstNoteId = `note_${Date.now()}`;
 const storageKey = 'file37-post-add';
@@ -73,8 +72,6 @@ function TextEditorWithFile({
     }
   });
 
-  const [currentEditor, setCurrentEditor] = useState(null);
-
   function handleCreate() {
     const newItems = innerItems
       .map(item => (item.type === 'note' ? { ...item, note: notes[item.id] } : item))
@@ -105,8 +102,6 @@ function TextEditorWithFile({
 
   return (
     <Box width="calc(100% - 2rem)">
-      {!!currentEditor && <TextEditorToolbar editor={currentEditor} />}
-
       {innerItems.map((item, index) => {
         return (
           <Box key={item.id} direction="row" width="100%" style={{ position: 'relative' }}>
@@ -121,9 +116,6 @@ function TextEditorWithFile({
                       if (index === 0 && isCreate) {
                         LocalStorage.set(storageKey, value);
                       }
-                    }}
-                    onFocus={newEditor => {
-                      setCurrentEditor(newEditor);
                     }}
                     onUpdateNote={newNote => {
                       if (!postId) {
@@ -171,6 +163,56 @@ function TextEditorWithFile({
             </Box>
 
             <Box width="2rem" style={{ position: 'absolute', right: '-3rem', top: '0.5rem' }}>
+              {isMobile && (
+                <TextEditorMediaIcon
+                  postId={postId}
+                  itemId={item.id}
+                  nextItem={innerItems[index + 1]}
+                  disabled={disabled || isPending}
+                  onAttachFilesToPost={onAttachFilesToPost}
+                  onChange={({ items: newItems }) => {
+                    const updatedItems = innerItems
+                      .slice(0, index + 1)
+                      .concat(newItems)
+                      .concat(innerItems.slice(index + 1));
+
+                    setInnerItems(updatedItems);
+                  }}
+                />
+              )}
+
+              <TextEditorAttachmentIcon
+                postId={postId}
+                itemId={item.id}
+                nextItem={innerItems[index + 1]}
+                disabled={disabled || isPending}
+                onAttachFilesToPost={onAttachFilesToPost}
+                onChange={({ items: newItems }) => {
+                  const updatedItems = innerItems
+                    .slice(0, index + 1)
+                    .concat(newItems)
+                    .concat(innerItems.slice(index + 1));
+
+                  setInnerItems(updatedItems);
+                }}
+              />
+
+              <TextEditorNoteIcon
+                postId={postId}
+                item={item}
+                nextItem={innerItems[index + 1]}
+                disabled={disabled || isPending}
+                onCreateNote={onCreateNote}
+                onChange={newItem => {
+                  const updatedItems = innerItems
+                    .slice(0, index + 1)
+                    .concat([newItem])
+                    .concat(innerItems.slice(index + 1));
+
+                  setInnerItems(updatedItems);
+                }}
+              />
+
               <TextEditorDeleteIcon
                 postId={postId}
                 index={index}
@@ -206,56 +248,6 @@ function TextEditorWithFile({
                   setInnerItems(newItems);
                 }}
               />
-
-              <TextEditorNoteIcon
-                postId={postId}
-                item={item}
-                nextItem={innerItems[index + 1]}
-                disabled={disabled || isPending}
-                onCreateNote={onCreateNote}
-                onChange={newItem => {
-                  const updatedItems = innerItems
-                    .slice(0, index + 1)
-                    .concat([newItem])
-                    .concat(innerItems.slice(index + 1));
-
-                  setInnerItems(updatedItems);
-                }}
-              />
-
-              {isMobile && (
-                <TextEditorMediaIcon
-                  postId={postId}
-                  itemId={item.id}
-                  nextItem={innerItems[index + 1]}
-                  disabled={disabled || isPending}
-                  onAttachFilesToPost={onAttachFilesToPost}
-                  onChange={({ items: newItems }) => {
-                    const updatedItems = innerItems
-                      .slice(0, index + 1)
-                      .concat(newItems)
-                      .concat(innerItems.slice(index + 1));
-
-                    setInnerItems(updatedItems);
-                  }}
-                />
-              )}
-
-              <TextEditorAttachmentIcon
-                postId={postId}
-                itemId={item.id}
-                nextItem={innerItems[index + 1]}
-                disabled={disabled || isPending}
-                onAttachFilesToPost={onAttachFilesToPost}
-                onChange={({ items: newItems }) => {
-                  const updatedItems = innerItems
-                    .slice(0, index + 1)
-                    .concat(newItems)
-                    .concat(innerItems.slice(index + 1));
-
-                  setInnerItems(updatedItems);
-                }}
-              />
             </Box>
           </Box>
         );
@@ -265,7 +257,7 @@ function TextEditorWithFile({
 
       {!!onCreate && (
         <Box align="end" margin="2rem 0 0">
-          <Button label="Create" primary onClick={handleCreate} disabled={disabled} />
+          <Button label="Create" primary color="brand" onClick={handleCreate} disabled={disabled} />
         </Box>
       )}
     </Box>

@@ -1,6 +1,7 @@
 import { Box, Button, Text } from 'grommet';
 import React, { useState } from 'react';
 import FileContent from '../../components/FileContent';
+import ScrollToTop from '../../components/ScrollToTop';
 import { useXMargin } from '../../hooks/useXMargin';
 import { globalState } from '../../lib/globalState';
 import { formatDate, formatDateWeekTime } from '../../shared/js/date';
@@ -100,6 +101,8 @@ function Files({ files, hasMore, startKey, isLoading, onFetch, onNav }) {
         {hasMore && (
           <Button
             label="Load more"
+            primary
+            color="brand"
             onClick={() =>
               onFetch({
                 startKey,
@@ -118,6 +121,8 @@ function Files({ files, hasMore, startKey, isLoading, onFetch, onNav }) {
             <Text margin={margin}>No files.</Text>
           </>
         )}
+
+        <ScrollToTop />
       </ContentWrapper>
     </>
   );

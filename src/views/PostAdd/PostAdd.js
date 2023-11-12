@@ -2,7 +2,7 @@ import { Text } from 'grommet';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import TextEditorWithFile from '../../components/TextEditorWithFile';
-import apps, { group37Prefix } from '../../shared/js/apps';
+import { apps, group37Prefix } from '../../shared/js/apps';
 import ContentWrapper from '../../shared/react-pure/ContentWrapper';
 import DatePicker2 from '../../shared/react-pure/DatePicker2';
 import Divider from '../../shared/react-pure/Divider';

@@ -1,7 +1,7 @@
 import { Anchor, Box, Spinner, Text } from 'grommet';
 import React from 'react';
 import { STORAGE_LIMIT_IN_GB, getUsagePercentage } from '../../lib/storageLimit';
-import apps from '../../shared/js/apps';
+import { apps } from '../../shared/js/apps';
 import { formatDateTime } from '../../shared/js/date';
 import ContentWrapper from '../../shared/react-pure/ContentWrapper';
 import Divider from '../../shared/react-pure/Divider';

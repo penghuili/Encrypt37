@@ -3,7 +3,7 @@ import { Attachment, Download } from 'grommet-icons';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useXMargin } from '../../hooks/useXMargin';
-import apps from '../../shared/js/apps';
+import { apps } from '../../shared/js/apps';
 import LoadingSkeleton from '../../shared/react-pure/LoadingSkeleton';
 import { isIOS } from '../../shared/react/device';
 import { isImage, isPdf, isVideo } from '../../shared/react/file';

@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import apps from '../../shared/js/apps';
+import { apps } from '../../shared/js/apps';
 import { getColor } from '../../shared/react-pure/color';
 
 const TextEditorWrapper = styled.div`
@@ -83,7 +83,7 @@ const TextEditorWrapper = styled.div`
 
     & > ul,
     ol {
-      margin-bottom: 1rem;
+      margin: 0.5rem 0;
     }
 
     ul,

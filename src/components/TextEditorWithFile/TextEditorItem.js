@@ -9,6 +9,7 @@ import { breakpoint } from '../../shared/react-pure/size';
 import useAutoSave from '../../shared/react/hooks/useAutoSave';
 import useIsMobileSize from '../../shared/react/hooks/useIsMobileSize';
 import useRefValue from '../../shared/react/hooks/useRefValue';
+import TextEditorToolbar from './TextEditorToolbar';
 import TextEditorWrapper from './TextEditorWrapper';
 
 function TextEditorItem({
@@ -91,12 +92,15 @@ function TextEditorItem({
   }, [editor, text]);
 
   return (
-    <TextEditorWrapper
-      editable={editable}
-      maxWidth={isMobile ? 'calc(100vw - 2rem)' : `${breakpoint}px`}
-    >
-      <EditorContent editor={editor} placeholder="Type something ..." />
-    </TextEditorWrapper>
+    <>
+      {editable && !!editor && <TextEditorToolbar editor={editor} />}
+      <TextEditorWrapper
+        editable={editable}
+        maxWidth={isMobile ? 'calc(100vw - 2rem)' : `${breakpoint}px`}
+      >
+        <EditorContent editor={editor} placeholder="Type something ..." />
+      </TextEditorWrapper>
+    </>
   );
 }
 

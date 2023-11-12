@@ -1,6 +1,5 @@
 import { Box } from 'grommet';
 import React, { useMemo } from 'react';
-import AnimatedList from '../shared/react-pure/AnimatedList';
 import PostItem from './PostItem';
 
 function splitTime(newerTime, olderTime) {
@@ -76,16 +75,11 @@ function PostItems({ posts }) {
     return null;
   }
 
-  return (
-    <AnimatedList
-      items={posts}
-      renderItem={item => (
-        <Box margin="0 0 1rem">
-          <PostItem item={item} timeDiff={timeDiffs[item.sortKey]} />
-        </Box>
-      )}
-    />
-  );
+  return posts.map(post => (
+    <Box key={post.sortKey} margin="0 0 1rem">
+      <PostItem item={post} timeDiff={timeDiffs[post.sortKey]} />
+    </Box>
+  ));
 }
 
 export default PostItems;

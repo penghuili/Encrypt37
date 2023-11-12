@@ -4,7 +4,7 @@ import { useLocation } from 'wouter';
 import ExpiredBanner from './components/ExpiredBanner';
 import NavBar from './components/NavBar';
 import Router from './router';
-import apps from './shared/js/apps';
+import { apps } from './shared/js/apps';
 import createTheme from './shared/react-pure/createTheme';
 import AppContainer from './shared/react/AppContainer';
 import Door from './shared/react/Door';
