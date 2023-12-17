@@ -78,6 +78,7 @@
     ]
   },
   "scripts": {
+    "cc": "node scripts/commit.js",
     "postinstall": "patch-package",
     "copyshared": "rm -rf src/shared && mkdir src/shared && cp -a ../sharedjs/lib/js src/shared/js && cp -a ../sharedjs/lib/react src/shared/react && cp -a ../sharedjs/lib/react-pure src/shared/react-pure && rm -f scripts/upload.js && cp -a ../sharedjs/lib/scripts/upload.js scripts/upload.js",
     "start": "npm run copyshared && ESLINT_NO_DEV_ERRORS=true BROWSER=none react-scripts start",
