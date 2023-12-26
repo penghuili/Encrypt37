@@ -19,7 +19,6 @@ import PostDetails from '../views/PostDetails';
 import PostUpdate from '../views/PostUpdate';
 import Posts from '../views/Posts';
 import Pricing from '../views/Pricing';
-import Privacy from '../views/Privacy';
 import Tickets from '../views/Tickets';
 import TryIt from '../views/TryIt';
 import Welcome from '../views/Welcome';
@@ -58,8 +57,6 @@ function Router({ isCheckingRefreshToken, isLoggedIn, isLoadingSettings, tried, 
           <Route path="/tickets" component={Tickets} />
           <Route path="/pricing" component={Pricing} />
 
-          <Route path="/privacy" component={Privacy} />
-
           <Route path="/" component={Posts} />
           <Route>{() => <Redirect to="/" />}</Route>
         </Switch>
@@ -85,8 +82,6 @@ function Router({ isCheckingRefreshToken, isLoggedIn, isLoadingSettings, tried, 
         <Route path="/tickets" component={Tickets} />
         <Route path="/pricing" component={Pricing} />
 
-        <Route path="/privacy" component={Privacy} />
-
         <Route path="/" component={Posts} />
         <Route>{() => <Redirect to="/" />}</Route>
       </Switch>
@@ -99,7 +94,6 @@ function Router({ isCheckingRefreshToken, isLoggedIn, isLoadingSettings, tried, 
       <Route path="/sign-in" component={SignIn} />
       <Route path="/sign-in/2fa" component={Verify2FA} />
 
-      <Route path="/privacy" component={Privacy} />
       <Route path="/pricing" component={Pricing} />
 
       <Route path="/" component={Welcome} />

@@ -22,9 +22,6 @@ import {
   isImage,
 } from '../../shared/react/file';
 
-// TODO: why this doesn't work? I have to use the github version
-// streamSaver.mitm = `${process.env.REACT_APP_ASSETS_FOR_CODE}/streamsave-sw.js`;
-
 async function fetchUrlsForUpload(count) {
   try {
     const { urls, thumbnailUrl, fileId } = await HTTP.get(

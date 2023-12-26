@@ -13,7 +13,7 @@ import PaymentStatus from '../../shared/react/PaymentStatus';
 import RouteLink from '../../shared/react/RouteLink';
 import { getFileSizeString } from '../../shared/react/file';
 import { useEffectOnce } from '../../shared/react/hooks/useEffectOnce';
-import { privacyUrl, termsUrl } from '../../shared/react/initShared';
+import { encryptionUrl, privacyUrl, termsUrl } from '../../shared/react/initShared';
 
 function Account({
   account,
@@ -55,23 +55,23 @@ function Account({
             <Spacer />
             <Divider />
             <Spacer />
-            <Anchor
-              label="How encryption works?"
-              href="https://encrypt37.com/encryption"
-              target="_blank"
-            />
+            <Anchor label="How encryption works?" href={encryptionUrl} target="_blank" />
             <Spacer />
             <RouteLink label="Pricing" to="/pricing" />
             <Spacer />
             <RouteLink label="Buy tickets" to="/tickets" />
             <Spacer />
-            <Anchor label="Source code" href="https://github.com/penghuili/Encrypt37" target="_blank" />
+            <Anchor
+              label="Source code"
+              href="https://github.com/penghuili/Encrypt37"
+              target="_blank"
+            />
             <Spacer />
             <Anchor label="Privacy" href={privacyUrl} target="_blank" />
             <Spacer />
             <Anchor label="Terms" href={termsUrl} target="_blank" />
             <Spacer />
-            <Anchor label="Contact" href="https://encrypt37.com/contact" target="_blank" />
+            <Anchor label="Contact" href="https://peng37.com/contact" target="_blank" />
             <Spacer />
             <Divider />
             <Spacer />

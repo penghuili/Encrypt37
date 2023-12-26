@@ -7,17 +7,14 @@ import HorizontalCenter from '../../shared/react-pure/HorizontalCenter';
 import Spacer from '../../shared/react-pure/Spacer';
 import ChangeTheme from '../../shared/react/ChangeTheme';
 import RouteLink from '../../shared/react/RouteLink';
-import { privacyUrl, termsUrl } from '../../shared/react/initShared';
+import { encryptionUrl, logo, privacyUrl, termsUrl } from '../../shared/react/initShared';
 
 function Welcome() {
   return (
     <>
       <ContentWrapper>
         <HorizontalCenter margin="2rem 0 1rem">
-          <Image
-            src={`${process.env.REACT_APP_ASSETS_FOR_CODE}/encrypt37-logo-231017.png`}
-            width="48px"
-          />{' '}
+          <Image src={logo} width="48px" />{' '}
           <Heading level="2" margin="0 0 0 1rem">
             Encrypt37
           </Heading>
@@ -33,11 +30,7 @@ function Welcome() {
         <Divider />
         <Spacer />
 
-        <Anchor
-          label="How encryption works?"
-          href="https://encrypt37.com/encryption"
-          target="_blank"
-        />
+        <Anchor label="How encryption works?" href={encryptionUrl} target="_blank" />
         <Spacer />
         <RouteLink label="Pricing" to="/pricing" />
         <Spacer />
@@ -47,7 +40,7 @@ function Welcome() {
         <Spacer />
         <Anchor label="Terms" href={termsUrl} target="_blank" />
         <Spacer />
-        <Anchor label="Contact" href="https://encrypt37.com/contact" target="_blank" />
+        <Anchor label="Contact" href="https://peng37.com/contact" target="_blank" />
 
         <Spacer />
         <Divider />
