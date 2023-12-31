@@ -241,10 +241,15 @@ export async function downloadFile(fileId) {
 
     const fileStream = streamSaver.createWriteStream(fileMeta.fileName);
     const writer = fileStream.getWriter();
-    await asyncForEach(urls, async url => {
-      const response = await fetch(url);
-      const unit8Array = await fetchResponseToUnit8Array(response);
-      const decryptedChunk = await decryptFile(unit8Array, decryptedPassword);
+    const decryptedChunks = await Promise.all(
+      urls.map(async url => {
+        const response = await fetch(url);
+        const unit8Array = await fetchResponseToUnit8Array(response);
+        const decryptedChunk = await decryptFile(unit8Array, decryptedPassword);
+        return decryptedChunk;
+      })
+    );
+    await asyncForEach(decryptedChunks, async decryptedChunk => {
       writer.write(new Uint8Array(decryptedChunk));
     });
     writer.close();
