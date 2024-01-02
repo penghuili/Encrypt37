@@ -1,7 +1,7 @@
-import { call, put, select, takeLatest } from 'redux-saga/effects';
+import { call, put, select } from 'redux-saga/effects';
 import { idbStorage } from '../../lib/indexDB';
 import { safeGet, safeSet } from '../../shared/js/object';
-import { sharedActionCreators, sharedActionTypes } from '../../shared/react/store/sharedActions';
+import { sharedActionCreators } from '../../shared/react/store/sharedActions';
 import {
   createDataSelectors,
   createGeneralStore,
@@ -122,12 +122,6 @@ const {
   },
 });
 
-function* customSaga() {
-  yield takeLatest(sharedActionTypes.RESET, function* () {
-    yield call(idbStorage.clear);
-  });
-}
-
 export const fileActions = {
   fetchItemsRequested: actions.fetchItems.requested.action,
   fetchItemRequested: actions.fetchItem.requested.action,
@@ -154,4 +148,4 @@ export const fileSelectors = {
 
 export const fileReducer = mergeReducers([reducer, downloadFileReducer, downloadThumbnailReducer]);
 
-export const fileSagas = mergeSagas([saga, downloadFileSaga, downloadThumbnailSaga, customSaga]);
+export const fileSagas = mergeSagas([saga, downloadFileSaga, downloadThumbnailSaga]);

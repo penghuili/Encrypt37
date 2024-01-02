@@ -55,6 +55,9 @@ const TextEditorWrapper = styled.div`
       font-family: 'JetBrainsMono', monospace;
       padding: 0.75rem 1rem;
       border-radius: 0.5rem;
+      width: 100%;
+      overflow-x: auto;
+      white-space: pre;
 
       code {
         color: inherit;
