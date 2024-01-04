@@ -1,7 +1,7 @@
 import { idbStorage } from '../../lib/indexDB';
 import { LocalStorage, sharedLocalStorageKeys } from '../../shared/js/LocalStorage';
 import { apps } from '../../shared/js/apps';
-import { asyncForEach } from '../../shared/js/asyncForEach';
+import { asyncForAll } from '../../shared/js/asyncForAll';
 import { batch } from '../../shared/js/batch';
 import {
   decryptMessage,
@@ -85,15 +85,17 @@ export async function fetchPosts({ startKey, groupId, startTime, endTime }) {
       limit,
     } = await HTTP.get(apps.file37.name, `/v1/posts${queryString ? `?${queryString}` : ''}`);
 
-    const decryptedItems = [];
-    await asyncForEach(items, async item => {
-      try {
-        const decryptedItem = await decryptPostContent(item);
-        decryptedItems.push(decryptedItem);
-      } catch (e) {
-        console.error(e, item);
-      }
-    });
+    const decryptedItems = (
+      await asyncForAll(items, async item => {
+        try {
+          const decryptedItem = await decryptPostContent(item);
+          return decryptedItem;
+        } catch (e) {
+          console.error(e, item);
+          return null;
+        }
+      })
+    ).filter(item => item);
 
     await cachePosts(decryptedItems, { startKey, groupId, startTime, endTime });
 
@@ -342,40 +344,36 @@ async function decryptPostContent(post) {
     ? await decryptMessageSymmetric(decryptedPostPassword, post.note)
     : null;
 
-  const items = [];
-  if (post.items?.length) {
-    await asyncForEach(post.items, async item => {
-      if (item.type === 'note') {
-        const note = item.note;
-        const decryptedNotePassword = await decryptMessage(
-          LocalStorage.get(sharedLocalStorageKeys.privateKey),
-          note.password
-        );
-        const decryptedNote = note.note
-          ? await decryptMessageSymmetric(decryptedNotePassword, note.note)
-          : null;
+  const items = await asyncForAll(post.items, async item => {
+    if (item.type === 'note') {
+      const note = item.note;
+      const decryptedNotePassword = await decryptMessage(
+        LocalStorage.get(sharedLocalStorageKeys.privateKey),
+        note.password
+      );
+      const decryptedNote = note.note
+        ? await decryptMessageSymmetric(decryptedNotePassword, note.note)
+        : null;
 
-        items.push({
+      return {
+        ...item,
+        note: {
+          ...note,
+          note: decryptedNote,
+          decryptedPassword: decryptedNotePassword,
+        },
+      };
+    } else {
+      if (item.fileMeta) {
+        const decryptedFileMeta = await decryptFileContent(item.fileMeta);
+        return {
           ...item,
-          note: {
-            ...note,
-            note: decryptedNote,
-            decryptedPassword: decryptedNotePassword,
-          },
-        });
-      } else {
-        if (item.fileMeta) {
-          const decryptedFileMeta = await decryptFileContent(item.fileMeta);
-          items.push({
-            ...item,
-            fileMeta: decryptedFileMeta,
-          });
-        } else {
-          items.push(item);
-        }
+          fileMeta: decryptedFileMeta,
+        };
       }
-    });
-  }
+      return item;
+    }
+  });
 
   return { ...post, note: decryptedNote, decryptedPassword: decryptedPostPassword, items };
 }

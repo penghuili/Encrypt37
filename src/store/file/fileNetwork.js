@@ -2,6 +2,7 @@ import streamSaver from 'streamsaver';
 import { idbStorage } from '../../lib/indexDB';
 import { LocalStorage, sharedLocalStorageKeys } from '../../shared/js/LocalStorage';
 import { apps } from '../../shared/js/apps';
+import { asyncForAll } from '../../shared/js/asyncForAll';
 import { asyncForEach } from '../../shared/js/asyncForEach';
 import {
   CHUNK_SIZE,
@@ -57,10 +58,9 @@ export async function fetchFiles({ startKey, startTime, endTime }) {
       limit,
     } = await HTTP.get(apps.file37.name, `/v1/files${queryString ? `?${queryString}` : ''}`);
 
-    const decryptedItems = [];
-    await asyncForEach(items, async item => {
+    const decryptedItems = await asyncForAll(items, async item => {
       const decryptedItem = await decryptFileContent(item);
-      decryptedItems.push(decryptedItem);
+      return decryptedItem;
     });
 
     return {
@@ -116,7 +116,7 @@ export async function uploadFile(file, note) {
 
     const password = generatePassword(20, true);
 
-    await asyncForEach(urls, async (url, index) => {
+    await asyncForAll(urls, async (url, index) => {
       const chunk = file.slice(index * CHUNK_SIZE, (index + 1) * CHUNK_SIZE);
       const unit8Array = await inputFileToUnit8Array(chunk);
       const encryptedChunk = await encryptFile(unit8Array, password);
@@ -129,6 +129,7 @@ export async function uploadFile(file, note) {
         },
       });
     });
+
     let thumbnail = false;
     let thumbnailBlob;
     if (isImage(file.type)) {
@@ -170,12 +171,6 @@ export async function uploadFile(file, note) {
     if (thumbnailBlob) {
       await cacheThumbnail(fileId, thumbnailBlob);
     }
-
-    // let post = null;
-    // if (postId) {
-    //   const { data } = await addFilesToPost(postId, [fileId], startItemId);
-    //   post = data;
-    // }
 
     return { data: decrypted, error: null };
   } catch (error) {
