@@ -23,7 +23,7 @@ import { groupSelectors } from '../../store/group/groupStore';
 
 function PostContentItem({ item, editable }) {
   return item.id.startsWith('file37') ? (
-    <FileContent fileId={item.id} fileMeta={item.fileMeta} editable={editable} />
+    <FileContent fileId={item.id} fileMeta={item.fileMeta} editable={editable} showDownloadIcon />
   ) : (
     <NoteContent note={item.note} editable={editable} />
   );

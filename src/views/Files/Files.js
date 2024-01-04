@@ -92,7 +92,7 @@ function Files({ files, hasMore, startKey, isLoading, onFetch, onNav }) {
                 <Text size="xsmall" margin={margin}>
                   {formatDateWeekTime(new Date(file.createdAt))}
                 </Text>
-                <FileContent fileId={file.sortKey} fileMeta={file} editable={false} />
+                <FileContent fileId={file.sortKey} fileMeta={file} editable={false} showDownloadIcon />
               </Box>
             ))}
           </Box>

@@ -39,10 +39,12 @@ function PostItem({
     return files.length > 1 ? (
       <Carousel fill controls="arrows">
         {files.map(fileId => (
-          <FileContent key={fileId} fileId={fileId} editable={false} />
+          <FileContent key={fileId} fileId={fileId} editable={false} showDownloadIcon={false} />
         ))}
       </Carousel>
-    ) : <FileContent fileId={files[0]} editable={false} />;
+    ) : (
+      <FileContent fileId={files[0]} editable={false} showDownloadIcon={false} />
+    );
   }
 
   return (

@@ -1,6 +1,6 @@
-import { Box, Image, Spinner, Text } from 'grommet';
+import { Box, Button, Image, Spinner, Text } from 'grommet';
 import { Attachment, Download } from 'grommet-icons';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { useXMargin } from '../../hooks/useXMargin';
 import { apps } from '../../shared/js/apps';
@@ -9,6 +9,7 @@ import { isIOS } from '../../shared/react/device';
 import { isImage, isPdf, isVideo } from '../../shared/react/file';
 import { useInView } from '../../shared/react/hooks/useInView';
 import { supportedFileIcon, supportedFileTypes } from './fileTypes';
+
 const DownloadWrapper = styled.div`
   position: absolute;
   top: 0;
@@ -36,12 +37,12 @@ function FileContent({
   editable,
   isDownloadingFile,
   isAccountValid,
+  showDownloadIcon,
   onFetch,
   onDownloadFile,
   onDownloadThumbnail,
 }) {
   const margin = useXMargin();
-  const [clickedDownload, setClickedDownload] = useState(false);
   const contentWidth = window.innerWidth > 600 ? `600px` : `100%`;
 
   const innerFileMeta = fileMeta || fileMetaInStore;
@@ -82,6 +83,7 @@ function FileContent({
 
   function showDownload() {
     return (
+      !!showDownloadIcon &&
       !isIOS() &&
       !!innerFileMeta &&
       !editable &&
@@ -134,30 +136,23 @@ function FileContent({
     );
   }
 
-  const isDownloading = isDownloadingFile && clickedDownload;
   return (
     <Box ref={ref} style={{ position: 'relative', minHeight: '1rem' }}>
       {renderContent()}
 
       {showDownload() && (
-        <DownloadWrapper border={!isDownloading}>
-          {isDownloading ? (
-            <Spinner size="small" />
-          ) : (
-            <Download
-              size="small"
-              color="brand"
-              onClick={() => {
-                setClickedDownload(true);
-                onDownloadFile({
-                  fileId,
-                  onSucceeded: () => {
-                    setClickedDownload(false);
-                  },
-                });
-              }}
-            />
-          )}
+        <DownloadWrapper border={!isDownloadingFile}>
+          <Button
+            icon={
+              isDownloadingFile ? <Spinner size="small" /> : <Download size="small" color="brand" />
+            }
+            onClick={() => {
+              onDownloadFile({
+                fileId,
+              });
+            }}
+            disabled={isDownloadingFile}
+          />
         </DownloadWrapper>
       )}
     </Box>

@@ -2,7 +2,6 @@ import { idbStorage } from '../../lib/indexDB';
 import { LocalStorage, sharedLocalStorageKeys } from '../../shared/js/LocalStorage';
 import { apps } from '../../shared/js/apps';
 import { asyncForAll } from '../../shared/js/asyncForAll';
-import { batch } from '../../shared/js/batch';
 import {
   decryptMessage,
   decryptMessageSymmetric,
@@ -288,45 +287,40 @@ export async function attachFilesToPost(
       }
     }
 
-    await batch(
-      innerItems,
-      async item => {
-        if (item.type === 'file') {
-          const result = await uploadFile(item.file, '');
-          if (result.data) {
-            onUpdate(item);
-          }
-
-          return result.data?.sortKey;
-        } else if (item.type === 'note') {
-          const result = await createNote({
-            postId: innerPostId,
-            startItemId: currentItemId,
-            note: item.note,
-            date: Date.now(),
-            updatePost: false,
-          });
-          if (result.data) {
-            onUpdate(item);
-          }
-
-          return result.data?.note?.sortKey;
+    const sortKeys = await asyncForAll(innerItems, async item => {
+      if (item.type === 'file') {
+        const result = await uploadFile(item.file, '');
+        if (result.data) {
+          onUpdate(item);
         }
-      },
-      {
-        onBatchSucceeded: async keys => {
-          const validKeys = keys.filter(k => !!k);
-          if (validKeys.length) {
-            const { data } = await addFilesToPost(innerPostId, validKeys, currentItemId);
-            if (data) {
-              innerPostId = data.sortKey;
-              post = data;
-              currentItemId = post.sortKey;
-            }
-          }
-        },
+
+        return result.data?.sortKey;
+      } else if (item.type === 'note') {
+        const result = await createNote({
+          postId: innerPostId,
+          startItemId: currentItemId,
+          note: item.note,
+          date: Date.now(),
+          updatePost: false,
+        });
+        if (result.data) {
+          onUpdate(item);
+        }
+
+        return result.data?.note?.sortKey;
       }
-    );
+
+      return null;
+    });
+    const validKeys = sortKeys.filter(k => !!k);
+    if (validKeys.length) {
+      const { data } = await addFilesToPost(innerPostId, validKeys, currentItemId);
+      if (data) {
+        innerPostId = data.sortKey;
+        post = data;
+        currentItemId = post.sortKey;
+      }
+    }
 
     return { data: post, error: null };
   } catch (e) {

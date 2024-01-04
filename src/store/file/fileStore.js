@@ -69,14 +69,6 @@ const {
   saga: downloadFileSaga,
 } = createRequest(fileDomain, 'downloadFile', {
   watchEvery: true,
-  onReducerSucceeded: (state, { payload, data }) => {
-    const newState = safeSet(state, [defaultId, 'data', 'rawFiles', payload.fileId], data);
-    return newState;
-  },
-  preRequest: function* ({ fileId }) {
-    const file = yield select(getRawFile, fileId);
-    return { continueCall: !file };
-  },
   request: function* ({ fileId, onSucceeded }) {
     const result = yield call(downloadFile, fileId);
     if (result.data) {
