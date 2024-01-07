@@ -6,7 +6,6 @@ const mapStateToProps = state => ({
   isCheckingRefreshToken: sharedSelectors.isCheckingRefreshToken(state),
   isLoggedIn: sharedSelectors.isLoggedIn(state),
   isLoadingSettings: sharedSelectors.isLoadingSettings(state),
-  tried: sharedSelectors.tried(state),
   isExpired: !sharedSelectors.isAccountValid(state),
 });
 

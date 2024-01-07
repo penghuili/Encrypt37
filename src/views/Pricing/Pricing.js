@@ -1,7 +1,6 @@
 import { Text } from 'grommet';
 import React from 'react';
-
-import TryForFree from '../../components/TryForFree';
+import Price from '../../components/Price';
 import ContentWrapper from '../../shared/react-pure/ContentWrapper';
 import Spacer from '../../shared/react-pure/Spacer';
 import AppBar from '../../shared/react/AppBar';
@@ -12,7 +11,7 @@ function Pricing({ isLoggedIn }) {
     <>
       <AppBar title="Pricing" hasBack />
       <ContentWrapper>
-        <TryForFree />
+        <Price />
 
         {isLoggedIn && (
           <>

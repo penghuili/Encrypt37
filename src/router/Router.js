@@ -20,11 +20,9 @@ import PostUpdate from '../views/PostUpdate';
 import Posts from '../views/Posts';
 import Pricing from '../views/Pricing';
 import Tickets from '../views/Tickets';
-import TryIt from '../views/TryIt';
 import Welcome from '../views/Welcome';
 
-function Router({ isCheckingRefreshToken, isLoggedIn, isLoadingSettings, tried, isExpired }) {
- 
+function Router({ isCheckingRefreshToken, isLoggedIn, isLoadingSettings, isExpired }) {
   if (process.env.REACT_APP_MAINTENANCE === 'true') {
     return <Maintenance />;
   }
@@ -38,26 +36,10 @@ function Router({ isCheckingRefreshToken, isLoggedIn, isLoadingSettings, tried, 
   }
 
   if (isLoggedIn) {
-    if (!tried) {
-      return <TryIt />;
-    }
-
     if (isExpired) {
       return (
         <Switch>
-          <Route path="/posts" component={Posts} />
-          <Route path="/posts/:postId" component={PostDetails} />
-          <Route path="/on-this-day" component={OnThisDay} />
-          <Route path="/files" component={Files} />
-
-          <Route path="/account" component={Account} />
-          <Route path="/security" component={Security} />
-          <Route path="/security/2fa" component={Setup2FA} />
-          <Route path="/security/password" component={ChangePassword} />
-          <Route path="/tickets" component={Tickets} />
-          <Route path="/pricing" component={Pricing} />
-
-          <Route path="/" component={Posts} />
+          <Route path="/" component={Tickets} />
           <Route>{() => <Redirect to="/" />}</Route>
         </Switch>
       );

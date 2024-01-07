@@ -1,16 +1,14 @@
 import { Text } from 'grommet';
 import React from 'react';
-
 import { STORAGE_LIMIT_IN_GB } from '../lib/storageLimit';
 import Pitch from './Pitch';
 
-function TryForFree() {
+function Price() {
   return (
     <>
       <Pitch />
-      <Text margin="2rem 0 0">You can try Encrypt37 for free for 14 days.</Text>
-      <Text>
-        After that, it's only <Text color="brand">$6 / month</Text> or{' '}
+      <Text margin="2rem 0 0">
+        Pricing: only <Text color="brand">$6 / month</Text> or{' '}
         <Text color="brand" weight="bold">
           $60 / year
         </Text>{' '}
@@ -30,4 +28,4 @@ function TryForFree() {
   );
 }
 
-export default TryForFree;
+export default Price;

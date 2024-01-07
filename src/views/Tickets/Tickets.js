@@ -1,21 +1,27 @@
 import { Anchor, Heading, Text } from 'grommet';
 import { Copy } from 'grommet-icons';
 import React from 'react';
-import TryForFree from '../../components/TryForFree';
+import { useLocation } from 'wouter';
+import Price from '../../components/Price';
 import { apps } from '../../shared/js/apps';
 import ContentWrapper from '../../shared/react-pure/ContentWrapper';
 import Divider from '../../shared/react-pure/Divider';
 import Spacer from '../../shared/react-pure/Spacer';
 import AppBar from '../../shared/react/AppBar';
+import DeleteAccountLink from '../../shared/react/DeleteAccountLink';
+import LogoutLink from '../../shared/react/LogoutLink';
 import PaymentStatus from '../../shared/react/PaymentStatus';
 import copyToClipboard from '../../shared/react/copyToClipboard';
+import { privacyUrl, termsUrl } from '../../shared/react/initShared';
 
 function Tickets({ account, isLoading, onToast }) {
+  const [location] = useLocation();
+
   return (
     <>
-      <AppBar title="Buy tickets" isLoading={isLoading} hasBack />
+      <AppBar title="Buy tickets" isLoading={isLoading} hasBack={location === '/tickets'} />
       <ContentWrapper>
-        <TryForFree />
+        <Price />
 
         <Spacer />
         <PaymentStatus app={apps.file37.name} showBuyButton={false} />
@@ -58,6 +64,18 @@ function Tickets({ account, isLoading, onToast }) {
             </Text>
 
             <Text margin="1rem 0 0">3. After payment, come back to this page and refresh.</Text>
+
+            <Spacer />
+            <Divider />
+            <Spacer />
+
+            <LogoutLink />
+            <Spacer />
+            <DeleteAccountLink />
+            <Spacer />
+            <Anchor label="Privacy" href={privacyUrl} target="_blank" />
+            <Spacer />
+            <Anchor label="Terms" href={termsUrl} target="_blank" />
           </>
         )}
       </ContentWrapper>
