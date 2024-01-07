@@ -108,7 +108,7 @@ function OnThisDay({
 
   return (
     <>
-      <AppBar title="On this day" isLoading={isLoading || isDeletingPost} hasBack />
+      <AppBar title="On this day" isLoading={isLoading || isDeletingPost} />
       <ContentWrapper padding="0">
         {historyDays.length > 0 && (
           <Box margin="0 0 2rem">

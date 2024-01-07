@@ -57,7 +57,7 @@ function Files({ files, hasMore, startKey, isLoading, onFetch, onNav }) {
 
   return (
     <>
-      <AppBar hasBack title="Files" isLoading={isLoading} />
+      <AppBar title="Files" isLoading={isLoading} />
       <ContentWrapper padding="0">
         <Box margin={margin}>
           <DateRange

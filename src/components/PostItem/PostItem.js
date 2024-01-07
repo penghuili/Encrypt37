@@ -1,4 +1,4 @@
-import { Anchor, Box, Carousel, Menu, Spinner, Text } from 'grommet';
+import { Anchor, Box, Menu, Spinner, Text } from 'grommet';
 import { MoreVertical } from 'grommet-icons';
 import React, { useRef, useState } from 'react';
 import { useXMargin } from '../../hooks/useXMargin';
@@ -36,15 +36,7 @@ function PostItem({
       return null;
     }
 
-    return files.length > 1 ? (
-      <Carousel fill controls="arrows">
-        {files.map(fileId => (
-          <FileContent key={fileId} fileId={fileId} editable={false} showDownloadIcon={false} />
-        ))}
-      </Carousel>
-    ) : (
-      <FileContent fileId={files[0]} editable={false} showDownloadIcon={false} />
-    );
+    return <FileContent fileId={files[0]} editable={false} showDownloadIcon={false} />;
   }
 
   return (
