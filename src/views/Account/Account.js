@@ -9,7 +9,7 @@ import Spacer from '../../shared/react-pure/Spacer';
 import AppBar from '../../shared/react/AppBar';
 import AppVersion from '../../shared/react/AppVersion';
 import ChangeTheme from '../../shared/react/ChangeTheme';
-import OneAccountFor from '../../shared/react/OneAccountFor';
+import OneAccountForAll from '../../shared/react/OneAccountForAll';
 import PaymentStatus from '../../shared/react/PaymentStatus';
 import RouteLink from '../../shared/react/RouteLink';
 import { getFileSizeString } from '../../shared/react/file';
@@ -80,7 +80,7 @@ function Account({
             <Spacer />
             <Divider />
             <Spacer />
-            <OneAccountFor app={apps.file37.name} />
+            <OneAccountForAll app={apps.file37.name} />
             <Spacer />
             <AppVersion />
             <Text size="small">Since 2023</Text>
