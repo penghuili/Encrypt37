@@ -36,7 +36,6 @@ function FileContent({
   thumbnail,
   editable,
   isDownloadingFile,
-  isAccountValid,
   showDownloadIcon,
   onFetch,
   onDownloadFile,
@@ -55,7 +54,7 @@ function FileContent({
     { alwaysObserve: true }
   );
   useEffect(() => {
-    if (isImage(innerFileMeta?.mimeType) && isAccountValid) {
+    if (isImage(innerFileMeta?.mimeType)) {
       onDownloadThumbnail({ fileId, fileMeta: innerFileMeta });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -87,7 +86,6 @@ function FileContent({
       !isIOS() &&
       !!innerFileMeta &&
       !editable &&
-      isAccountValid &&
       (!isImage(innerFileMeta?.mimeType) || !!thumbnail)
     );
   }
@@ -97,7 +95,7 @@ function FileContent({
       return null;
     }
 
-    if (isImage(innerFileMeta.mimeType) && isAccountValid) {
+    if (isImage(innerFileMeta.mimeType)) {
       return thumbnail ? (
         <Image
           fit="contain"

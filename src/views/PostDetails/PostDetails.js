@@ -29,7 +29,6 @@ function PostDetails({
   post,
   isLoading,
   isDeleting,
-  isExpired,
   onFetch,
   onFetchGroups,
   onDelete,
@@ -90,7 +89,7 @@ function PostDetails({
             icon={<Edit size="small" />}
             onClick={() => onNav(`/posts/${postId}/update`)}
             margin="0 1rem 0 0"
-            disabled={isDeleting || isLoading || isExpired}
+            disabled={isDeleting || isLoading}
           />
 
           <Button

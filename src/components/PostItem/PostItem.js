@@ -14,16 +14,7 @@ import useIsMobileSize from '../../shared/react/hooks/useIsMobileSize';
 import { groupSelectors } from '../../store/group/groupStore';
 import FileContent from '../FileContent';
 
-function PostItem({
-  item,
-  timeDiff,
-  isDownloadingFile,
-  isDeleting,
-  isExpired,
-  onDelete,
-  onUpdate,
-  onNav,
-}) {
+function PostItem({ item, timeDiff, isDownloadingFile, isDeleting, onDelete, onUpdate, onNav }) {
   const margin = useXMargin();
   const isMobile = useIsMobileSize();
   const [isFocusing, setIsFocusing] = useState(false);
@@ -48,15 +39,11 @@ function PostItem({
         <Menu
           icon={<MoreVertical size="small" />}
           items={[
-            ...(isExpired
-              ? []
-              : [
-                  {
-                    label: 'Update',
-                    onClick: () => onNav(`/posts/${item.sortKey}/update`),
-                    margin: '0.25rem 0',
-                  },
-                ]),
+            {
+              label: 'Update',
+              onClick: () => onNav(`/posts/${item.sortKey}/update`),
+              margin: '0.25rem 0',
+            },
             {
               label: 'Delete',
               onClick: () => {
@@ -88,9 +75,6 @@ function PostItem({
               text={item.note}
               editable={false}
               onReadOnlyChecked={content => {
-                if (isExpired) {
-                  return;
-                }
                 onUpdate({ itemId: item.sortKey, note: content, goBack: false });
               }}
             />

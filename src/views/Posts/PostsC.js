@@ -17,7 +17,6 @@ const mapStateToProps = state => {
     isCreatingFile: fileSelectors.createItem.isPending(state),
     isDeletingPost: filePostSelectors.deleteItem.isPending(state),
     isDeletingFile: fileSelectors.deleteItem.isPending(state),
-    isExpired: !sharedSelectors.isAccountValid(state),
   };
 };
 

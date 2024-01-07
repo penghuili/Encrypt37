@@ -1,7 +1,6 @@
 import React from 'react';
 import { Provider as StoreProvider, useDispatch } from 'react-redux';
 import { useLocation } from 'wouter';
-import ExpiredBanner from './components/ExpiredBanner';
 import NavBar from './components/NavBar';
 import Router from './router';
 import { apps } from './shared/js/apps';
@@ -31,7 +30,6 @@ function App() {
   return (
     <StoreProvider store={store}>
       <AppContainer theme={theme}>
-        <ExpiredBanner />
         <Enable2FABanner />
         <NavBar />
         <Router />

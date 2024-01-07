@@ -31,7 +31,6 @@ function Posts({
   isCreatingFile,
   isDeletingPost,
   isDeletingFile,
-  isExpired,
   onFetch,
   onFetchGroups,
   onNav,
@@ -165,7 +164,7 @@ function Posts({
         )}
 
         <ScrollToTop />
-        {canUpload && !isExpired && (
+        {canUpload && (
           <FloatingButton
             onClick={() =>
               onNav(selectedGroupId ? `/posts/add?groupId=${selectedGroupId}` : `/posts/add`)
