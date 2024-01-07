@@ -4,12 +4,10 @@ import ExpiredBanner from './ExpiredBanner';
 
 const mapStateToProps = state => {
   return {
-    tried: sharedSelectors.tried(state),
     isExpired: !sharedSelectors.isAccountValid(state),
   };
 };
 
-const mapDispatchToProps = {
-};
+const mapDispatchToProps = {};
 
 export default connect(mapStateToProps, mapDispatchToProps)(ExpiredBanner);

@@ -2,10 +2,10 @@ import { Anchor, Box } from 'grommet';
 import React from 'react';
 import { useLocation } from 'wouter';
 
-function NavBar({ isLoggedIn, tried }) {
+function NavBar({ isLoggedIn, isExpired }) {
   const [location, setLocation] = useLocation();
 
-  if (!isLoggedIn || !tried) {
+  if (!isLoggedIn || isExpired) {
     return null;
   }
 

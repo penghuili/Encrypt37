@@ -5,7 +5,7 @@ import NavBar from './NavBar';
 const mapStateToProps = state => {
   return {
     isLoggedIn: sharedSelectors.isLoggedIn(state),
-    tried: sharedSelectors.tried(state),
+    isExpired: !sharedSelectors.isAccountValid(state),
   };
 };
 
