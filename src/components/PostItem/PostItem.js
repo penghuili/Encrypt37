@@ -81,7 +81,9 @@ function PostItem({ item, timeDiff, isDownloadingFile, isDeleting, onDelete, onU
           </ShowMoreWrapper>
         </Box>
       )}
+
       {renderFiles()}
+
       <Box margin={margin} align="start">
         <Anchor
           size="small"

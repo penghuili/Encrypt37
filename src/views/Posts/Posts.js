@@ -123,6 +123,7 @@ function Posts({
             }}
           />
         </Box>
+
         {hasHistory && (
           <Box align="start" direction="row" margin={margin}>
             {!isLoading && (
@@ -164,6 +165,7 @@ function Posts({
         )}
 
         <ScrollToTop />
+
         {canUpload && (
           <FloatingButton
             onClick={() =>

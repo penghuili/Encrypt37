@@ -35,21 +35,16 @@ const getPostsCacheKeyFromStore = state =>
 
 const { actions, selectors, reducer, saga } = createGeneralStore(filePostDomain, {
   preFetchItems: function* (payload) {
-    const cacheKey = yield select(getPostsCacheKeyFromStore);
-    const newCacheKey = getPostsCacheKey(payload);
-    if (!payload?.force && cacheKey === newCacheKey) {
-      return { continueCall: false };
-    }
-
     const cachedPosts = yield call(getCachedPosts, payload);
     if (cachedPosts?.length) {
-      yield put(actions.fetchItems.succeeded.action({ data: { items: cachedPosts } }));
+      yield put(actions.fetchItems.succeeded.action({ data: { items: cachedPosts }, payload }));
     }
 
     return { continueCall: true };
   },
-  fetchItems: async ({ startKey, groupId, startTime, endTime }) => {
-    return fetchPosts({ startKey, groupId, startTime, endTime });
+  fetchItems: function* ({ startKey, groupId, startTime, endTime }) {
+    const result = yield call(fetchPosts, { startKey, groupId, startTime, endTime });
+    return result;
   },
   onFetchItemsSucceeded: (state, { payload = {} }) => {
     const newState = safeSet(
