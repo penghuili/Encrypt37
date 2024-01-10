@@ -2,11 +2,12 @@ import { Text } from 'grommet';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import TextEditorWithFile from '../../components/TextEditorWithFile';
-import { apps, group37Prefix } from '../../shared/js/apps';
+import { group37Prefix } from '../../shared/js/apps';
 import ContentWrapper from '../../shared/react-pure/ContentWrapper';
 import DatePicker2 from '../../shared/react-pure/DatePicker2';
 import Divider from '../../shared/react-pure/Divider';
 import Spacer from '../../shared/react-pure/Spacer';
+import { getColor } from '../../shared/react-pure/color';
 import AppBar from '../../shared/react/AppBar';
 import GroupsSelector from '../../shared/react/GroupsSelector';
 import { useEffectOnce } from '../../shared/react/hooks/useEffectOnce';
@@ -15,7 +16,7 @@ import { groupActions, groupSelectors } from '../../store/group/groupStore';
 
 const ProgressWrapper = styled.div`
   height: 8px;
-  background-color: ${apps.file37.color};
+  background-color: ${getColor('status-ok')};
   position: fixed;
   top: 0;
   left: 0;
@@ -28,7 +29,7 @@ const ProgressArrow = styled.div`
   width: 8px;
   height: 8px;
   clip-path: polygon(100% 50%, 0 0, 0 100%);
-  background-color: ${apps.file37.color};
+  background-color: ${getColor('status-ok')};
   position: absolute;
   right: -8px;
   animation: moveArrow 1s infinite alternate;
@@ -47,7 +48,6 @@ function Progress({ progress }) {
   const width = `${Math.floor(progress * 100)}%`;
   return (
     <ProgressWrapper width={width}>
-      {/* <ProgressSpinner /> */}
       <ProgressArrow />
     </ProgressWrapper>
   );

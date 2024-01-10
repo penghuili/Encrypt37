@@ -1,9 +1,8 @@
-import streamSaver from 'streamsaver';
+import { saveAs } from 'file-saver';
 import { idbStorage } from '../../lib/indexDB';
 import { LocalStorage, sharedLocalStorageKeys } from '../../shared/js/LocalStorage';
 import { apps } from '../../shared/js/apps';
 import { asyncForAll } from '../../shared/js/asyncForAll';
-import { asyncForEach } from '../../shared/js/asyncForEach';
 import {
   CHUNK_SIZE,
   decryptFile,
@@ -234,20 +233,15 @@ export async function downloadFile(fileId) {
       fileMeta.password
     );
 
-    const fileStream = streamSaver.createWriteStream(fileMeta.fileName);
-    const writer = fileStream.getWriter();
-    const decryptedChunks = await Promise.all(
-      urls.map(async url => {
-        const response = await fetch(url);
-        const unit8Array = await fetchResponseToUnit8Array(response);
-        const decryptedChunk = await decryptFile(unit8Array, decryptedPassword);
-        return decryptedChunk;
-      })
-    );
-    await asyncForEach(decryptedChunks, async decryptedChunk => {
-      writer.write(new Uint8Array(decryptedChunk));
+    const decryptedChunks = await asyncForAll(urls, async url => {
+      const response = await fetch(url);
+      const unit8Array = await fetchResponseToUnit8Array(response);
+      const decryptedChunk = await decryptFile(unit8Array, decryptedPassword);
+      return decryptedChunk;
     });
-    writer.close();
+    const blob = new Blob(decryptedChunks, { type: fileMeta.mimeType });
+    console.log(fileMeta.fileName);
+    saveAs(blob, fileMeta.fileName);
 
     return { data: { success: true }, error: null };
   } catch (error) {

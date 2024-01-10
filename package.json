@@ -17,6 +17,7 @@
     "copy-to-clipboard": "3.3.3",
     "date-fns": "2.29.3",
     "eventemitter3": "5.0.0",
+    "file-saver": "2.0.5",
     "framer-motion": "10.16.4",
     "grommet": "2.31.0",
     "grommet-icons": "4.10.0",
@@ -39,7 +40,6 @@
     "react-router-dom": "6.3.0",
     "redux": "4.2.0",
     "redux-saga": "1.2.2",
-    "streamsaver": "2.0.6",
     "styled-components": "5.3.6",
     "web-streams-polyfill": "3.2.1",
     "wouter": "2.9.0"
