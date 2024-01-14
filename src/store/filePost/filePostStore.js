@@ -35,6 +35,12 @@ const getPostsCacheKeyFromStore = state =>
 
 const { actions, selectors, reducer, saga } = createGeneralStore(filePostDomain, {
   preFetchItems: function* (payload) {
+    const cacheKey = yield select(getPostsCacheKeyFromStore);
+    const newCacheKey = getPostsCacheKey(payload);
+    if (!payload?.force && cacheKey === newCacheKey) {
+      return { continueCall: false };
+    }
+
     const cachedPosts = yield call(getCachedPosts, payload);
     if (cachedPosts?.length) {
       yield put(actions.fetchItems.succeeded.action({ data: { items: cachedPosts }, payload }));
