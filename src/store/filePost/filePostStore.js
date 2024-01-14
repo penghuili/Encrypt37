@@ -137,8 +137,8 @@ const {
   reducer: attachFilesToPostReducer,
   saga: attachFilesToPostSaga,
 } = createRequest(filePostDomain, 'attachFilesToPost', {
-  request: function* ({ postId, items, startItemId, groups, onUpdate, onSucceeded }) {
-    const result = yield call(attachFilesToPost, postId, items, startItemId, groups, onUpdate);
+  request: function* ({ postId, postDate, items, startItemId, groups, onUpdate, onSucceeded }) {
+    const result = yield call(attachFilesToPost, postId, postDate, items, startItemId, groups, onUpdate);
     if (result.data) {
       yield put(sharedActionCreators.setToast('Encrypted and saved in server.'));
       if (onSucceeded) {

@@ -257,6 +257,7 @@ export async function deleteFileAndCombineNotes(postId, fileId, previousItem, ne
 
 export async function attachFilesToPost(
   postId,
+  postDate,
   items,
   startItemId,
   groups = [],
@@ -270,7 +271,7 @@ export async function attachFilesToPost(
 
     if (!postId) {
       const result = await createPost({
-        date: Date.now(),
+        date: postDate ? postDate.getTime() : Date.now(),
         note: items[0].note,
         groups,
         files: [],

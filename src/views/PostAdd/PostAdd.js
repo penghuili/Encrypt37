@@ -79,6 +79,7 @@ function PostAdd({ isAttachingFiles, onAttachFilesToPost, onToast }) {
       }, please leave the page open ...`
     );
     onAttachFilesToPost({
+      postDate: date,
       postId: null,
       items,
       startItemId: null,
@@ -107,7 +108,10 @@ function PostAdd({ isAttachingFiles, onAttachFilesToPost, onToast }) {
         >
           <Spacer size="2rem" />
           <Text weight="bold">Select date</Text>
-          <DatePicker2 date={date} onSelect={setDate} />
+          <DatePicker2 date={date} onSelect={d => {
+            setDate(d)
+            console.log(d)
+          }} />
           <Spacer />
 
           <GroupsSelector
