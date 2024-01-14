@@ -1,4 +1,11 @@
-import { differenceInCalendarYears, subDays, subMonths, subYears } from 'date-fns';
+import {
+  addDays,
+  differenceInCalendarDays,
+  differenceInCalendarYears,
+  subDays,
+  subMonths,
+  subYears,
+} from 'date-fns';
 import { Box, Tab, Tabs, Text } from 'grommet';
 import React, { useMemo, useState } from 'react';
 import PostItems from '../../components/PostItems';
@@ -44,6 +51,14 @@ function getHistoryDays(startDate) {
           history.push({ label: year.getFullYear(), date: year });
         }
       });
+  }
+
+  if (lastMonth > startDateObj) {
+    const randomDay = addDays(
+      startDateObj,
+      Math.floor(differenceInCalendarDays(today, startDateObj) * Math.random())
+    );
+    history.push({ label: 'Ramdom day', date: randomDay });
   }
 
   return history;
