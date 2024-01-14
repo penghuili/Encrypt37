@@ -1,5 +1,5 @@
 import { subDays } from 'date-fns';
-import { Box, Text } from 'grommet';
+import { Box, Spinner, Text } from 'grommet';
 import { Refresh } from 'grommet-icons';
 import React, { useMemo, useState } from 'react';
 import PostItems from '../../components/PostItems';
@@ -126,7 +126,9 @@ function Posts({
 
         {hasHistory && (
           <Box align="start" direction="row" margin={margin}>
-            {!isLoading && (
+            {isLoading ? (
+              <Spinner size="small" />
+            ) : (
               <Refresh
                 onClick={() =>
                   onFetch({
