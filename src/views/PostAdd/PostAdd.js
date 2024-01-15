@@ -66,6 +66,8 @@ function PostAdd({ isAttachingFiles, onAttachFilesToPost, onToast }) {
   });
 
   function handleSend(items) {
+    setProgress(1 / (items.length + 2));
+
     let leftItems = items.slice(0);
 
     const filesCount = items.filter(i => i.type === 'file').length;
@@ -108,10 +110,13 @@ function PostAdd({ isAttachingFiles, onAttachFilesToPost, onToast }) {
         >
           <Spacer size="2rem" />
           <Text weight="bold">Select date</Text>
-          <DatePicker2 date={date} onSelect={d => {
-            setDate(d)
-            console.log(d)
-          }} />
+          <DatePicker2
+            date={date}
+            onSelect={d => {
+              setDate(d);
+              console.log(d);
+            }}
+          />
           <Spacer />
 
           <GroupsSelector
