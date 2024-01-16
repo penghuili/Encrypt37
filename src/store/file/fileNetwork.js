@@ -6,7 +6,7 @@ import { asyncForAll } from '../../shared/js/asyncForAll';
 import {
   CHUNK_SIZE,
   decryptFile,
-  decryptMessage,
+  decryptMessageAsymmetric,
   decryptMessageSymmetric,
   encryptFile,
   encryptMessageAsymmetric,
@@ -228,7 +228,7 @@ export async function downloadFile(fileId) {
     } = await fetchUrlsForDownload(fileId);
 
     const { data: fileMeta } = await fetchFile(fileId);
-    const decryptedPassword = await decryptMessage(
+    const decryptedPassword = await decryptMessageAsymmetric(
       LocalStorage.get(sharedLocalStorageKeys.privateKey),
       fileMeta.password
     );
@@ -250,7 +250,7 @@ export async function downloadFile(fileId) {
 }
 
 export async function decryptFileContent(file) {
-  const decryptedPassword = await decryptMessage(
+  const decryptedPassword = await decryptMessageAsymmetric(
     LocalStorage.get(sharedLocalStorageKeys.privateKey),
     file.password
   );

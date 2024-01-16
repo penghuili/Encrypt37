@@ -1,7 +1,7 @@
 import { LocalStorage, sharedLocalStorageKeys } from '../../shared/js/LocalStorage';
 import { apps } from '../../shared/js/apps';
 import {
-  decryptMessage,
+  decryptMessageAsymmetric,
   decryptMessageSymmetric,
   encryptMessageAsymmetric,
   encryptMessageSymmetric,
@@ -89,7 +89,7 @@ async function encryptNoteContent(data, decryptedPassword) {
 }
 
 async function decryptNoteContent(data) {
-  const decryptedPassword = await decryptMessage(
+  const decryptedPassword = await decryptMessageAsymmetric(
     LocalStorage.get(sharedLocalStorageKeys.privateKey),
     data.password
   );

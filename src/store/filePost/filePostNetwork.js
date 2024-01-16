@@ -3,7 +3,7 @@ import { LocalStorage, sharedLocalStorageKeys } from '../../shared/js/LocalStora
 import { apps } from '../../shared/js/apps';
 import { asyncForAll } from '../../shared/js/asyncForAll';
 import {
-  decryptMessage,
+  decryptMessageAsymmetric,
   decryptMessageSymmetric,
   encryptMessageAsymmetric,
   encryptMessageSymmetric,
@@ -330,7 +330,7 @@ export async function attachFilesToPost(
 }
 
 async function decryptPostContent(post) {
-  const decryptedPostPassword = await decryptMessage(
+  const decryptedPostPassword = await decryptMessageAsymmetric(
     LocalStorage.get(sharedLocalStorageKeys.privateKey),
     post.password
   );
@@ -342,7 +342,7 @@ async function decryptPostContent(post) {
   const items = await asyncForAll(post.items, async item => {
     if (item.type === 'note') {
       const note = item.note;
-      const decryptedNotePassword = await decryptMessage(
+      const decryptedNotePassword = await decryptMessageAsymmetric(
         LocalStorage.get(sharedLocalStorageKeys.privateKey),
         note.password
       );
