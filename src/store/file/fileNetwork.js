@@ -8,7 +8,7 @@ import {
   decryptFile,
   decryptMessageAsymmetric,
   decryptMessageSymmetric,
-  encryptFile,
+  encryptFileSymmetric,
   encryptMessageAsymmetric,
   encryptMessageSymmetric,
 } from '../../shared/js/encryption';
@@ -118,7 +118,7 @@ export async function uploadFile(file, note) {
     await asyncForAll(urls, async (url, index) => {
       const chunk = file.slice(index * CHUNK_SIZE, (index + 1) * CHUNK_SIZE);
       const unit8Array = await inputFileToUnit8Array(chunk);
-      const encryptedChunk = await encryptFile(unit8Array, password);
+      const encryptedChunk = await encryptFileSymmetric(password, unit8Array);
 
       await fetch(url, {
         method: 'PUT',
@@ -135,7 +135,7 @@ export async function uploadFile(file, note) {
       thumbnailBlob = await generateImageThumbnail(file);
       if (thumbnailBlob) {
         const thumbnailUnit8Array = await blobToUnit8Array(thumbnailBlob);
-        const encryptedThumbnail = await encryptFile(thumbnailUnit8Array, password);
+        const encryptedThumbnail = await encryptFileSymmetric(password, thumbnailUnit8Array);
 
         await fetch(thumbnailUrl, {
           method: 'PUT',
