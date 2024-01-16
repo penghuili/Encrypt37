@@ -5,7 +5,7 @@ import { apps } from '../../shared/js/apps';
 import { asyncForAll } from '../../shared/js/asyncForAll';
 import {
   CHUNK_SIZE,
-  decryptFile,
+  decryptFileSymmetric,
   decryptMessageAsymmetric,
   decryptMessageSymmetric,
   encryptFileSymmetric,
@@ -207,7 +207,7 @@ export async function downloadThumbnail(fileId, fileMeta) {
     const response = await fetch(thumbnailUrl);
     const unit8Array = await fetchResponseToUnit8Array(response);
 
-    const decryptedFile = await decryptFile(unit8Array, fileMeta.decryptedPassword);
+    const decryptedFile = await decryptFileSymmetric(fileMeta.decryptedPassword, unit8Array);
 
     const blob = new Blob([decryptedFile], { type: fileMeta.mimeType });
 
@@ -236,7 +236,7 @@ export async function downloadFile(fileId) {
     const decryptedChunks = await asyncForAll(urls, async url => {
       const response = await fetch(url);
       const unit8Array = await fetchResponseToUnit8Array(response);
-      const decryptedChunk = await decryptFile(unit8Array, decryptedPassword);
+      const decryptedChunk = await decryptFileSymmetric(decryptedPassword, unit8Array);
       return decryptedChunk;
     });
     const blob = new Blob(decryptedChunks, { type: fileMeta.mimeType });
