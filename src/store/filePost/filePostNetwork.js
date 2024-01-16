@@ -5,7 +5,7 @@ import { asyncForAll } from '../../shared/js/asyncForAll';
 import {
   decryptMessage,
   decryptMessageSymmetric,
-  encryptMessage,
+  encryptMessageAsymmetric,
   encryptMessageSymmetric,
 } from '../../shared/js/encryption';
 import { generatePassword } from '../../shared/js/generatePassword';
@@ -132,7 +132,7 @@ export async function createPost({ date, note, files, groups }) {
   try {
     const password = generatePassword(20, true);
     const encryptedNote = note ? await encryptMessageSymmetric(password, note) : undefined;
-    const encryptedPassword = await encryptMessage(
+    const encryptedPassword = await encryptMessageAsymmetric(
       LocalStorage.get(sharedLocalStorageKeys.publicKey),
       password
     );

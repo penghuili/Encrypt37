@@ -3,7 +3,7 @@ import { apps } from '../../shared/js/apps';
 import {
   decryptMessage,
   decryptMessageSymmetric,
-  encryptMessage,
+  encryptMessageAsymmetric,
   encryptMessageSymmetric,
 } from '../../shared/js/encryption';
 import { generatePassword } from '../../shared/js/generatePassword';
@@ -27,7 +27,7 @@ export async function createNote({ postId, startItemId, note, date, updatePost }
     const password = generatePassword(20, true);
     const { note: encryptedNote } = await encryptNoteContent({ note }, password);
 
-    const encryptedPassword = await encryptMessage(
+    const encryptedPassword = await encryptMessageAsymmetric(
       LocalStorage.get(sharedLocalStorageKeys.publicKey),
       password
     );

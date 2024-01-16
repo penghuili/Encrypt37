@@ -9,7 +9,7 @@ import {
   decryptMessage,
   decryptMessageSymmetric,
   encryptFile,
-  encryptMessage,
+  encryptMessageAsymmetric,
   encryptMessageSymmetric,
 } from '../../shared/js/encryption';
 import { generatePassword } from '../../shared/js/generatePassword';
@@ -150,7 +150,7 @@ export async function uploadFile(file, note) {
 
     const encryptedFileName = await encryptMessageSymmetric(password, file.name);
     const encryptedNote = note ? await encryptMessageSymmetric(password, note) : undefined;
-    const encryptedPassword = await encryptMessage(
+    const encryptedPassword = await encryptMessageAsymmetric(
       LocalStorage.get(sharedLocalStorageKeys.publicKey),
       password
     );
