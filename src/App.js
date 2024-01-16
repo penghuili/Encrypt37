@@ -19,6 +19,7 @@ initShared({
   encryptionUrl: 'https://peng37.com/encryption/',
   privacyUrl: 'https://encrypt37.com/privacy/',
   termsUrl: 'https://encrypt37.com/terms/',
+  hasSettings: true,
 });
 
 setHook('location', useLocation);

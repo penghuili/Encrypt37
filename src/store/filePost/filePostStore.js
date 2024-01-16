@@ -1,5 +1,5 @@
 import { call, put, select, take } from 'redux-saga/effects';
-import { prepend, safeGet, safeSet } from '../../shared/js/object';
+import { safeGet, safeSet, updateOrPrepend } from '../../shared/js/object';
 import { uniqBy } from '../../shared/js/uniq';
 import { sharedActionCreators } from '../../shared/react/store/sharedActions';
 import {
@@ -138,7 +138,15 @@ const {
   saga: attachFilesToPostSaga,
 } = createRequest(filePostDomain, 'attachFilesToPost', {
   request: function* ({ postId, postDate, items, startItemId, groups, onUpdate, onSucceeded }) {
-    const result = yield call(attachFilesToPost, postId, postDate, items, startItemId, groups, onUpdate);
+    const result = yield call(
+      attachFilesToPost,
+      postId,
+      postDate,
+      items,
+      startItemId,
+      groups,
+      onUpdate
+    );
     if (result.data) {
       yield put(sharedActionCreators.setToast('Encrypted and saved in server.'));
       if (onSucceeded) {
@@ -149,7 +157,7 @@ const {
   },
   onReducerSucceeded: (state, { data }) => {
     let newState = safeSet(state, [defaultId, 'data', 'item'], data);
-    newState = prepend(newState, [defaultId, 'data', 'items'], data);
+    newState = updateOrPrepend(newState, [defaultId, 'data', 'items'], data.sortKey, data);
     return newState;
   },
 });
