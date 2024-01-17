@@ -1,6 +1,6 @@
 import { Anchor, Box, Menu, Spinner, Text } from 'grommet';
 import { MoreVertical } from 'grommet-icons';
-import React, { useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { useXMargin } from '../../hooks/useXMargin';
 import { setOffsetTop } from '../../lib/globalState';
 import { formatDateWeekTime } from '../../shared/js/date';
@@ -20,14 +20,30 @@ function PostItem({ item, timeDiff, isDownloadingFile, isDeleting, onDelete, onU
   const [isFocusing, setIsFocusing] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const ref = useRef();
+  const files = useMemo(
+    () => (item?.files || []).filter(fileId => fileId.startsWith('file37')),
+    [item]
+  );
 
   function renderFiles() {
-    const files = (item?.files || []).filter(fileId => fileId.startsWith('file37'));
     if (!files.length) {
       return null;
     }
 
     return <FileContent fileId={files[0]} editable={false} showDownloadIcon={false} />;
+  }
+
+  function renderDetails() {
+    const moreFilesCount = files.length - 1;
+    return (
+      <Text size="small">
+        Details{' '}
+        {files.length > 1
+          ? `(${moreFilesCount} more ${moreFilesCount > 1 ? 'files' : 'file'})`
+          : ''}{' '}
+        &gt;&gt;
+      </Text>
+    );
   }
 
   return (
@@ -87,7 +103,7 @@ function PostItem({ item, timeDiff, isDownloadingFile, isDeleting, onDelete, onU
       <Box margin={margin} align="start">
         <Anchor
           size="small"
-          label={<Text size="small">Details &gt;&gt;</Text>}
+          label={renderDetails()}
           onClick={() => {
             onNav(`/posts/${item.sortKey}`);
             setOffsetTop(ref.current.offsetTop);
