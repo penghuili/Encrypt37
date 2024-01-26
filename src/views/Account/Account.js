@@ -25,7 +25,7 @@ function Account({
   onLogOut,
 }) {
   useEffectOnce(() => {
-    onFetchSettings(apps.file37.name, true);
+    onFetchSettings(apps.Encrypt37.name, true);
   });
   return (
     <>
@@ -37,7 +37,7 @@ function Account({
             <Text margin="0 0 1rem">Username: {account.username}</Text>
             <Text margin="0 0 1rem">User ID: {account.userId}</Text>
             <Text margin="0 0 1rem">Created at: {formatDateTime(account.createdAt)}</Text>
-            <PaymentStatus app={apps.file37.name} showBuyButton />
+            <PaymentStatus app={apps.Encrypt37.name} showBuyButton />
             <Divider />
             <Spacer />
             <Box margin="0 0 1rem" direction="row" align="center">
@@ -80,7 +80,7 @@ function Account({
             <Spacer />
             <Divider />
             <Spacer />
-            <OneAccountForAll app={apps.file37.name} />
+            <OneAccountForAll app={apps.Encrypt37.name} />
             <Spacer />
             <AppVersion />
             <Text size="small">Since 2023</Text>

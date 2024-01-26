@@ -9,7 +9,7 @@ export const supportedFileTypes = {
 };
 
 export const supportedFileIcon = {
-  [supportedFileTypes.IMAGE]: <PiImageSquare color={apps.file37.color} />,
-  [supportedFileTypes.VIDEO]: <PiVideo color={apps.file37.color} />,
-  [supportedFileTypes.PDF]: <PiFilePdf color={apps.file37.color} />,
+  [supportedFileTypes.IMAGE]: <PiImageSquare color={apps.Encrypt37.color} />,
+  [supportedFileTypes.VIDEO]: <PiVideo color={apps.Encrypt37.color} />,
+  [supportedFileTypes.PDF]: <PiFilePdf color={apps.Encrypt37.color} />,
 };

@@ -25,7 +25,7 @@ import {
 async function fetchUrlsForUpload(count) {
   try {
     const { urls, thumbnailUrl, fileId } = await HTTP.get(
-      apps.file37.name,
+      apps.Encrypt37.name,
       `/v1/upload-url?count=${count}`
     );
 
@@ -37,7 +37,7 @@ async function fetchUrlsForUpload(count) {
 
 async function fetchUrlsForDownload(fileId) {
   try {
-    const { urls, thumbnailUrl } = await HTTP.get(apps.file37.name, `/v1/download-url/${fileId}`);
+    const { urls, thumbnailUrl } = await HTTP.get(apps.Encrypt37.name, `/v1/download-url/${fileId}`);
 
     return { data: { urls, thumbnailUrl }, error: null };
   } catch (error) {
@@ -55,7 +55,7 @@ export async function fetchFiles({ startKey, startTime, endTime }) {
       items,
       startKey: newStartKey,
       limit,
-    } = await HTTP.get(apps.file37.name, `/v1/files${queryString ? `?${queryString}` : ''}`);
+    } = await HTTP.get(apps.Encrypt37.name, `/v1/files${queryString ? `?${queryString}` : ''}`);
 
     const decryptedItems = await asyncForAll(items, async item => {
       const decryptedItem = await decryptFileContent(item);
@@ -77,7 +77,7 @@ export async function fetchFiles({ startKey, startTime, endTime }) {
 
 export async function fetchFile(fileId) {
   try {
-    const file = await HTTP.get(apps.file37.name, `/v1/files/${fileId}`);
+    const file = await HTTP.get(apps.Encrypt37.name, `/v1/files/${fileId}`);
 
     const decrypted = await decryptFileContent(file);
 
@@ -93,7 +93,7 @@ export async function fetchFile(fileId) {
 export async function updateFile(fileId, { note }, decryptedPassword) {
   try {
     const encryptedNote = note ? await encryptMessageSymmetric(decryptedPassword, note) : undefined;
-    const file = await HTTP.put(apps.file37.name, `/v1/files/${fileId}`, { note: encryptedNote });
+    const file = await HTTP.put(apps.Encrypt37.name, `/v1/files/${fileId}`, { note: encryptedNote });
 
     const decrypted = await decryptFileContent(file);
 
@@ -154,7 +154,7 @@ export async function uploadFile(file, note) {
       LocalStorage.get(sharedLocalStorageKeys.publicKey),
       password
     );
-    const data = await HTTP.post(apps.file37.name, `/v1/files`, {
+    const data = await HTTP.post(apps.Encrypt37.name, `/v1/files`, {
       fileId,
       password: encryptedPassword,
       fileName: encryptedFileName,

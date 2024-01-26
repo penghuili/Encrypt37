@@ -15,7 +15,7 @@ import store from './store';
 
 initShared({
   logo: 'https://static.peng37.com/faviconapi/52190fe8-4549-4a16-b25b-3b42954128bc/ad57b4975e3b5add4004281dc78d909b63dd26be286caa3fc815a1c1e57ff8c2/icon-192.png',
-  app: apps.file37.name,
+  app: apps.Encrypt37.name,
   encryptionUrl: 'https://peng37.com/encryption/',
   privacyUrl: 'https://encrypt37.com/privacy/',
   termsUrl: 'https://encrypt37.com/terms/',
@@ -25,7 +25,7 @@ initShared({
 setHook('location', useLocation);
 setHook('dispatch', useDispatch);
 
-const theme = createTheme(apps.file37.color);
+const theme = createTheme(apps.Encrypt37.color);
 
 function App() {
   return (

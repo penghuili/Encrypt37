@@ -82,7 +82,7 @@ export async function fetchPosts({ startKey, groupId, startTime, endTime }) {
       items,
       startKey: newStartKey,
       limit,
-    } = await HTTP.get(apps.file37.name, `/v1/posts${queryString ? `?${queryString}` : ''}`);
+    } = await HTTP.get(apps.Encrypt37.name, `/v1/posts${queryString ? `?${queryString}` : ''}`);
 
     const decryptedItems = (
       await asyncForAll(items, async item => {
@@ -113,7 +113,7 @@ export async function fetchPosts({ startKey, groupId, startTime, endTime }) {
 
 export async function fetchPost(postId) {
   try {
-    const post = await HTTP.get(apps.file37.name, `/v1/posts/${postId}`);
+    const post = await HTTP.get(apps.Encrypt37.name, `/v1/posts/${postId}`);
 
     const decrypted = await decryptPostContent(post);
 
@@ -136,7 +136,7 @@ export async function createPost({ date, note, files, groups }) {
       LocalStorage.get(sharedLocalStorageKeys.publicKey),
       password
     );
-    const post = await HTTP.post(apps.file37.name, `/v1/posts`, {
+    const post = await HTTP.post(apps.Encrypt37.name, `/v1/posts`, {
       password: encryptedPassword,
       date,
       note: encryptedNote,
@@ -160,7 +160,7 @@ export async function createPost({ date, note, files, groups }) {
 export async function updatePost(postId, { note }, decryptedPassword) {
   try {
     const encryptedNote = note ? await encryptMessageSymmetric(decryptedPassword, note) : undefined;
-    const post = await HTTP.put(apps.file37.name, `/v1/posts/${postId}`, { note: encryptedNote });
+    const post = await HTTP.put(apps.Encrypt37.name, `/v1/posts/${postId}`, { note: encryptedNote });
 
     const decrypted = await decryptPostContent(post);
 
@@ -177,7 +177,7 @@ export async function updatePost(postId, { note }, decryptedPassword) {
 
 export async function addFilesToPost(postId, files, startItemId) {
   try {
-    const post = await HTTP.put(apps.file37.name, `/v1/posts/${postId}/files`, {
+    const post = await HTTP.put(apps.Encrypt37.name, `/v1/posts/${postId}/files`, {
       files,
       startFile: startItemId,
     });
@@ -197,7 +197,7 @@ export async function addFilesToPost(postId, files, startItemId) {
 
 export async function removeFileFromPost(postId, fileId) {
   try {
-    const post = await HTTP.delete(apps.file37.name, `/v1/posts/${postId}/files/${fileId}`);
+    const post = await HTTP.delete(apps.Encrypt37.name, `/v1/posts/${postId}/files/${fileId}`);
 
     await idbStorage.removeItem(fileId);
 
@@ -216,7 +216,7 @@ export async function removeFileFromPost(postId, fileId) {
 
 export async function deletePost(postId) {
   try {
-    await HTTP.delete(apps.file37.name, `/v1/posts/${postId}`);
+    await HTTP.delete(apps.Encrypt37.name, `/v1/posts/${postId}`);
 
     await deleteCachedPost(postId);
 

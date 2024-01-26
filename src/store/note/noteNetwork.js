@@ -12,7 +12,7 @@ import { addFilesToPost } from '../filePost/filePostNetwork';
 
 export async function fetchNote(noteId) {
   try {
-    const item = await HTTP.get(apps.note37.name, `/v1/notes/${noteId}`);
+    const item = await HTTP.get(apps.Note37.name, `/v1/notes/${noteId}`);
 
     const decrypted = await decryptNoteContent(item);
 
@@ -31,7 +31,7 @@ export async function createNote({ postId, startItemId, note, date, updatePost }
       LocalStorage.get(sharedLocalStorageKeys.publicKey),
       password
     );
-    const data = await HTTP.post(apps.note37.name, `/v1/notes`, {
+    const data = await HTTP.post(apps.Note37.name, `/v1/notes`, {
       password: encryptedPassword,
       note: encryptedNote,
       date,
@@ -55,7 +55,7 @@ export async function updateNote(noteId, { note }, decryptedPassword) {
   try {
     const { note: encryptedNote } = await encryptNoteContent({ note }, decryptedPassword);
 
-    const data = await HTTP.put(apps.note37.name, `/v1/notes/${noteId}`, {
+    const data = await HTTP.put(apps.Note37.name, `/v1/notes/${noteId}`, {
       note: encryptedNote,
     });
 
@@ -69,7 +69,7 @@ export async function updateNote(noteId, { note }, decryptedPassword) {
 
 export async function deleteNote(noteId) {
   try {
-    const data = await HTTP.delete(apps.note37.name, `/v1/notes/${noteId}`);
+    const data = await HTTP.delete(apps.Note37.name, `/v1/notes/${noteId}`);
 
     return { data, error: null };
   } catch (error) {

@@ -41,7 +41,7 @@ const TextEditorWrapper = styled.div`
     }
 
     a {
-      color: ${apps.file37.color};
+      color: ${apps.Encrypt37.color};
     }
 
     code {

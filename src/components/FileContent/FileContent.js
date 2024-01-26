@@ -26,7 +26,7 @@ const DownloadWrapper = styled.div`
   align-items: center;
   justify-content: center;
 
-  border: ${({ border }) => (border ? `1px solid ${apps.file37.color}` : '0')};
+  border: ${({ border }) => (border ? `1px solid ${apps.Encrypt37.color}` : '0')};
 `;
 
 function FileContent({
