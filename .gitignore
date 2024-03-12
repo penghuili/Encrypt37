@@ -11,6 +11,7 @@
 # production
 /build
 src/shared
+src/shared-private
 scripts/upload.js
 
 # misc
