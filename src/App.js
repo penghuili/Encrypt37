@@ -2,6 +2,7 @@ import React from 'react';
 import { Provider as StoreProvider, useDispatch } from 'react-redux';
 import { useLocation } from 'wouter';
 import NavBar from './components/NavBar';
+import { registerSW } from './registerSW';
 import Router from './router';
 import { apps } from './shared/js/apps';
 import createTheme from './shared/react-pure/createTheme';
@@ -12,6 +13,8 @@ import Toast from './shared/react/Toast';
 import { HooksOutsieWrapper, setHook } from './shared/react/hooksOutside';
 import initShared from './shared/react/initShared';
 import store from './store';
+
+registerSW();
 
 initShared({
   logo: 'https://static.peng37.com/faviconapi/52190fe8-4549-4a16-b25b-3b42954128bc/ad57b4975e3b5add4004281dc78d909b63dd26be286caa3fc815a1c1e57ff8c2/icon-192.png',
